@@ -1,0 +1,83 @@
+﻿Assignee,ProjectKey,IssueType_norm,nb_tasks_type,total_tasks_person,pct_type
+A Ben Jamaa,DL,Story,1,1,100.0
+AMMAR.MARIEM,DL,Story,6,12,50.0
+AMMAR.MARIEM,DL,Task,6,12,50.0
+AMMAR.MARIEM,MBC,Task,1,1,100.0
+ANIS.CHOUCHENE,DL,Epic,5,6,83.3
+ANIS.CHOUCHENE,DL,Story,1,6,16.7
+Abderrahim Aziza,DL,Epic,2,5,40.0
+Abderrahim Aziza,DL,Story,2,5,40.0
+Abderrahim Aziza,DL,Task,1,5,20.0
+Abderrahim Aziza,RIDIDP25,Epic,5,6,83.3
+Abderrahim Aziza,RIDIDP25,Task,1,6,16.7
+Adam Chaabani,DL,Epic,1,7,14.3
+Adam Chaabani,DL,Task,6,7,85.7
+Ahlem Tlili,CSCCP25,Story,12,13,92.3
+Ahlem Tlili,CSCCP25,Task,1,13,7.7
+Ahlem Tlili,DL,Story,1,2,50.0
+Ahlem Tlili,DL,Task,1,2,50.0
+Ahmed Jallouli,DL,Epic,1,2,50.0
+Ahmed Jallouli,DL,Story,1,2,50.0
+Aicha Ben Messaoud,DL,Story,20,20,100.0
+Aloui.Meriem,DL,Epic,1,1,100.0
+Aymen Barhoumi,DL,Epic,1,11,9.1
+Aymen Barhoumi,DL,Story,1,11,9.1
+Aymen Barhoumi,DL,Task,9,11,81.8
+Ayoub Mhadheb Chammam,DL,Story,9,11,81.8
+Ayoub Mhadheb Chammam,DL,Task,2,11,18.2
+BENSALEM.HOUSSEIN,MBC,Story,1,1,100.0
+BENYAHIA.FIRAS,MBC,Story,3,3,100.0
+BOUGUERRA.RYM,DL,Story,1,1,100.0
+Boubakri Iheb,DL,Story,43,43,100.0
+ELABED.FIRAS,CSCCP25,Task,1,1,100.0
+Faouzi BEN MAKHLOUF,MBC,Story,2,2,100.0
+Fida Rebai,CSCCP25,Story,5,9,55.6
+Fida Rebai,CSCCP25,Task,4,9,44.4
+Firas Brinsi,DL,Epic,1,17,5.9
+Firas Brinsi,DL,Story,5,17,29.4
+Firas Brinsi,DL,Task,11,17,64.7
+GHARBI.YOUNES,DL,Story,1,1,100.0
+Hedi Ben Ammar,RIDIDP25,Epic,2,7,28.6
+Hedi Ben Ammar,RIDIDP25,Task,5,7,71.4
+Iheb Sliti,DL,Epic,1,57,1.8
+Iheb Sliti,DL,Story,52,57,91.2
+Iheb Sliti,DL,Task,4,57,7.0
+Iheb Sliti,RIDIDP25,Epic,5,5,100.0
+Imèn BEN HAJ SALAH,MBC,Story,1,1,100.0
+Jawher KHALIFA,MBC,Story,1,1,100.0
+Jemaa Med Amir,DL,Story,1,1,100.0
+LAJDEL.BOUDOUR,MBC,Epic,1,1,100.0
+Malek Rabhi,CSCCP25,Story,3,3,100.0
+Melki Iheb,CSCCP25,Story,8,8,100.0
+Melki Iheb,DL,Epic,1,1,100.0
+NOUR.TABOUBI,DL,Epic,3,38,7.9
+NOUR.TABOUBI,DL,Story,35,38,92.1
+NOUR.TABOUBI,RIDIDP25,Epic,2,2,100.0
+Naim Ben Assila,DL,Task,1,1,100.0
+Rania Aroua,CSCCP25,Epic,2,4,50.0
+Rania Aroua,CSCCP25,Story,1,4,25.0
+Rania Aroua,CSCCP25,Task,1,4,25.0
+SANA.ABOULAILA,MBC,Task,1,1,100.0
+Skander Amdouni,DL,Story,8,8,100.0
+TERRAS AHMED KHALIL,DL,Epic,1,29,3.4
+TERRAS AHMED KHALIL,DL,Story,28,29,96.6
+Yassine Baccouche,MBC,Story,1,1,100.0
+azizridane,DL,Story,5,16,31.3
+azizridane,DL,Task,11,16,68.8
+azizridane,RIDIDP25,Epic,2,2,100.0
+latifa,DL,Story,2,3,66.7
+latifa,DL,Task,1,3,33.3
+nan,CSCCP25,Story,2,3,66.7
+nan,CSCCP25,Task,1,3,33.3
+nan,DL,Epic,24,85,28.2
+nan,DL,Story,55,85,64.7
+nan,DL,Task,6,85,7.1
+nan,MBC,Epic,10,16,62.5
+nan,MBC,Story,6,16,37.5
+nan,RIDIDP25,Task,4,4,100.0
+oumaima daghfous,MBC,Story,7,7,100.0
+saber ben salem,MBC,Story,2,2,100.0
+sarra hamzaoui,CSCCP25,Story,3,4,75.0
+sarra hamzaoui,CSCCP25,Task,1,4,25.0
+sarra hamzaoui,DL,Epic,2,7,28.6
+sarra hamzaoui,DL,Story,5,7,71.4

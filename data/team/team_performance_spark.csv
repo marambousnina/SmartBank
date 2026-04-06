@@ -1,0 +1,5 @@
+﻿ProjectKey,nb_members,nb_tickets_total,nb_tickets_deployed,nb_bugs_total,team_lead_time_median,team_lead_time_avg,team_cycle_time_avg,team_blocked_avg,team_on_time_rate,team_bug_rate,team_completion_rate,team_velocity_per_week
+DL,26,386,263,0,272.22,1782.7,166.92,19.87,99.5,0.0,68.1,7.51
+MBC,12,37,11,0,7456.92,5500.5,65.48,10.59,100.0,0.0,29.7,2.75
+RIDIDP25,6,26,3,0,4360.92,4471.71,54.36,6.13,100.0,0.0,11.5,1.0
+CSCCP25,8,45,24,0,375.95,1693.32,136.02,12.47,100.0,0.0,53.3,2.18

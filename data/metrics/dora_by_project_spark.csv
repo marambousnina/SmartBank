@@ -1,0 +1,5 @@
+﻿ProjectKey,nb_tickets,nb_deployed,avg_lead_time_h,median_lead_time_h,nb_delayed,delay_rate_pct,data_source
+DL,386,263,1866.66,272.22,2,0.5,jira+git
+MBC,37,11,5685.65,7720.4,0,0.0,jira+git
+RIDIDP25,26,3,4704.79,4624.4,0,0.0,jira+git
+CSCCP25,45,24,1816.28,375.95,0,0.0,jira+git
