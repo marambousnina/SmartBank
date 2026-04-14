@@ -3,27 +3,27 @@
 # ============================================================
 
 paths:
-  raw_data:     data/raw/
+  raw_data: data/raw/
   cleaned_data: data/cleaned/
-  models:       models/
-  outputs:      outputs/
+  models: models/
+  outputs: outputs/
 
 files:
-  jira:          jira_status_history.csv
-  commits:       gitlab_commits.csv
-  pipelines:     gitlab_pipelines.csv
-  jobs:          gitlab_jobs.csv
+  jira: jira_status_history.csv
+  commits: gitlab_commits.csv
+  pipelines: gitlab_pipelines.csv
+  jobs: gitlab_jobs.csv
   merge_requests: gitlab_merge_requests.csv
 
 projects:
   - name: Mobile Web Banking
-    key:  MBC
+    key: MBC
   - name: Data Lake
-    key:  DL
+    key: DL
   - name: Cross Sell Credit
-    key:  CSCCP25
+    key: CSCCP25
   - name: Refonte Indicateurs
-    key:  RIDIDP25
+    key: RIDIDP25
 
 workflow_order:
   - In Analysis
@@ -38,15 +38,25 @@ workflow_order:
   - To Be Deployed
 
 status_category:
-  To Do:                 "To Do"
-  In Analysis:           "In Progress"
-  In Process:            "In Progress"
-  Blocked:               "In Progress"
-  In Review:             "In Progress"
-  Correction Post Review:"In Progress"
-  Ready For Test:        "In Progress"
-  QA In Process:         "In Progress"
-  Correction Post QA:    "In Progress"
-  To Be Deployed:        "Done"
+  To Do: "To Do"
+  In Analysis: "In Progress"
+  In Process: "In Progress"
+  Blocked: "In Progress"
+  In Review: "In Progress"
+  Correction Post Review: "In Progress"
+  Ready For Test: "In Progress"
+  QA In Process: "In Progress"
+  Correction Post QA: "In Progress"
+  To Be Deployed: "Done"
 
 date_format: "%d/%m/%Y %H:%M"
+
+# ────────────────────────────────────────────────
+# Configuration Base de Données PostgreSQL
+# ────────────────────────────────────────────────
+database:
+  host: localhost
+  port: 5432
+  database: smartbank_db
+  user: smartbank_user
+  password: admin   # Override via env var SMARTBANK_DB_PASSWORD

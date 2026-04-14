@@ -1,0 +1,830 @@
+{
+  "info": {
+    "name": "SmartBank Metrics API",
+    "description": "Collection complète pour tester et visualiser les données DORA & Performance Équipe",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "version": "1.0.0"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8000",
+      "type": "string"
+    }
+  ],
+  "item": [
+
+    {
+      "name": "🔧 System",
+      "item": [
+        {
+          "name": "Health Check",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('DB connected', () => {",
+                  "    const body = pm.response.json();",
+                  "    pm.expect(body.status).to.eql('ok');",
+                  "    pm.expect(body.database).to.eql('connected');",
+                  "});",
+                  "pm.test('Commits en base > 0', () => {",
+                  "    pm.expect(pm.response.json().commits_in_db).to.be.above(0);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/health",
+            "description": "Vérifie que l'API et PostgreSQL sont opérationnels"
+          }
+        },
+        {
+          "name": "Stats Globales",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Toutes les tables ont des données', () => {",
+                  "    const body = pm.response.json();",
+                  "    pm.expect(body.jira_rows).to.be.above(0);",
+                  "    pm.expect(body.commits_rows).to.be.above(0);",
+                  "    pm.expect(body.pipelines_rows).to.be.above(0);",
+                  "    pm.expect(body.jobs_rows).to.be.above(0);",
+                  "    pm.expect(body.tickets_rows).to.be.above(0);",
+                  "});",
+                  "// Afficher le résumé dans la console",
+                  "console.log('=== STATS BASE DE DONNÉES ===');",
+                  "const b = pm.response.json();",
+                  "Object.keys(b).forEach(k => console.log(k + ': ' + b[k]));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/stats",
+            "description": "Nombre de lignes dans chaque table de la base"
+          }
+        }
+      ]
+    },
+
+    {
+      "name": "🧹 Cleaned - Jira",
+      "item": [
+        {
+          "name": "Jira - Toutes les données",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Pagination présente', () => {",
+                  "    const body = pm.response.json();",
+                  "    pm.expect(body).to.have.property('total');",
+                  "    pm.expect(body).to.have.property('data');",
+                  "    pm.expect(body.data).to.be.an('array');",
+                  "});",
+                  "pm.test('Total > 3000 lignes', () => {",
+                  "    pm.expect(pm.response.json().total).to.be.above(3000);",
+                  "});",
+                  "pm.test('Colonnes correctes', () => {",
+                  "    const row = pm.response.json().data[0];",
+                  "    pm.expect(row).to.have.property('ticket_key');",
+                  "    pm.expect(row).to.have.property('status');",
+                  "    pm.expect(row).to.have.property('assignee');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/cleaned/jira?limit=50&offset=0",
+              "query": [
+                {"key": "limit", "value": "50"},
+                {"key": "offset", "value": "0"}
+              ],
+              "host": ["{{base_url}}"],
+              "path": ["cleaned", "jira"]
+            }
+          }
+        },
+        {
+          "name": "Jira - Filtrer par projet DL",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Tous les tickets sont DL', () => {",
+                  "    pm.response.json().data.forEach(row => {",
+                  "        pm.expect(row.project_key).to.eql('DL');",
+                  "    });",
+                  "});",
+                  "pm.test('Projet DL a des tickets', () => {",
+                  "    pm.expect(pm.response.json().total).to.be.above(0);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/cleaned/jira?project=DL&limit=20",
+              "query": [
+                {"key": "project", "value": "DL"},
+                {"key": "limit", "value": "20"}
+              ],
+              "host": ["{{base_url}}"],
+              "path": ["cleaned", "jira"]
+            },
+            "description": "Filtrer les tickets du projet Data Lake"
+          }
+        },
+        {
+          "name": "Jira - Filtrer statut Blocked",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Tickets Blocked retournés', () => {",
+                  "    const body = pm.response.json();",
+                  "    pm.expect(body.total).to.be.above(0);",
+                  "    body.data.forEach(row => {",
+                  "        pm.expect(row.status.toLowerCase()).to.eql('blocked');",
+                  "    });",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/cleaned/jira?status=Blocked&limit=20",
+              "query": [
+                {"key": "status", "value": "Blocked"},
+                {"key": "limit", "value": "20"}
+              ],
+              "host": ["{{base_url}}"],
+              "path": ["cleaned", "jira"]
+            }
+          }
+        }
+      ]
+    },
+
+    {
+      "name": "🔨 Cleaned - Commits",
+      "item": [
+        {
+          "name": "Commits - Tous (récents)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Plus de 3000 commits', () => {",
+                  "    pm.expect(pm.response.json().total).to.be.above(3000);",
+                  "});",
+                  "pm.test('SHA présent dans chaque commit', () => {",
+                  "    pm.response.json().data.forEach(c => {",
+                  "        pm.expect(c.sha).to.be.a('string').and.not.empty;",
+                  "    });",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/cleaned/commits?limit=20",
+              "query": [{"key": "limit", "value": "20"}],
+              "host": ["{{base_url}}"],
+              "path": ["cleaned", "commits"]
+            }
+          }
+        },
+        {
+          "name": "Commits - Liés à Jira seulement",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Tous les commits ont un ticket_key', () => {",
+                  "    pm.response.json().data.forEach(c => {",
+                  "        pm.expect(c.ticket_key).to.not.be.null;",
+                  "    });",
+                  "});",
+                  "console.log('Commits liés à Jira:', pm.response.json().total);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/cleaned/commits?linked_only=true&limit=30",
+              "query": [
+                {"key": "linked_only", "value": "true"},
+                {"key": "limit", "value": "30"}
+              ],
+              "host": ["{{base_url}}"],
+              "path": ["cleaned", "commits"]
+            }
+          }
+        }
+      ]
+    },
+
+    {
+      "name": "⚙️ Cleaned - Pipelines",
+      "item": [
+        {
+          "name": "Pipelines - Résumé par statut",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Statuts présents', () => {",
+                  "    const statuses = pm.response.json().map(r => r.status);",
+                  "    pm.expect(statuses).to.include('success');",
+                  "    pm.expect(statuses).to.include('failed');",
+                  "});",
+                  "// Log le résumé",
+                  "pm.response.json().forEach(r => {",
+                  "    console.log(r.status + ': ' + r.nb + ' (avg ' + r.avg_duration_min + ' min)');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/cleaned/pipelines/summary",
+            "description": "Repartition success/failed/canceled avec durée moyenne"
+          }
+        },
+        {
+          "name": "Pipelines - Production uniquement",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Tous sont en production', () => {",
+                  "    pm.response.json().data.forEach(p => {",
+                  "        pm.expect(p.is_production).to.be.true;",
+                  "    });",
+                  "});",
+                  "pm.test('Plus de 2000 pipelines prod', () => {",
+                  "    pm.expect(pm.response.json().total).to.be.above(2000);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/cleaned/pipelines?production_only=true&limit=20",
+              "query": [
+                {"key": "production_only", "value": "true"},
+                {"key": "limit", "value": "20"}
+              ],
+              "host": ["{{base_url}}"],
+              "path": ["cleaned", "pipelines"]
+            }
+          }
+        },
+        {
+          "name": "Pipelines - En echec",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Plus de 1000 pipelines echoues', () => {",
+                  "    pm.expect(pm.response.json().total).to.be.above(1000);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/cleaned/pipelines?status=failed&limit=20",
+              "query": [
+                {"key": "status", "value": "failed"},
+                {"key": "limit", "value": "20"}
+              ],
+              "host": ["{{base_url}}"],
+              "path": ["cleaned", "pipelines"]
+            }
+          }
+        },
+        {
+          "name": "Jobs - Top 10 echecs",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('10 jobs retournés', () => {",
+                  "    pm.expect(pm.response.json().length).to.be.at.most(10);",
+                  "});",
+                  "pm.test('Triés par nb_failed décroissant', () => {",
+                  "    const data = pm.response.json();",
+                  "    for (let i = 1; i < data.length; i++) {",
+                  "        pm.expect(data[i-1].nb_failed).to.be.at.least(data[i].nb_failed);",
+                  "    }",
+                  "});",
+                  "console.log('Top job échoué:', pm.response.json()[0]);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/cleaned/jobs/summary",
+            "description": "Top 10 des jobs avec le plus d'echecs"
+          }
+        }
+      ]
+    },
+
+    {
+      "name": "🎯 Features - Tickets",
+      "item": [
+        {
+          "name": "Tickets - Tous (tri par risque)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('494 tickets en base', () => {",
+                  "    pm.expect(pm.response.json().total).to.eql(494);",
+                  "});",
+                  "pm.test('Colonnes features presentes', () => {",
+                  "    const row = pm.response.json().data[0];",
+                  "    pm.expect(row).to.have.property('lead_time_hours');",
+                  "    pm.expect(row).to.have.property('risk_score');",
+                  "    pm.expect(row).to.have.property('risk_level');",
+                  "    pm.expect(row).to.have.property('nb_commits');",
+                  "});",
+                  "pm.test('Trié par risk_score décroissant', () => {",
+                  "    const data = pm.response.json().data;",
+                  "    for (let i = 1; i < data.length; i++) {",
+                  "        pm.expect(data[i-1].risk_score).to.be.at.least(data[i].risk_score);",
+                  "    }",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/features/tickets?limit=50",
+              "query": [{"key": "limit", "value": "50"}],
+              "host": ["{{base_url}}"],
+              "path": ["features", "tickets"]
+            }
+          }
+        },
+        {
+          "name": "Tickets - Risk Level HIGH",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Tous sont High risk', () => {",
+                  "    pm.response.json().data.forEach(t => {",
+                  "        pm.expect(t.risk_level).to.eql('High');",
+                  "    });",
+                  "});",
+                  "pm.test('risk_score >= 60', () => {",
+                  "    pm.response.json().data.forEach(t => {",
+                  "        pm.expect(t.risk_score).to.be.at.least(60);",
+                  "    });",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/features/tickets?risk_level=High",
+              "query": [{"key": "risk_level", "value": "High"}],
+              "host": ["{{base_url}}"],
+              "path": ["features", "tickets"]
+            }
+          }
+        },
+        {
+          "name": "Tickets - En retard",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('is_delayed = 1 pour tous', () => {",
+                  "    pm.response.json().data.forEach(t => {",
+                  "        pm.expect(t.is_delayed).to.eql(1);",
+                  "    });",
+                  "});",
+                  "console.log('Tickets en retard:', pm.response.json().total);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/features/tickets?delayed_only=true",
+              "query": [{"key": "delayed_only", "value": "true"}],
+              "host": ["{{base_url}}"],
+              "path": ["features", "tickets"]
+            }
+          }
+        },
+        {
+          "name": "Tickets - Bloques",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/features/tickets?blocked_only=true&limit=20",
+              "query": [
+                {"key": "blocked_only", "value": "true"},
+                {"key": "limit", "value": "20"}
+              ],
+              "host": ["{{base_url}}"],
+              "path": ["features", "tickets"]
+            }
+          }
+        },
+        {
+          "name": "Ticket - Detail DL-1",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200 ou 404', () => {",
+                  "    pm.expect(pm.response.code).to.be.oneOf([200, 404]);",
+                  "});",
+                  "if (pm.response.code === 200) {",
+                  "    pm.test('ticket_key correct', () => {",
+                  "        pm.expect(pm.response.json().ticket_key.toUpperCase()).to.include('DL');",
+                  "    });",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": {
+              "host": ["{{base_url}}"],
+              "path": ["features", "tickets", "DL-1"]
+            },
+            "description": "Remplace DL-1 par un vrai ticket_key de ton projet"
+          }
+        },
+        {
+          "name": "Tickets - Projet DL (stats)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Projet DL a 386 tickets', () => {",
+                  "    pm.expect(pm.response.json().nb_tickets).to.eql(386);",
+                  "});",
+                  "pm.test('completion_rate présent', () => {",
+                  "    pm.expect(pm.response.json()).to.have.property('completion_rate');",
+                  "});",
+                  "console.log('Stats DL:', JSON.stringify(pm.response.json(), null, 2));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": {
+              "host": ["{{base_url}}"],
+              "path": ["features", "tickets", "project", "DL"]
+            }
+          }
+        }
+      ]
+    },
+
+    {
+      "name": "👤 Features - Assignees",
+      "item": [
+        {
+          "name": "Assignees - Tri par lead time",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('40 developpeurs en base', () => {",
+                  "    pm.expect(pm.response.json().length).to.be.at.least(35);",
+                  "});",
+                  "pm.test('Colonnes présentes', () => {",
+                  "    const row = pm.response.json()[0];",
+                  "    pm.expect(row).to.have.property('assignee');",
+                  "    pm.expect(row).to.have.property('nb_tickets_assigned');",
+                  "    pm.expect(row).to.have.property('on_time_rate');",
+                  "    pm.expect(row).to.have.property('completion_rate');",
+                  "});",
+                  "// Log le top 5",
+                  "console.log('=== TOP 5 lead time ===');",
+                  "pm.response.json().slice(0, 5).forEach((a, i) => {",
+                  "    console.log(i+1 + '. ' + a.assignee + ' -> ' + a.avg_lead_time_hours + 'h');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/features/assignees?sort_by=avg_lead_time_hours&order=asc",
+              "query": [
+                {"key": "sort_by", "value": "avg_lead_time_hours"},
+                {"key": "order", "value": "asc"}
+              ],
+              "host": ["{{base_url}}"],
+              "path": ["features", "assignees"]
+            }
+          }
+        },
+        {
+          "name": "Assignees - Tri par on_time_rate (meilleurs)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/features/assignees?sort_by=on_time_rate&order=desc",
+              "query": [
+                {"key": "sort_by", "value": "on_time_rate"},
+                {"key": "order", "value": "desc"}
+              ],
+              "host": ["{{base_url}}"],
+              "path": ["features", "assignees"]
+            }
+          }
+        },
+        {
+          "name": "Assignee - Detail developpeur",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200 ou 404', () => {",
+                  "    pm.expect(pm.response.code).to.be.oneOf([200, 404]);",
+                  "});",
+                  "if (pm.response.code === 200) {",
+                  "    pm.test('metrics et tickets presents', () => {",
+                  "        const body = pm.response.json();",
+                  "        pm.expect(body).to.have.property('metrics');",
+                  "        pm.expect(body).to.have.property('tickets');",
+                  "    });",
+                  "    console.log('Tickets assignés:', pm.response.json().metrics.nb_tickets_assigned);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": {
+              "host": ["{{base_url}}"],
+              "path": ["features", "assignees", "Firas Brinsi"]
+            },
+            "description": "Remplace 'Firas Brinsi' par un nom réel de ton équipe"
+          }
+        }
+      ]
+    },
+
+    {
+      "name": "📊 Features - Projets",
+      "item": [
+        {
+          "name": "Projets - Vue d'ensemble",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('4 projets présents', () => {",
+                  "    pm.expect(pm.response.json().length).to.eql(4);",
+                  "});",
+                  "pm.test('Projets connus présents', () => {",
+                  "    const keys = pm.response.json().map(p => p.project_key);",
+                  "    pm.expect(keys).to.include.members(['DL', 'MBC', 'CSCCP25', 'RIDIDP25']);",
+                  "});",
+                  "console.log('=== PROJETS ===');",
+                  "pm.response.json().forEach(p => {",
+                  "    console.log(p.project_key + ': ' + p.completion_rate + '% done (' + p.nb_tickets_done + '/' + p.nb_tickets_total + ')');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/features/projects"
+          }
+        }
+      ]
+    },
+
+    {
+      "name": "📈 Analytics",
+      "item": [
+        {
+          "name": "Distribution du risque par projet",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Low/Medium/High présents', () => {",
+                  "    const levels = pm.response.json().map(r => r.risk_level);",
+                  "    pm.expect(levels).to.include('Low');",
+                  "    pm.expect(levels).to.include('Medium');",
+                  "});",
+                  "console.log('=== RISQUE PAR PROJET ===');",
+                  "pm.response.json().forEach(r => {",
+                  "    console.log(r.project_key + ' | ' + r.risk_level + ': ' + r.nb_tickets + ' tickets (avg score: ' + r.avg_risk_score + ')');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/analytics/risk-distribution",
+            "description": "Repartition Low/Medium/High par projet"
+          }
+        },
+        {
+          "name": "Lead Time - Percentiles par projet",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Percentiles calculés', () => {",
+                  "    const row = pm.response.json()[0];",
+                  "    pm.expect(row).to.have.property('median_h');",
+                  "    pm.expect(row).to.have.property('p25_h');",
+                  "    pm.expect(row).to.have.property('p75_h');",
+                  "});",
+                  "console.log('=== LEAD TIME MÉDIAN ===');",
+                  "pm.response.json().forEach(r => {",
+                  "    console.log(r.project_key + ': median=' + r.median_h + 'h, avg=' + r.avg_h + 'h');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/analytics/lead-time-by-project",
+            "description": "Min/P25/Médiane/P75/Max du lead time par projet"
+          }
+        },
+        {
+          "name": "Activite mensuelle",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Format month_year correct', () => {",
+                  "    pm.response.json().forEach(r => {",
+                  "        pm.expect(r.month_year).to.match(/^\\d{4}-\\d{2}$/);",
+                  "    });",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/analytics/monthly-activity",
+            "description": "Evolution mensuelle du nombre de tickets par projet"
+          }
+        },
+        {
+          "name": "Top 10 tickets les plus bloques",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('10 tickets maximum', () => {",
+                  "    pm.expect(pm.response.json().length).to.be.at.most(10);",
+                  "});",
+                  "pm.test('Tous were_blocked', () => {",
+                  "    pm.response.json().forEach(t => {",
+                  "        pm.expect(t.time_blocked_hours).to.be.above(0);",
+                  "    });",
+                  "});",
+                  "pm.test('Trié par time_blocked_hours décroissant', () => {",
+                  "    const data = pm.response.json();",
+                  "    for (let i = 1; i < data.length; i++) {",
+                  "        pm.expect(data[i-1].time_blocked_hours).to.be.at.least(data[i].time_blocked_hours);",
+                  "    }",
+                  "});",
+                  "console.log('Ticket le plus bloqué:', pm.response.json()[0]);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/analytics/top-blocked-tickets?limit=10",
+              "query": [{"key": "limit", "value": "10"}],
+              "host": ["{{base_url}}"],
+              "path": ["analytics", "top-blocked-tickets"]
+            }
+          }
+        },
+        {
+          "name": "Taux d'echec pipelines par semaine",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('12 semaines max', () => {",
+                  "    pm.expect(pm.response.json().length).to.be.at.most(12);",
+                  "});",
+                  "pm.test('failure_rate_pct entre 0 et 100', () => {",
+                  "    pm.response.json().forEach(r => {",
+                  "        if (r.failure_rate_pct !== null) {",
+                  "            pm.expect(r.failure_rate_pct).to.be.within(0, 100);",
+                  "        }",
+                  "    });",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/analytics/pipeline-failure-rate",
+            "description": "Taux d'echec CI/CD sur les 12 dernieres semaines"
+          }
+        }
+      ]
+    }
+
+  ]
+}

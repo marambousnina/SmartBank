@@ -1,9 +1,10 @@
 pandas
 numpy
 scikit-learn
-sqlalchemy
-pymysql
+sqlalchemy>=2.0
+psycopg2-binary
 pyyaml
 matplotlib
 seaborn
 pyspark
+python-dotenv
