@@ -1,30 +1,27 @@
 import os
+import sys
 
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 
-os.environ["PYSPARK_SUBMIT_ARGS"] = (
-    "--driver-java-options "
-    "-Djava.security.manager=allow "
-    "pyspark-shell"
+# -- Fix Windows : chemin Python sans espaces pour les workers Spark
+def _get_python_exec():
+    if sys.platform == "win32":
+        try:
+            import ctypes
+            buf = ctypes.create_unicode_buffer(512)
+            ctypes.windll.kernel32.GetShortPathNameW(sys.executable, buf, 512)
+            return buf.value or sys.executable
+        except Exception:
+            pass
+    return sys.executable
+
+_py = _get_python_exec()
+os.environ["PYSPARK_PYTHON"]        = _py
+os.environ["PYSPARK_DRIVER_PYTHON"] = _py
+os.environ["PYSPARK_SUBMIT_ARGS"]   = (
+    "--driver-java-options -Djava.security.manager=allow pyspark-shell"
 )
-
-"""
-=============================================================
- DORA Metrics Project — VERSION BIG DATA
- Script  : 01_cleaning_spark.py
- Étape   : 1 — Nettoyage avec Apache PySpark
-=============================================================
- Différence avec la version pandas :
-   - pandas  : traitement en mémoire, 1 seule machine
-   - PySpark : traitement distribué, cluster de machines
-               → scalable à des millions de lignes
-
- Installation :
-   pip install pyspark
-
- Lancement :
-   python scripts/01_cleaning_spark.py
-=============================================================
-"""
 
 import pandas as pd
 from pyspark.sql import SparkSession
@@ -33,7 +30,6 @@ from pyspark.sql.types import (
     StructType, StructField, StringType,
     DoubleType, IntegerType, TimestampType
 )
-import os
 
 # ── Créer la session Spark ────────────────────────────────────────────────────
 # local[*] = utilise tous les cœurs du processeur disponibles
@@ -51,18 +47,28 @@ spark = SparkSession.builder \
 
 
 
-spark.conf.set("spark.sql.session.timeZone", "UTC")   # ← add this line
+spark.conf.set("spark.sql.session.timeZone", "UTC")
 spark.sparkContext.setLogLevel("ERROR")
 
-RAW     = "data/raw/"
-CLEANED = "data/cleaned/"
+from pathlib import Path
+ROOT_DIR = Path(__file__).resolve().parent.parent
+RAW     = str(ROOT_DIR / "data" / "raw") + "/"
+CLEANED = str(ROOT_DIR / "data" / "cleaned")   + "/"
 os.makedirs(CLEANED, exist_ok=True)
 
 print("=" * 60)
-print("🚀 Session Spark démarrée")
+print("  Session Spark demarree")
 print(f"   Version Spark : {spark.version}")
 print("=" * 60)
 print()
+
+
+def to_pandas(spark_df) -> pd.DataFrame:
+    """Utilise collect() via py4j — evite les Python workers (crash Windows)."""
+    rows = spark_df.collect()
+    if not rows:
+        return pd.DataFrame()
+    return pd.DataFrame([r.asDict() for r in rows])
 
 
 # ══════════════════════════════════════════════════════════════════════════════
@@ -103,7 +109,7 @@ print("1. Nettoyage Jira Status History")
 print("=" * 60)
 
 jira = spark.read.csv(
-    RAW + "jira_status_history.csv",
+    RAW + "jira.csv",
     header=True,
     inferSchema=False,   # On garde tout en String d'abord
     encoding="UTF-8"
@@ -163,9 +169,9 @@ jira = jira.withColumn(
 )
 
 # Sauvegarde
-jira.toPandas().to_csv(CLEANED + "jira_cleaned_spark.csv", index=False, encoding="utf-8-sig")
+to_pandas(jira).to_csv(CLEANED + "jira_cleaned_spark.csv", index=False, encoding="utf-8-sig")
 final_count = jira.count()
-print(f"   ✅ Lignes sauvegardées     : {final_count}")
+print(f"   [OK] Lignes sauvegardees   : {final_count}")
 print(f"   Tickets uniques            : {jira.select('TicketKey').distinct().count()}")
 print()
 
@@ -205,9 +211,9 @@ commits = commits \
     .withColumn("email",  F.lower(F.trim(F.col("email")))) \
     .withColumn("title",  F.trim(F.col("title")))
 
-commits.toPandas().to_csv(CLEANED + "commits_cleaned_spark.csv", index=False, encoding="utf-8-sig")
+to_pandas(commits).to_csv(CLEANED + "commits_cleaned_spark.csv", index=False, encoding="utf-8-sig")
 linked = commits.filter(F.col("TicketKey").isNotNull()).count()
-print(f"   ✅ Lignes sauvegardées     : {commits.count()}")
+print(f"   [OK] Lignes sauvegardees   : {commits.count()}")
 print(f"   Commits liés à Jira        : {linked}")
 print()
 
@@ -252,9 +258,9 @@ pipelines = pipelines \
     .withColumn("status", F.lower(F.trim(F.col("status")))) \
     .filter(F.col("status").isin(valid_statuses))
 
-pipelines.toPandas().to_csv(CLEANED + "pipelines_cleaned_spark.csv", index=False, encoding="utf-8-sig")
+to_pandas(pipelines).to_csv(CLEANED + "pipelines_cleaned_spark.csv", index=False, encoding="utf-8-sig")
 prod_count = pipelines.filter(F.col("is_production") == True).count()
-print(f"   ✅ Lignes sauvegardées     : {pipelines.count()}")
+print(f"   [OK] Lignes sauvegardees   : {pipelines.count()}")
 print(f"   Pipelines production       : {prod_count}")
 print()
 
@@ -308,8 +314,8 @@ jobs = jobs \
     .withColumn("name",   F.trim(F.col("name"))) \
     .filter(F.col("pipeline_id").isNotNull())
 
-jobs.toPandas().to_csv(CLEANED + "jobs_cleaned_spark.csv", index=False, encoding="utf-8-sig")
-print(f"   ✅ Lignes sauvegardées     : {jobs.count()}")
+to_pandas(jobs).to_csv(CLEANED + "jobs_cleaned_spark.csv", index=False, encoding="utf-8-sig")
+print(f"   [OK] Lignes sauvegardees   : {jobs.count()}")
 print()
 
 
@@ -363,24 +369,24 @@ mrs = mrs \
     .withColumn("author", F.trim(F.col("author"))) \
     .filter(F.col("state").isin(["merged", "opened", "closed"]))
 
-mrs.toPandas().to_csv(CLEANED + "merge_requests_cleaned_spark.csv", index=False, encoding="utf-8-sig")
+to_pandas(mrs).to_csv(CLEANED + "merge_requests_cleaned_spark.csv", index=False, encoding="utf-8-sig")
 linked_mrs = mrs.filter(F.col("TicketKey").isNotNull()).count()
-print(f"   ✅ Lignes sauvegardées     : {mrs.count()}")
+print(f"   [OK] Lignes sauvegardees   : {mrs.count()}")
 print(f"   MR liés à Jira             : {linked_mrs}")
 print()
 
 
 # ── Rapport final ─────────────────────────────────────────────────────────────
 print("=" * 60)
-print("RAPPORT DE NETTOYAGE — RÉSUMÉ FINAL")
+print("RAPPORT DE NETTOYAGE -- RESUME FINAL")
 print("=" * 60)
-print(f"   jira_cleaned_spark         {jira.count():>6} lignes  ✅")
-print(f"   commits_cleaned_spark      {commits.count():>6} lignes  ✅")
-print(f"   pipelines_cleaned_spark    {pipelines.count():>6} lignes  ✅")
-print(f"   jobs_cleaned_spark         {jobs.count():>6} lignes  ✅")
-print(f"   merge_requests_cleaned_spark {mrs.count():>4} lignes  ✅")
+print(f"   jira_cleaned_spark           {jira.count():>6} lignes  [OK]")
+print(f"   commits_cleaned_spark        {commits.count():>6} lignes  [OK]")
+print(f"   pipelines_cleaned_spark      {pipelines.count():>6} lignes  [OK]")
+print(f"   jobs_cleaned_spark           {jobs.count():>6} lignes  [OK]")
+print(f"   merge_requests_cleaned_spark {mrs.count():>6} lignes  [OK]")
 print()
-print("✅ Étape 1 Spark terminée.")
-print("   Prochaine étape : 02_feature_engineering_spark.py")
+print("[OK] Etape 1 Spark terminee.")
+print("   Prochaine etape : 02_feature_engineering_spark.py")
 
 spark.stop()

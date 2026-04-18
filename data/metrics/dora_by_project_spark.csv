@@ -1,5 +1,6 @@
-﻿ProjectKey,nb_tickets,nb_deployed,avg_lead_time_h,median_lead_time_h,nb_delayed,delay_rate_pct,data_source
-DL,386,263,1866.66,272.22,2,0.5,jira+git
-MBC,37,11,5685.65,7720.4,0,0.0,jira+git
-RIDIDP25,26,3,4704.79,4624.4,0,0.0,jira+git
-CSCCP25,45,24,1816.28,375.95,0,0.0,jira+git
+﻿ProjectKey,nb_tickets,nb_deployed,avg_lead_time_h,median_lead_time_h,nb_delayed,delay_rate_pct,nb_tickets_with_git,git_coverage_pct,data_source,project_phase,dora_available
+DL,379,0,5709.08,4945.88,253,66.8,0,0.0,jira_only,Phase 1 - Jira only,Lead Time uniquement (pas de Git)
+MBC,34,0,8736.82,8913.26,23,67.6,4,11.8,jira+git,Phase 2 - Transition,Lead Time + Deployment Freq + CFR + MTTR
+RIDIDP25,24,0,8243.94,9921.26,5,20.8,0,0.0,jira_only,Phase 1 - Jira only,Lead Time uniquement (pas de Git)
+CSCCP25,79,0,3931.43,2631.83,65,82.3,0,0.0,jira_only,Phase 1 - Jira only,Lead Time uniquement (pas de Git)
+MWBR,125,18,9349.98,10113.26,0,0.0,125,100.0,jira+git,Phase 2 - Jira+Git,Lead Time + Deployment Freq + CFR + MTTR

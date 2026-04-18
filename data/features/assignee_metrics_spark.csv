@@ -1,42 +1,45 @@
 ﻿Assignee,nb_tickets_assigned,nb_tickets_deployed_person,avg_lead_time_person,on_time_rate
-Jemaa Med Amir,1,0,9232.39,100.0
-Firas Brinsi,17,17,177.1,100.0
-TERRAS AHMED KHALIL,29,26,452.83,100.0
-LAJDEL.BOUDOUR,1,0,6424.39,100.0
-Aymen Barhoumi,11,11,189.43,100.0
-BOUGUERRA.RYM,1,0,1000.39,100.0
-A Ben Jamaa,1,0,5368.39,100.0
-Abderrahim Aziza,11,1,4782.15,100.0
-Ahlem Tlili,15,11,692.48,100.0
-Aicha Ben Messaoud,20,16,349.82,100.0
-Faouzi BEN MAKHLOUF,2,0,8464.39,100.0
-BENYAHIA.FIRAS,3,3,214.53,100.0
-SANA.ABOULAILA,1,1,239.65,100.0
-Rania Aroua,4,2,3306.01,100.0
-nan,108,23,5602.76,100.0
-Jawher KHALIFA,1,0,8464.39,100.0
-Iheb Sliti,62,44,1140.78,100.0
-Naim Ben Assila,1,1,212.18,100.0
-ANIS.CHOUCHENE,6,0,5424.39,100.0
-GHARBI.YOUNES,1,1,360.7,100.0
-latifa,3,2,1712.44,100.0
-AMMAR.MARIEM,13,11,677.45,100.0
-Ahmed Jallouli,2,1,3083.57,100.0
-Aloui.Meriem,1,0,6856.39,0.0
-ELABED.FIRAS,1,1,121.13,100.0
-Boubakri Iheb,43,38,292.47,100.0
-Ayoub Mhadheb Chammam,11,7,2292.95,100.0
-Malek Rabhi,3,1,570.35,100.0
-Melki Iheb,9,1,4828.55,88.9
-NOUR.TABOUBI,40,33,1094.75,100.0
-oumaima daghfous,7,3,4919.31,100.0
-Fida Rebai,9,3,2106.78,100.0
-Hedi Ben Ammar,7,3,1854.41,100.0
-Adam Chaabani,7,4,2647.35,100.0
-Skander Amdouni,8,8,186.69,100.0
-sarra hamzaoui,11,9,402.77,100.0
-Yassine Baccouche,1,1,316.13,100.0
-Imèn BEN HAJ SALAH,1,0,6328.39,100.0
-BENSALEM.HOUSSEIN,1,0,8464.39,100.0
-azizridane,18,16,895.8,100.0
-saber ben salem,2,2,178.19,100.0
+Non assigné,106,0,8682.93,53.8
+Jemaa Med Amir,1,0,9681.26,0.0
+Firas Brinsi,17,0,7446.05,70.6
+TERRAS AHMED KHALIL,29,0,2878.74,0.0
+LAJDEL.BOUDOUR,1,0,9177.26,100.0
+Ahmed Chaouch,60,5,11326.22,100.0
+Aymen Barhoumi,11,0,7975.25,90.9
+Med Zoubeidi,2,0,1737.26,100.0
+BOUGUERRA.RYM,1,0,1449.26,0.0
+A Ben Jamaa,1,0,5817.26,0.0
+Abderrahim Aziza,11,0,8801.92,81.8
+Ahlem Tlili,22,0,2772.64,9.1
+Aicha Ben Messaoud,18,0,2768.35,0.0
+BENYAHIA.FIRAS,3,0,8195.06,0.0
+SANA.ABOULAILA,1,0,7624.96,100.0
+Rania Aroua,4,0,7962.6,75.0
+Jawher KHALIFA,1,0,8913.26,0.0
+Iheb Sliti,61,0,4288.6,21.3
+Naim Ben Assila,1,0,8073.35,100.0
+ANIS.CHOUCHENE,6,0,8509.26,83.3
+GHARBI.YOUNES,1,0,8063.32,100.0
+latifa,2,0,4989.79,0.0
+Iyed Bakhouch,3,0,14769.26,100.0
+AMMAR.MARIEM,13,0,6154.16,61.5
+Ahmed Jallouli,2,0,9087.49,100.0
+Chaima Jenhani,5,1,14086.05,100.0
+ELABED.FIRAS,1,0,2987.32,0.0
+Boubakri Iheb,43,0,3413.73,4.7
+Saber Bensalem,54,12,6573.49,100.0
+Ayoub Mhadheb Chammam,11,0,5759.6,18.2
+Malek Rabhi,5,0,1755.88,0.0
+Melki Iheb,35,0,4427.35,14.3
+NOUR.TABOUBI,39,0,6316.37,46.2
+oumaima daghfous,7,0,8393.4,28.6
+Fida Rebai,8,0,3882.62,25.0
+Hedi Ben Ammar,6,0,6691.99,66.7
+Adam Chaabani,7,0,7857.4,85.7
+Ahmed Craftfoundry,1,0,15993.26,100.0
+Skander Amdouni,8,0,3160.56,0.0
+sarra hamzaoui,11,0,3397.46,18.2
+Yassine Baccouche,1,0,8131.29,0.0
+BENSALEM.HOUSSEIN,1,0,8913.26,0.0
+azizridane,18,0,5705.6,11.1
+saber ben salem,2,0,8382.65,0.0

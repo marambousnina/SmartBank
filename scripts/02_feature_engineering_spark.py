@@ -60,6 +60,7 @@ spark = SparkSession.builder \
     .config("spark.driver.memory", "2g") \
     .getOrCreate()
 
+spark.conf.set("spark.sql.session.timeZone", "UTC")
 spark.sparkContext.setLogLevel("ERROR")
 
 CLEANED  = "data/cleaned/"
@@ -115,7 +116,7 @@ print("=" * 60)
 print("Calcul des features par ticket")
 print("=" * 60)
 
-current = jira.filter(F.col("IsCurrent") == "Yes") \
+current = jira.filter(F.col("IsCurrent").isin("True", "Yes", "true", "yes")) \
     .select(
         "TicketKey", "Project", "ProjectKey", "IssueType",
         "Status", "StatusCategory", "Priority",
