@@ -1,0 +1,39 @@
+======================================================
+FORMULES — project_metrics_spark.csv
+Source : 02_feature_engineering_spark.py
+======================================================
+
+nb_tickets_total        = COUNT(tickets Jira) par ProjectKey
+nb_tickets_done         = COUNT(tickets) ou CurrentStatus = "To Be Deployed"
+completion_rate         = (nb_tickets_done / nb_tickets_total) × 100
+
+avg_commits_per_ticket  = AVG(nb_commits) par ProjectKey
+   AVG(nb_commits) par ProjectKey veut dire :
+
+
+   avg_commits_per_ticket = somme des commits de tous les tickets du projet
+                         ÷ nombre de tickets du projet
+    Exemple : projet MBC avec 3 tickets :
+     
+   Ticket 1 → 2 commits
+   Ticket 2 → 5 commits
+   Ticket 3 → 0 commits
+
+avg_commits_per_ticket = (2 + 5 + 0) / 3 = 2.33
+
+avg_mrs_per_ticket      = AVG(nb_mrs) par ProjectKey
+avg_lead_time_hours     = AVG(lead_time_hours) par ProjectKey
+
+nb_commits_git          = COUNT(commits Git) ou TicketKey commence par ProjectKey
+nb_contributors         = COUNT_DISTINCT(author) des commits par ProjectKey
+
+nb_mrs_git              = COUNT(MRs) ou TicketKey commence par ProjectKey
+nb_mrs_merged           = COUNT(MRs) ou state = "merged"
+avg_merge_time_hours    = AVG(merge_time_hours) des MRs par ProjectKey
+
+nb_pipelines            = COUNT(pipelines) ou ref contient le ProjectKey
+nb_deployments          = COUNT(pipelines) ou is_production = True
+nb_pipelines_failed     = COUNT(pipelines) ou status = "failed"
+avg_pipeline_duration_min = AVG(duration_minutes) des pipelines par ProjectKey
+
+cfr_pct                 = (nb_pipelines_failed / nb_pipelines) × 100

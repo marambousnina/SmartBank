@@ -1,0 +1,25 @@
+======================================================
+FORMULES — person_vs_team_spark.csv
+Source : 03_dora_metrics_03.py
+======================================================
+
+avg_lead_time_hours     = AVG(lead_time_hours) de la personne
+team_median_lead_time   = MEDIAN(lead_time_hours) de l'equipe (ProjectKey)
+
+lead_time_vs_team       = avg_lead_time_hours - team_median_lead_time
+                          [negatif = mieux que l'equipe, positif = moins bien]
+
+nb_commits_linked       = COUNT(commits Git lies a la personne)
+team_avg_commits        = AVG(nb_commits_linked) de l'equipe
+
+commits_vs_team         = nb_commits_linked - team_avg_commits
+
+on_time_rate            = (tickets_on_time / nb_tickets) × 100
+team_avg_on_time_rate   = AVG(on_time_rate) de l'equipe
+
+on_time_vs_team         = on_time_rate - team_avg_on_time_rate
+                          [positif = mieux que l'equipe]
+
+performance_score       = (on_time_rate × 0.4)
+                        + ((1 - avg_lead_time normalise) × 0.3)
+                        + (nb_commits_linked normalise × 0.3)

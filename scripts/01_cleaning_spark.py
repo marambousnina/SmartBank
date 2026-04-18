@@ -52,7 +52,7 @@ spark.sparkContext.setLogLevel("ERROR")
 
 from pathlib import Path
 ROOT_DIR = Path(__file__).resolve().parent.parent
-RAW     = str(ROOT_DIR / "data" / "raw") + "/"
+RAW     = str(ROOT_DIR / "data" / "augmented") + "/"
 CLEANED = str(ROOT_DIR / "data" / "cleaned")   + "/"
 os.makedirs(CLEANED, exist_ok=True)
 
@@ -109,7 +109,7 @@ print("1. Nettoyage Jira Status History")
 print("=" * 60)
 
 jira = spark.read.csv(
-    RAW + "jira.csv",
+    RAW + "jira_augmented.csv",
     header=True,
     inferSchema=False,   # On garde tout en String d'abord
     encoding="UTF-8"
@@ -184,7 +184,7 @@ print("2. Nettoyage GitLab Commits")
 print("=" * 60)
 
 commits = spark.read.csv(
-    RAW + "gitlab_commits.csv",
+    RAW + "gitlab_commits_augmented.csv",
     header=True, inferSchema=False
 )
 total = commits.count()
@@ -226,7 +226,7 @@ print("3. Nettoyage GitLab Pipelines")
 print("=" * 60)
 
 pipelines = spark.read.csv(
-    RAW + "gitlab_pipelines.csv",
+    RAW + "gitlab_pipelines_augmented.csv",
     header=True, inferSchema=False
 )
 total = pipelines.count()
@@ -273,7 +273,7 @@ print("4. Nettoyage GitLab Jobs")
 print("=" * 60)
 
 jobs = spark.read.csv(
-    RAW + "gitlab_jobs.csv",
+    RAW + "gitlab_jobs_augmented.csv",
     header=True, inferSchema=False
 )
 total = jobs.count()
@@ -327,7 +327,7 @@ print("5. Nettoyage GitLab Merge Requests")
 print("=" * 60)
 
 mrs = spark.read.csv(
-    RAW + "gitlab_merge_requests.csv",
+    RAW + "gitlab_merge_requests_augmented.csv",
     header=True, inferSchema=False
 )
 total = mrs.count()

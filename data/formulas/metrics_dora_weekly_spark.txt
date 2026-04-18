@@ -1,0 +1,25 @@
+======================================================
+FORMULES — dora_metrics_weekly_spark.csv
+           dora_project_weekly.csv
+           dora_project_monthly.csv
+Source : 03_dora_metrics_01.py / 03_dora_metrics_04.py
+======================================================
+
+week / year_week        = FORMAT(created_at, "yyyy-WW")
+year_month              = FORMAT(created_at, "yyyy-MM")
+
+total_pipelines         = COUNT(pipelines) par semaine/mois
+success_pipelines       = COUNT(pipelines) ou status = "success"
+failed_pipelines        = COUNT(pipelines) ou status = "failed"
+deployment_count        = COUNT(pipelines) ou is_production = True
+
+change_failure_rate     = (failed_pipelines / total_pipelines) × 100
+
+lead_time               = AVG(lead_time_hours) des tickets crees dans la periode
+deployment_frequency    = COUNT(pipelines success) par semaine/mois
+mttr                    = AVG(duree resolution bugs) dans la periode
+cycle_time              = AVG(cycle_time_hours) dans la periode
+throughput              = COUNT(tickets resolus) dans la periode
+wip                     = COUNT(tickets en cours) dans la periode
+bug_rate                = (COUNT(bugs) / COUNT(tickets total)) × 100
+velocity                = COUNT(tickets fermes) dans la periode

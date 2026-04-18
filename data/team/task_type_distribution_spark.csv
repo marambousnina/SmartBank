@@ -1,8 +1,16 @@
 ﻿Assignee,ProjectKey,IssueType_norm,nb_tasks_type,total_tasks_person,pct_type
 A Ben Jamaa,DL,Story,1,1,100.0
+AMMAR.MARIEM,APG,Epic,2,9,22.2
+AMMAR.MARIEM,APG,Story,4,9,44.4
+AMMAR.MARIEM,APG,Task,3,9,33.3
+AMMAR.MARIEM,CMIG,Story,10,11,90.9
+AMMAR.MARIEM,CMIG,Task,1,11,9.1
 AMMAR.MARIEM,DL,Story,6,12,50.0
 AMMAR.MARIEM,DL,Task,6,12,50.0
 AMMAR.MARIEM,MBC,Task,1,1,100.0
+AMMAR.MARIEM,PG,Epic,3,12,25.0
+AMMAR.MARIEM,PG,Story,8,12,66.7
+AMMAR.MARIEM,PG,Task,1,12,8.3
 ANIS.CHOUCHENE,DL,Epic,5,6,83.3
 ANIS.CHOUCHENE,DL,Story,1,6,16.7
 Abderrahim Aziza,DL,Epic,2,5,40.0
@@ -12,31 +20,93 @@ Abderrahim Aziza,RIDIDP25,Epic,5,6,83.3
 Abderrahim Aziza,RIDIDP25,Task,1,6,16.7
 Adam Chaabani,DL,Epic,1,7,14.3
 Adam Chaabani,DL,Task,6,7,85.7
+Adam Chaabani,DO,Epic,2,13,15.4
+Adam Chaabani,DO,Story,8,13,61.5
+Adam Chaabani,DO,Task,3,13,23.1
+Adam Chaabani,FDAI,Story,5,7,71.4
+Adam Chaabani,FDAI,Task,2,7,28.6
+Adam Chaabani,NEOB,Epic,3,19,15.8
+Adam Chaabani,NEOB,Story,13,19,68.4
+Adam Chaabani,NEOB,Task,3,19,15.8
+Ahlem Tlili,CMIG,Epic,2,14,14.3
+Ahlem Tlili,CMIG,Story,10,14,71.4
+Ahlem Tlili,CMIG,Task,2,14,14.3
 Ahlem Tlili,CSCCP25,Story,15,20,75.0
 Ahlem Tlili,CSCCP25,Task,5,20,25.0
 Ahlem Tlili,DL,Story,1,2,50.0
 Ahlem Tlili,DL,Task,1,2,50.0
+Ahlem Tlili,DO,Epic,1,7,14.3
+Ahlem Tlili,DO,Story,4,7,57.1
+Ahlem Tlili,DO,Task,2,7,28.6
+Ahlem Tlili,FDAI,Epic,1,11,9.1
+Ahlem Tlili,FDAI,Story,9,11,81.8
+Ahlem Tlili,FDAI,Task,1,11,9.1
 Ahmed Chaouch,MWBR,Story,60,60,100.0
 Ahmed Craftfoundry,MWBR,Story,1,1,100.0
+Ahmed Jallouli,CMIG,Epic,1,15,6.7
+Ahmed Jallouli,CMIG,Story,8,15,53.3
+Ahmed Jallouli,CMIG,Task,6,15,40.0
 Ahmed Jallouli,DL,Epic,1,2,50.0
 Ahmed Jallouli,DL,Story,1,2,50.0
+Ahmed Jallouli,DO,Epic,1,13,7.7
+Ahmed Jallouli,DO,Story,9,13,69.2
+Ahmed Jallouli,DO,Task,3,13,23.1
+Ahmed Jallouli,FDAI,Epic,1,14,7.1
+Ahmed Jallouli,FDAI,Story,9,14,64.3
+Ahmed Jallouli,FDAI,Task,4,14,28.6
 Aicha Ben Messaoud,DL,Story,18,18,100.0
 Aymen Barhoumi,DL,Epic,1,11,9.1
 Aymen Barhoumi,DL,Story,1,11,9.1
 Aymen Barhoumi,DL,Task,9,11,81.8
+Aymen Barhoumi,DO,Story,7,10,70.0
+Aymen Barhoumi,DO,Task,3,10,30.0
+Aymen Barhoumi,NEOB,Epic,2,22,9.1
+Aymen Barhoumi,NEOB,Story,14,22,63.6
+Aymen Barhoumi,NEOB,Task,6,22,27.3
+Ayoub Mhadheb Chammam,APG,Epic,4,20,20.0
+Ayoub Mhadheb Chammam,APG,Story,10,20,50.0
+Ayoub Mhadheb Chammam,APG,Task,6,20,30.0
+Ayoub Mhadheb Chammam,CMIG,Epic,2,19,10.5
+Ayoub Mhadheb Chammam,CMIG,Story,14,19,73.7
+Ayoub Mhadheb Chammam,CMIG,Task,3,19,15.8
 Ayoub Mhadheb Chammam,DL,Story,9,11,81.8
 Ayoub Mhadheb Chammam,DL,Task,2,11,18.2
+Ayoub Mhadheb Chammam,PG,Epic,1,10,10.0
+Ayoub Mhadheb Chammam,PG,Story,5,10,50.0
+Ayoub Mhadheb Chammam,PG,Task,4,10,40.0
 BENSALEM.HOUSSEIN,MBC,Story,1,1,100.0
 BENYAHIA.FIRAS,MBC,Story,3,3,100.0
 BOUGUERRA.RYM,DL,Story,1,1,100.0
 Boubakri Iheb,DL,Story,43,43,100.0
 Chaima Jenhani,MWBR,Story,5,5,100.0
+ELABED.FIRAS,CMIG,Epic,3,16,18.8
+ELABED.FIRAS,CMIG,Story,11,16,68.8
+ELABED.FIRAS,CMIG,Task,2,16,12.5
 ELABED.FIRAS,CSCCP25,Task,1,1,100.0
+ELABED.FIRAS,PG,Epic,1,10,10.0
+ELABED.FIRAS,PG,Story,5,10,50.0
+ELABED.FIRAS,PG,Task,4,10,40.0
+Fida Rebai,APG,Story,9,13,69.2
+Fida Rebai,APG,Task,4,13,30.8
 Fida Rebai,CSCCP25,Story,5,8,62.5
 Fida Rebai,CSCCP25,Task,3,8,37.5
+Fida Rebai,NEOB,Epic,2,22,9.1
+Fida Rebai,NEOB,Story,15,22,68.2
+Fida Rebai,NEOB,Task,5,22,22.7
+Firas Brinsi,APG,Epic,1,9,11.1
+Firas Brinsi,APG,Story,5,9,55.6
+Firas Brinsi,APG,Task,3,9,33.3
 Firas Brinsi,DL,Epic,1,17,5.9
 Firas Brinsi,DL,Story,5,17,29.4
 Firas Brinsi,DL,Task,11,17,64.7
+Firas Brinsi,NEOB,Epic,3,23,13.0
+Firas Brinsi,NEOB,Story,16,23,69.6
+Firas Brinsi,NEOB,Task,4,23,17.4
+GHARBI.YOUNES,APG,Story,9,11,81.8
+GHARBI.YOUNES,APG,Task,2,11,18.2
+GHARBI.YOUNES,CMIG,Epic,2,10,20.0
+GHARBI.YOUNES,CMIG,Story,6,10,60.0
+GHARBI.YOUNES,CMIG,Task,2,10,20.0
 GHARBI.YOUNES,DL,Story,1,1,100.0
 Hedi Ben Ammar,RIDIDP25,Epic,2,6,33.3
 Hedi Ben Ammar,RIDIDP25,Task,4,6,66.7
@@ -47,16 +117,49 @@ Iheb Sliti,RIDIDP25,Epic,4,4,100.0
 Iyed Bakhouch,MWBR,Story,3,3,100.0
 Jawher KHALIFA,MBC,Story,1,1,100.0
 Jemaa Med Amir,DL,Story,1,1,100.0
+Jemaa Med Amir,DO,Epic,1,10,10.0
+Jemaa Med Amir,DO,Story,7,10,70.0
+Jemaa Med Amir,DO,Task,2,10,20.0
+Jemaa Med Amir,NEOB,Epic,1,22,4.5
+Jemaa Med Amir,NEOB,Story,13,22,59.1
+Jemaa Med Amir,NEOB,Task,8,22,36.4
+Jemaa Med Amir,PG,Epic,3,10,30.0
+Jemaa Med Amir,PG,Story,5,10,50.0
+Jemaa Med Amir,PG,Task,2,10,20.0
 LAJDEL.BOUDOUR,MBC,Epic,1,1,100.0
+Malek Rabhi,CMIG,Epic,1,19,5.3
+Malek Rabhi,CMIG,Story,11,19,57.9
+Malek Rabhi,CMIG,Task,7,19,36.8
 Malek Rabhi,CSCCP25,Story,5,5,100.0
+Malek Rabhi,DO,Story,6,9,66.7
+Malek Rabhi,DO,Task,3,9,33.3
 Med Zoubeidi,MWBR,Story,2,2,100.0
 Melki Iheb,CSCCP25,Story,8,34,23.5
 Melki Iheb,CSCCP25,Task,26,34,76.5
 Melki Iheb,DL,Epic,1,1,100.0
+Melki Iheb,DO,Epic,1,7,14.3
+Melki Iheb,DO,Story,5,7,71.4
+Melki Iheb,DO,Task,1,7,14.3
+Melki Iheb,FDAI,Epic,1,9,11.1
+Melki Iheb,FDAI,Story,6,9,66.7
+Melki Iheb,FDAI,Task,2,9,22.2
+Melki Iheb,NEOB,Epic,1,24,4.2
+Melki Iheb,NEOB,Story,16,24,66.7
+Melki Iheb,NEOB,Task,7,24,29.2
 NOUR.TABOUBI,DL,Epic,3,37,8.1
 NOUR.TABOUBI,DL,Story,34,37,91.9
+NOUR.TABOUBI,PG,Story,9,10,90.0
+NOUR.TABOUBI,PG,Task,1,10,10.0
 NOUR.TABOUBI,RIDIDP25,Epic,2,2,100.0
+Naim Ben Assila,APG,Story,9,11,81.8
+Naim Ben Assila,APG,Task,2,11,18.2
 Naim Ben Assila,DL,Task,1,1,100.0
+Naim Ben Assila,DO,Epic,1,6,16.7
+Naim Ben Assila,DO,Story,4,6,66.7
+Naim Ben Assila,DO,Task,1,6,16.7
+Naim Ben Assila,FDAI,Epic,4,17,23.5
+Naim Ben Assila,FDAI,Story,10,17,58.8
+Naim Ben Assila,FDAI,Task,3,17,17.6
 Non assigné,CSCCP25,Story,2,3,66.7
 Non assigné,CSCCP25,Task,1,3,33.3
 Non assigné,DL,Epic,24,83,28.9
@@ -68,20 +171,49 @@ Non assigné,RIDIDP25,Task,4,4,100.0
 Rania Aroua,CSCCP25,Epic,2,4,50.0
 Rania Aroua,CSCCP25,Story,1,4,25.0
 Rania Aroua,CSCCP25,Task,1,4,25.0
+Rania Aroua,FDAI,Story,6,10,60.0
+Rania Aroua,FDAI,Task,4,10,40.0
+Rania Aroua,PG,Story,5,8,62.5
+Rania Aroua,PG,Task,3,8,37.5
 SANA.ABOULAILA,MBC,Task,1,1,100.0
 Saber Bensalem,MWBR,Story,54,54,100.0
+Skander Amdouni,APG,Epic,1,18,5.6
+Skander Amdouni,APG,Story,13,18,72.2
+Skander Amdouni,APG,Task,4,18,22.2
 Skander Amdouni,DL,Story,8,8,100.0
+Skander Amdouni,NEOB,Epic,3,21,14.3
+Skander Amdouni,NEOB,Story,13,21,61.9
+Skander Amdouni,NEOB,Task,5,21,23.8
 TERRAS AHMED KHALIL,DL,Epic,1,29,3.4
 TERRAS AHMED KHALIL,DL,Story,28,29,96.6
+TERRAS AHMED KHALIL,FDAI,Epic,1,15,6.7
+TERRAS AHMED KHALIL,FDAI,Story,11,15,73.3
+TERRAS AHMED KHALIL,FDAI,Task,3,15,20.0
+TERRAS AHMED KHALIL,PG,Story,9,12,75.0
+TERRAS AHMED KHALIL,PG,Task,3,12,25.0
 Yassine Baccouche,MBC,Story,1,1,100.0
 azizridane,DL,Story,5,16,31.3
 azizridane,DL,Task,11,16,68.8
+azizridane,FDAI,Epic,1,7,14.3
+azizridane,FDAI,Story,3,7,42.9
+azizridane,FDAI,Task,3,7,42.9
+azizridane,PG,Story,6,8,75.0
+azizridane,PG,Task,2,8,25.0
 azizridane,RIDIDP25,Epic,2,2,100.0
 latifa,DL,Story,1,2,50.0
 latifa,DL,Task,1,2,50.0
 oumaima daghfous,MBC,Story,7,7,100.0
 saber ben salem,MBC,Story,2,2,100.0
+sarra hamzaoui,APG,Epic,2,9,22.2
+sarra hamzaoui,APG,Story,6,9,66.7
+sarra hamzaoui,APG,Task,1,9,11.1
+sarra hamzaoui,CMIG,Epic,1,16,6.3
+sarra hamzaoui,CMIG,Story,8,16,50.0
+sarra hamzaoui,CMIG,Task,7,16,43.8
 sarra hamzaoui,CSCCP25,Story,3,4,75.0
 sarra hamzaoui,CSCCP25,Task,1,4,25.0
 sarra hamzaoui,DL,Epic,2,7,28.6
 sarra hamzaoui,DL,Story,5,7,71.4
+sarra hamzaoui,NEOB,Epic,2,22,9.1
+sarra hamzaoui,NEOB,Story,15,22,68.2
+sarra hamzaoui,NEOB,Task,5,22,22.7

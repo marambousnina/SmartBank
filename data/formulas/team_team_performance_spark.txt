@@ -1,0 +1,20 @@
+======================================================
+FORMULES — team_performance_spark.csv
+Source : 03_dora_metrics_03.py
+======================================================
+
+nb_members              = COUNT_DISTINCT(Assignee) par ProjectKey
+nb_tickets_total        = COUNT(tickets) par ProjectKey
+nb_tickets_deployed     = COUNT(tickets) ou CurrentStatus = "To Be Deployed"
+nb_bugs_total           = COUNT(tickets) ou IssueType = "Bug"
+
+team_lead_time_median   = MEDIAN(lead_time_hours) par ProjectKey
+team_lead_time_avg      = AVG(lead_time_hours) par ProjectKey
+team_cycle_time_avg     = AVG(cycle_time_hours) par ProjectKey
+team_blocked_avg        = AVG(time_blocked_hours) par ProjectKey
+team_bug_rate           = (nb_bugs_total / nb_tickets_total) × 100
+team_completion_rate    = (nb_tickets_deployed / nb_tickets_total) × 100
+
+team_on_time_rate       = (COUNT(tickets ou is_delayed = 0) / nb_tickets_total) × 100
+
+team_velocity_per_week  = nb_tickets_deployed / nb_semaines_du_projet

@@ -1,0 +1,17 @@
+======================================================
+FORMULES — sprint_metrics_spark.csv
+Source : 03_dora_metrics_03.py
+======================================================
+
+nb_tickets_sprint       = COUNT(tickets) par ProjectKey + SprintState
+sprint_velocity         = COUNT(tickets fermes dans le sprint)
+sprint_completion_rate  = (sprint_velocity / nb_tickets_sprint) × 100
+
+nb_bugs_sprint          = COUNT(tickets Bug) dans le sprint
+nb_delayed_sprint       = COUNT(tickets ou is_delayed = 1) dans le sprint
+avg_lead_time_sprint    = AVG(lead_time_hours) dans le sprint
+avg_cycle_time_sprint   = AVG(cycle_time_hours) dans le sprint
+nb_blocked_sprint       = COUNT(tickets ou was_blocked = 1) dans le sprint
+
+scope_change_count      = COUNT(tickets ou nb_status_changes > 1)
+                          [approximation : tickets ajoutes en cours de sprint]

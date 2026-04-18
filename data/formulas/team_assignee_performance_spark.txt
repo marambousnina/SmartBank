@@ -1,0 +1,24 @@
+======================================================
+FORMULES — assignee_performance_spark.csv
+Source : 03_dora_metrics_03.py
+======================================================
+
+nb_tickets_assigned     = COUNT(tickets Jira) par Assignee
+nb_tickets_deployed     = COUNT(tickets) ou CurrentStatus = "To Be Deployed"
+nb_tickets_in_progress  = COUNT(tickets) ou StatusCategory = "In Progress"
+nb_bugs_assigned        = COUNT(tickets) ou IssueType = "Bug"
+nb_bugs_resolved        = COUNT(bugs) ou statut final atteint
+
+avg_lead_time_hours     = AVG(lead_time_hours) par Assignee
+avg_cycle_time_hours    = AVG(cycle_time_hours) par Assignee
+avg_time_blocked_hours  = AVG(time_blocked_hours) par Assignee
+avg_status_changes      = AVG(nb_status_changes) par Assignee
+
+on_time_rate            = (COUNT(tickets ou is_delayed = 0) / nb_tickets_assigned) × 100
+
+nb_commits_linked       = COUNT(commits Git lies aux tickets de la personne)
+nb_mrs_linked           = COUNT(MRs liees aux tickets de la personne)
+
+performance_score       = (on_time_rate × 0.4)
+                        + ((1 - avg_lead_time normalise) × 0.3)
+                        + (nb_commits_linked normalise × 0.3)

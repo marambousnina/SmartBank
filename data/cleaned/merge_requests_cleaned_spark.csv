@@ -408,61 +408,561 @@
 1364,Feature/permanent transfers,98b6e6fd,opened,2026-03-02 08:36:41,,0.0,
 1365,add zip sort transfer,f7d61e48,merged,2026-03-02 08:49:40,2026-03-02 08:51:25,0.03,
 1366,Change territoriality customer response,f7d61e48,merged,2026-03-04 08:34:39,2026-03-04 09:02:34,0.47,
+1367,DO-1: test onboarding API gateway,93219ff0,merged,2020-05-06 12:47:52,2020-05-10 03:58:49,87.18,DO-1
+1368,DO-2: refactor ID card parser,947a69f2,merged,2020-05-07 21:49:30,2020-05-08 16:38:49,18.82,DO-2
+1369,DO-3: migrate onboarding funnel report,a94a3fd1,merged,2020-05-06 23:55:02,2020-05-08 21:26:59,45.53,DO-3
 137,feature(schooling)add microservice schooling,3d946cae,closed,2024-07-11 10:55:01,,0.0,
+1370,DO-4: improve customer registration step,5a83eabc,merged,2020-05-16 19:46:59,2020-05-17 21:36:47,25.83,DO-4
+1371,DO-5: improve partner integration connector,a94a3fd1,merged,2020-05-16 22:29:25,2020-05-18 14:54:35,40.42,DO-5
+1372,DO-6: improve consent management flow,095db500,merged,2020-05-13 04:56:40,2020-05-14 08:15:48,27.32,DO-6
+1373,DO-7: implement admin monitoring dashboard,a94a3fd1,merged,2020-05-20 06:23:11,2020-05-23 03:59:27,69.6,DO-7
+1374,DO-8: refactor onboarding notification hook,93219ff0,merged,2020-05-17 12:51:41,2020-05-19 05:01:58,40.17,DO-8
+1375,DO-9: migrate face recognition module,5a83eabc,merged,2020-05-19 23:04:20,2020-05-21 08:14:51,33.18,DO-9
+1376,DO-10: migrate data retention policy,a94a3fd1,merged,2020-05-27 23:59:06,2020-05-30 01:50:33,49.86,DO-10
+1377,DO-11: refactor risk score calculator,a94a3fd1,merged,2020-06-04 18:03:03,2020-06-07 12:52:13,66.82,DO-11
+1378,DO-12: add audit log handler,947a69f2,merged,2020-06-06 00:26:46,2020-06-09 16:15:28,87.81,DO-12
+1379,DO-13: migrate KYC validation service,947a69f2,merged,2020-05-31 14:40:17,2020-06-04 07:34:03,88.9,DO-13
 138,Feature/consultation cours change/mwbr58 2,a94a3fd1,merged,2024-07-11 11:09:42,2024-07-15 12:57:21,97.79,
+1380,DO-14: remove account creation trigger,93219ff0,merged,2020-06-06 10:09:36,2020-06-07 12:30:34,26.35,DO-14
+1381,DO-16: update email OTP flow,75f04902,merged,2020-06-11 22:11:53,2020-06-12 10:37:23,12.43,DO-16
+1382,DO-17: refactor account creation trigger,947a69f2,merged,2020-06-06 16:30:03,2020-06-10 01:30:21,81.01,DO-17
+1383,DO-18: optimise risk score calculator,5a83eabc,merged,2020-06-17 15:45:05,2020-06-20 08:52:01,65.12,DO-18
+1384,DO-19: update AML compliance check,a94a3fd1,merged,2020-06-16 01:45:45,2020-06-19 12:16:37,82.51,DO-19
+1385,DO-20: test face recognition module,5a83eabc,merged,2020-06-17 11:54:05,2020-06-21 15:16:29,99.37,DO-20
+1386,DO-22: add consent management flow,5a83eabc,merged,2020-06-27 04:05:14,2020-06-29 18:44:32,62.66,DO-22
+1387,DO-23: optimise SMS OTP service,947a69f2,merged,2020-06-24 18:11:34,2020-06-26 17:52:09,47.68,DO-23
+1388,DO-24: update SMS OTP service,75f04902,merged,2020-06-30 15:38:54,2020-07-04 17:07:43,97.48,DO-24
+1389,DO-26: test data extraction pipeline,75f04902,merged,2020-06-30 06:20:32,2020-06-30 15:12:48,8.87,DO-26
 139,fix(account) : added mock data to account,a94a3fd1,merged,2024-07-11 13:52:05,2024-07-12 11:39:52,21.8,
+1390,DO-27: implement proof-of-address validator,5a83eabc,merged,2020-07-08 06:30:29,2020-07-12 08:09:48,97.66,DO-27
+1391,DO-28: implement ID card parser,93219ff0,merged,2020-07-05 17:03:16,2020-07-05 21:33:51,4.51,DO-28
+1392,DO-29: optimise dropout detection,5a83eabc,merged,2020-07-14 17:02:29,2020-07-16 00:28:05,31.43,DO-29
+1393,DO-30: improve audit log handler,a94a3fd1,merged,2020-07-11 07:28:11,2020-07-15 06:23:48,94.93,DO-30
+1394,DO-33: migrate address verification API,947a69f2,merged,2020-07-19 12:24:44,2020-07-20 09:50:50,21.44,DO-33
+1395,DO-34: migrate onboarding funnel report,a94a3fd1,merged,2020-07-24 08:36:41,2020-07-25 03:31:30,18.91,DO-34
+1396,DO-35: test onboarding API gateway,5a83eabc,merged,2020-07-22 10:58:02,2020-07-26 07:18:51,92.35,DO-35
+1397,DO-36: update duplicate detection service,a94a3fd1,merged,2020-07-21 21:23:12,2020-07-22 03:29:32,6.11,DO-36
+1398,DO-37: test customer registration step,a94a3fd1,merged,2020-08-01 23:35:19,2020-08-06 20:02:28,116.45,DO-37
+1399,DO-39: test dropout detection,93219ff0,closed,2020-08-02 11:52:38,,0.0,DO-39
 14,Feature/mwbr 48 consult cards details,c82282e6,closed,2024-05-17 10:26:52,,0.0,
 140,Fixe/sendmail,3d946cae,merged,2024-07-12 08:27:09,2024-07-15 10:16:40,73.83,
+1400,DO-40: configure identity verification module,095db500,merged,2020-08-07 20:21:13,2020-08-08 10:34:49,14.23,DO-40
+1401,DO-41: refactor onboarding status tracker,5a83eabc,merged,2020-08-05 08:04:29,2020-08-06 20:02:28,35.97,DO-41
+1402,DO-42: implement AML compliance check,a94a3fd1,merged,2020-08-04 18:46:46,2020-08-06 11:12:30,40.43,DO-42
+1403,DO-43: update onboarding status tracker,75f04902,opened,2020-08-17 12:44:01,,0.0,DO-43
+1404,DO-44: implement AML compliance check,a94a3fd1,merged,2020-08-16 19:39:58,2020-08-18 02:59:38,31.33,DO-44
+1405,DO-45: integrate onboarding API gateway,a94a3fd1,merged,2020-08-19 07:22:13,2020-08-23 23:15:21,111.89,DO-45
+1406,DO-46: refactor customer registration step,095db500,merged,2020-08-13 13:56:44,2020-08-17 07:12:01,89.25,DO-46
+1407,DO-47: optimise KYC validation service,095db500,merged,2020-08-24 05:28:53,2020-08-26 18:38:24,61.16,DO-47
+1408,DO-48: optimise data retention policy,a94a3fd1,merged,2020-08-18 08:08:29,2020-08-21 13:53:08,77.74,DO-48
+1409,DO-51: optimise customer profile builder,93219ff0,merged,2020-08-27 09:01:15,2020-08-29 00:41:04,39.66,DO-51
 141,Feature/adding ci,634938b8,merged,2024-07-12 09:28:17,2024-07-12 11:58:51,2.51,
+1410,DO-52: test AML compliance check,947a69f2,merged,2020-08-28 21:30:11,2020-08-31 14:29:21,64.99,DO-52
+1411,DO-53: integrate OCR extraction engine,93219ff0,merged,2020-08-29 15:21:48,2020-08-31 20:52:28,53.51,DO-53
+1412,DO-54: migrate consent management flow,75f04902,merged,2020-09-09 10:31:07,2020-09-13 00:01:22,85.5,DO-54
+1413,DO-55: refactor onboarding API gateway,93219ff0,merged,2020-09-13 02:08:21,2020-09-15 14:26:57,60.31,DO-55
+1414,DO-56: improve biometric liveness check,a94a3fd1,merged,2020-09-06 21:34:56,2020-09-09 17:51:19,68.27,DO-56
+1415,DO-57: integrate AML compliance check,5a83eabc,opened,2020-09-13 12:02:10,,0.0,DO-57
+1416,DO-58: migrate data retention policy,a94a3fd1,merged,2020-09-12 13:53:58,2020-09-17 06:22:49,112.48,DO-58
+1417,DO-60: improve audit log handler,a94a3fd1,merged,2020-09-21 06:32:15,2020-09-25 11:45:22,101.22,DO-60
+1418,DO-63: migrate proof-of-address validator,947a69f2,merged,2020-09-28 01:08:07,2020-09-28 17:34:20,16.44,DO-63
+1419,DO-66: integrate data retention policy,5a83eabc,opened,2020-10-05 11:23:33,,0.0,DO-66
 142,Feature/mwbr 69/consultation virement unitaire,7c71de97,opened,2024-07-12 10:30:44,,0.0,
+1420,DO-67: configure SMS OTP service,a94a3fd1,merged,2020-10-01 09:19:20,2020-10-02 19:52:16,34.55,DO-67
+1421,DO-69: refactor document upload API,947a69f2,merged,2020-10-06 13:18:20,2020-10-07 06:32:05,17.23,DO-69
+1422,DO-70: improve dropout detection,095db500,merged,2020-10-16 23:41:34,2020-10-21 15:57:45,112.27,DO-70
+1423,DO-71: implement customer journey analytics,095db500,merged,2020-10-14 05:38:23,2020-10-14 09:41:14,4.05,DO-71
+1424,DO-72: test consent management flow,947a69f2,merged,2020-10-13 02:10:53,2020-10-14 06:42:55,28.53,DO-72
+1425,DO-75: configure customer registration step,5a83eabc,merged,2020-10-25 08:25:38,2020-10-30 04:25:12,115.99,DO-75
+1426,APG-1: integrate OAuth2 token service,2521bef3,merged,2021-04-05 22:28:31,2021-04-10 07:42:57,105.24,APG-1
+1427,APG-2: integrate load balancer configuration,c7650c51,merged,2021-04-04 13:30:24,2021-04-08 14:23:38,96.89,APG-2
+1428,APG-3: fix webhook delivery engine,1060bbfa,merged,2021-04-13 00:03:33,2021-04-15 01:31:09,49.46,APG-3
+1429,APG-4: improve API versioning strategy,2521bef3,merged,2021-04-16 12:24:59,2021-04-18 14:09:23,49.74,APG-4
 143,Feature/mwbr 124 get schooling files by customer,d5ec8f59,closed,2024-07-15 10:44:46,,0.0,
+1430,APG-5: fix circuit breaker module,1846b166,merged,2021-04-14 19:19:06,2021-04-17 13:16:57,65.96,APG-5
+1431,APG-6: fix traffic shaping policy,1060bbfa,opened,2021-04-11 12:58:42,,0.0,APG-6
+1432,APG-7: add rate limiting engine,1846b166,merged,2021-04-23 18:35:50,2021-04-27 16:56:15,94.34,APG-7
+1433,APG-9: configure gateway health check,1060bbfa,closed,2021-04-19 15:48:47,,0.0,APG-9
+1434,APG-10: implement OAuth2 token service,1846b166,merged,2021-04-21 10:06:05,2021-04-26 09:22:30,119.27,APG-10
+1435,APG-11: update distributed tracing system,44b5d939,opened,2021-04-24 06:47:52,,0.0,APG-11
+1436,APG-12: fix IP whitelisting service,44b5d939,merged,2021-05-02 21:52:07,2021-05-07 17:59:00,116.11,APG-12
+1437,APG-14: configure JWT validation middleware,1060bbfa,merged,2021-05-09 08:33:11,2021-05-12 22:52:12,86.32,APG-14
+1438,APG-16: fix dead-letter queue,1846b166,merged,2021-05-07 05:48:01,2021-05-11 05:18:07,95.5,APG-16
+1439,APG-17: remove distributed tracing system,2521bef3,merged,2021-05-16 04:36:18,2021-05-16 19:12:11,14.6,APG-17
 144,fixe/sendmail,e6fda5b6,merged,2024-07-16 09:06:33,2024-07-16 12:26:17,3.33,
+1440,APG-18: optimise response caching module,c7650c51,merged,2021-05-08 17:29:50,2021-05-09 12:18:18,18.81,APG-18
+1441,APG-19: optimise gateway health check,1846b166,merged,2021-05-16 10:13:05,2021-05-18 18:46:08,56.55,APG-19
+1442,APG-20: fix IP whitelisting service,44b5d939,opened,2021-05-16 00:36:37,,0.0,APG-20
+1443,APG-22: implement retry logic handler,16b8dc73,closed,2021-05-17 09:25:18,,0.0,APG-22
+1444,APG-23: integrate request routing layer,44b5d939,merged,2021-05-28 22:13:03,2021-05-30 22:11:30,47.97,APG-23
+1445,APG-24: optimise circuit breaker module,1846b166,merged,2021-05-22 07:34:48,2021-05-25 04:40:26,69.09,APG-24
+1446,APG-25: optimise dead-letter queue,2521bef3,merged,2021-05-23 18:09:11,2021-05-28 12:34:52,114.43,APG-25
+1447,APG-26: test API usage analytics,2521bef3,merged,2021-06-02 09:02:05,2021-06-04 16:46:34,55.74,APG-26
+1448,APG-27: configure load balancer configuration,2521bef3,merged,2021-06-04 14:51:42,2021-06-08 20:05:31,101.23,APG-27
+1449,APG-28: add canary deployment,1846b166,merged,2021-06-02 02:28:21,2021-06-05 04:13:38,73.75,APG-28
 145,Feature/mbc 11 recup liste virement emis,ddcb93f9,closed,2024-07-16 10:31:04,,0.0,
+1450,APG-29: fix OAuth2 token service,16b8dc73,merged,2021-06-08 12:14:13,2021-06-10 17:40:33,53.44,APG-29
+1451,APG-31: update request transformation layer,16b8dc73,merged,2021-06-15 19:18:59,2021-06-20 12:04:59,112.77,APG-31
+1452,APG-32: fix response caching module,1060bbfa,merged,2021-06-09 22:37:26,2021-06-10 22:27:13,23.83,APG-32
+1453,APG-33: refactor distributed tracing system,1846b166,merged,2021-06-19 20:54:39,2021-06-24 16:39:40,115.75,APG-33
+1454,APG-34: add mock server setup,44b5d939,merged,2021-06-17 07:45:40,2021-06-20 21:55:33,86.16,APG-34
+1455,APG-35: implement distributed tracing system,c7650c51,merged,2021-06-15 20:11:06,2021-06-18 12:45:31,64.57,APG-35
+1456,APG-36: integrate blue-green switch,1846b166,merged,2021-06-17 06:24:54,2021-06-20 11:02:32,76.63,APG-36
+1457,APG-37: test circuit breaker module,44b5d939,merged,2021-06-21 07:32:43,2021-06-23 19:39:22,60.11,APG-37
+1458,APG-38: update mock server setup,44b5d939,merged,2021-06-24 20:55:35,2021-06-24 22:30:05,1.58,APG-38
+1459,APG-39: integrate load balancer configuration,1846b166,merged,2021-07-01 17:41:51,2021-07-02 10:16:47,16.58,APG-39
 146,Feature/adding ci,634938b8,merged,2024-07-16 11:00:01,2024-07-16 11:05:59,0.1,
+1460,APG-40: remove SSL termination handler,16b8dc73,merged,2021-07-02 23:52:50,2021-07-07 04:45:36,100.88,APG-40
+1461,APG-41: fix OAuth2 token service,1846b166,merged,2021-07-03 14:55:09,2021-07-07 12:34:47,93.66,APG-41
+1462,APG-42: configure SSL termination handler,1060bbfa,merged,2021-07-07 06:45:50,2021-07-10 05:12:23,70.44,APG-42
+1463,APG-43: migrate API versioning strategy,44b5d939,merged,2021-07-06 02:08:58,2021-07-06 18:03:50,15.91,APG-43
+1464,APG-44: refactor developer portal backend,1060bbfa,closed,2021-07-12 04:34:06,,0.0,APG-44
+1465,APG-45: remove API usage analytics,1060bbfa,merged,2021-07-07 13:20:56,2021-07-10 08:25:34,67.08,APG-45
+1466,APG-46: fix API key rotation service,2521bef3,merged,2021-07-15 18:41:29,2021-07-16 06:09:31,11.47,APG-46
+1467,APG-49: fix mock server setup,44b5d939,merged,2021-07-16 00:38:25,2021-07-16 15:42:48,15.07,APG-49
+1468,APG-50: improve JWT validation middleware,44b5d939,merged,2021-07-19 16:46:57,2021-07-20 14:27:43,21.68,APG-50
+1469,APG-52: optimise gateway health check,c7650c51,merged,2021-07-19 14:35:53,2021-07-20 06:46:41,16.18,APG-52
 147,fix(trade): fix esb base url bug,c82282e6,merged,2024-07-16 12:58:43,2024-07-16 13:01:31,0.05,
+1470,APG-53: configure error response standardisation,44b5d939,merged,2021-07-31 04:47:00,2021-08-04 16:59:04,108.2,APG-53
+1471,APG-54: integrate JWT validation middleware,44b5d939,merged,2021-07-28 08:15:42,2021-07-31 10:11:42,73.93,APG-54
+1472,APG-55: add JWT validation middleware,2521bef3,merged,2021-08-02 12:58:39,2021-08-02 16:57:26,3.98,APG-55
+1473,APG-56: remove traffic shaping policy,44b5d939,merged,2021-07-30 11:15:31,2021-08-03 00:07:46,84.87,APG-56
+1474,APG-57: remove retry logic handler,44b5d939,opened,2021-08-02 21:12:37,,0.0,APG-57
+1475,APG-58: optimise API versioning strategy,1060bbfa,merged,2021-08-12 00:21:50,2021-08-13 05:48:41,29.45,APG-58
+1476,APG-61: refactor SLA monitoring dashboard,1846b166,merged,2021-08-20 11:40:17,2021-08-22 07:01:37,43.36,APG-61
+1477,APG-63: add API documentation generator,44b5d939,merged,2021-08-23 16:55:59,2021-08-24 11:33:44,18.63,APG-63
+1478,APG-64: integrate distributed tracing system,44b5d939,merged,2021-08-19 18:07:38,2021-08-21 11:19:01,41.19,APG-64
+1479,APG-65: implement traffic shaping policy,c7650c51,closed,2021-08-16 05:14:47,,0.0,APG-65
 148,Feature/adddemandescolairite,3d946cae,closed,2024-07-17 10:13:45,,0.0,
+1480,APG-66: implement SSL termination handler,1846b166,merged,2021-08-24 12:13:41,2021-08-25 09:36:43,21.38,APG-66
+1481,APG-67: configure error response standardisation,c7650c51,merged,2021-08-31 07:49:34,2021-09-02 10:53:45,51.07,APG-67
+1482,APG-68: migrate dead-letter queue,1846b166,merged,2021-09-01 18:57:44,2021-09-04 00:03:51,53.1,APG-68
+1483,APG-69: fix API documentation generator,1060bbfa,merged,2021-08-30 05:09:41,2021-09-01 17:16:18,60.11,APG-69
+1484,APG-70: configure error response standardisation,44b5d939,merged,2021-08-30 00:08:47,2021-08-31 13:14:49,37.1,APG-70
+1485,APG-71: update API key rotation service,2521bef3,merged,2021-09-01 04:21:26,2021-09-05 01:41:23,93.33,APG-71
+1486,APG-72: migrate API key rotation service,16b8dc73,merged,2021-09-03 13:01:38,2021-09-06 07:28:54,66.45,APG-72
+1487,APG-73: migrate request routing layer,1060bbfa,merged,2021-09-14 00:50:03,2021-09-17 21:58:39,93.14,APG-73
+1488,APG-75: configure contract testing suite,2521bef3,merged,2021-09-10 13:01:10,2021-09-12 06:41:26,41.67,APG-75
+1489,APG-76: update circuit breaker module,16b8dc73,merged,2021-09-16 08:18:17,2021-09-20 08:51:07,96.55,APG-76
 149,fixe(transfer)add File to sharepoint,3d946cae,merged,2024-07-17 11:24:28,2024-08-08 10:02:24,526.63,
+1490,APG-77: improve IP whitelisting service,44b5d939,merged,2021-09-20 13:37:47,2021-09-20 22:37:00,8.99,APG-77
+1491,APG-78: refactor API key rotation service,44b5d939,merged,2021-09-21 01:48:36,2021-09-21 14:43:07,12.91,APG-78
+1492,APG-79: test API versioning strategy,2521bef3,merged,2021-09-17 21:52:40,2021-09-17 23:42:50,1.84,APG-79
+1493,APG-80: implement circuit breaker module,16b8dc73,opened,2021-09-22 22:08:24,,0.0,APG-80
+1494,APG-83: add retry logic handler,c7650c51,merged,2021-09-28 18:13:25,2021-09-29 15:39:36,21.44,APG-83
+1495,APG-84: improve API usage analytics,44b5d939,merged,2021-10-05 15:14:38,2021-10-08 15:06:48,71.87,APG-84
+1496,APG-85: fix traffic shaping policy,1846b166,merged,2021-10-06 08:44:34,2021-10-09 09:29:12,72.74,APG-85
+1497,APG-86: integrate error response standardisation,1846b166,merged,2021-10-07 18:04:54,2021-10-09 22:59:29,52.91,APG-86
+1498,APG-87: fix partner onboarding flow,2521bef3,merged,2021-10-09 07:14:19,2021-10-10 09:39:22,26.42,APG-87
+1499,APG-88: test blue-green switch,c7650c51,merged,2021-10-13 07:02:54,2021-10-14 08:34:45,25.53,APG-88
 15,Feature/mwbr 49 update card limit,c82282e6,merged,2024-05-17 10:55:43,2024-05-31 11:26:50,336.52,
 150,Feat/mwbr 111/transferred account,a94a3fd1,merged,2024-07-18 12:03:32,2024-07-29 12:03:43,264.0,
+1500,APG-92: migrate rate limiting engine,16b8dc73,merged,2021-10-17 05:45:53,2021-10-19 05:42:01,47.94,APG-92
+1501,APG-93: fix circuit breaker module,16b8dc73,merged,2021-10-21 21:39:02,2021-10-26 01:36:12,99.95,APG-93
+1502,APG-95: optimise developer portal backend,44b5d939,merged,2021-10-30 12:28:11,2021-11-03 00:28:52,84.01,APG-95
+1503,APG-96: implement webhook delivery engine,1060bbfa,merged,2021-10-30 11:54:35,2021-11-03 06:25:19,90.51,APG-96
+1504,APG-98: migrate request routing layer,44b5d939,merged,2021-11-05 14:15:22,2021-11-06 05:07:47,14.87,APG-98
+1505,APG-99: integrate rate limiting engine,1846b166,merged,2021-11-01 10:36:18,2021-11-05 22:02:58,107.44,APG-99
+1506,APG-100: fix partner onboarding flow,1846b166,merged,2021-11-07 05:01:18,2021-11-09 01:52:18,44.85,APG-100
+1507,PG-1: optimise split payment module,5f76374b,opened,2022-01-07 01:56:13,,0.0,PG-1
+1508,PG-2: migrate retry payment service,374ae545,merged,2022-01-08 17:57:00,2022-01-13 12:08:54,114.2,PG-2
+1509,PG-3: integrate split payment module,3d8a229f,merged,2022-01-09 03:19:07,2022-01-11 08:14:20,52.92,PG-3
 151,Feature/creation unit transfer,c7650c51,merged,2024-07-18 12:34:02,2024-07-22 09:08:29,92.57,
+1510,PG-4: add recurring payment scheduler,5f76374b,merged,2022-01-09 18:07:44,2022-01-11 10:11:29,40.06,PG-4
+1511,PG-5: test PCI-DSS audit trail,2acfbd7a,merged,2022-01-13 13:47:51,2022-01-16 16:15:13,74.46,PG-5
+1512,PG-6: implement transaction search API,3d8a229f,merged,2022-01-22 00:11:38,2022-01-24 08:05:39,55.9,PG-6
+1513,PG-7: configure split payment module,374ae545,merged,2022-01-14 23:49:14,2022-01-15 17:54:02,18.08,PG-7
+1514,PG-8: remove payment gateway logs,5f76374b,merged,2022-01-24 08:00:37,2022-01-24 11:23:39,3.38,PG-8
+1515,PG-9: add tokenisation service,90bedccd,merged,2022-01-28 15:52:06,2022-01-31 05:49:00,61.95,PG-9
+1516,PG-12: add merchant SDK library,0106c648,merged,2022-01-29 03:21:35,2022-02-02 03:35:57,96.24,PG-12
+1517,PG-14: integrate void transaction flow,5f76374b,merged,2022-01-31 22:56:18,2022-02-04 01:31:23,74.58,PG-14
+1518,PG-15: fix fraud pre-screening hook,374ae545,merged,2022-02-04 14:58:30,2022-02-07 05:49:55,62.86,PG-15
+1519,PG-18: fix fraud pre-screening hook,2acfbd7a,merged,2022-02-17 20:20:42,2022-02-19 21:32:01,49.19,PG-18
 152,feat(trade): web client proxy config,c82282e6,merged,2024-07-19 12:01:27,2024-07-22 08:13:57,68.21,
+1520,PG-19: configure Visa/Mastercard integration,374ae545,opened,2022-02-19 11:46:41,,0.0,PG-19
+1521,PG-20: configure merchant dashboard,374ae545,merged,2022-02-18 20:18:33,2022-02-21 16:38:05,68.33,PG-20
+1522,PG-21: optimise payment notification service,2acfbd7a,merged,2022-02-19 15:19:22,2022-02-22 20:50:11,77.51,PG-21
+1523,PG-22: migrate payment analytics dashboard,90bedccd,merged,2022-02-25 22:07:19,2022-03-02 02:29:54,100.38,PG-22
+1524,PG-23: configure card payment processor,5f76374b,merged,2022-03-01 07:07:42,2022-03-06 00:56:10,113.81,PG-23
+1525,PG-24: fix dispute management flow,374ae545,closed,2022-02-23 06:25:26,,0.0,PG-24
+1526,PG-25: remove refund workflow engine,5f76374b,merged,2022-02-25 18:49:55,2022-02-26 10:16:57,15.45,PG-25
+1527,PG-26: test 3DS authentication,0106c648,merged,2022-03-08 19:28:31,2022-03-09 07:48:03,12.33,PG-26
+1528,PG-27: fix merchant dashboard,3d8a229f,merged,2022-03-09 22:20:08,2022-03-11 03:23:39,29.06,PG-27
+1529,PG-29: fix batch payment processor,0106c648,merged,2022-03-12 09:27:51,2022-03-16 00:46:39,87.31,PG-29
 153,Feature/mbc 38 upload doc to sharepoint,6029dd24,merged,2024-07-19 12:42:16,2024-07-22 08:42:53,68.01,
+1530,PG-32: configure fee calculation engine,374ae545,merged,2022-03-15 08:22:39,2022-03-18 03:35:04,67.21,PG-32
+1531,PG-33: migrate FX conversion service,2acfbd7a,merged,2022-03-23 09:09:27,2022-03-24 10:31:04,25.36,PG-33
+1532,PG-35: configure merchant dashboard,0106c648,merged,2022-03-26 16:41:27,2022-03-30 08:38:25,87.95,PG-35
+1533,PG-36: optimise Visa/Mastercard integration,374ae545,merged,2022-03-24 06:29:25,2022-03-28 11:47:20,101.3,PG-36
+1534,PG-37: test payment routing logic,90bedccd,opened,2022-03-30 16:45:27,,0.0,PG-37
+1535,PG-40: integrate payment link generator,2acfbd7a,merged,2022-04-04 02:38:28,2022-04-05 08:23:30,29.75,PG-40
+1536,PG-41: remove payment notification service,0106c648,merged,2022-04-08 10:19:42,2022-04-12 23:48:25,109.48,PG-41
+1537,PG-42: test mobile payment SDK,90bedccd,merged,2022-04-12 14:01:47,2022-04-15 13:15:26,71.23,PG-42
+1538,PG-43: implement payment gateway logs,0106c648,merged,2022-04-07 22:37:58,2022-04-08 13:36:41,14.98,PG-43
+1539,PG-45: optimise transaction search API,2acfbd7a,merged,2022-04-14 23:23:05,2022-04-16 16:52:04,41.48,PG-45
 154,Feature/mwbr 127/upload fichier transfert,a94a3fd1,merged,2024-07-22 11:19:04,2024-09-19 08:37:57,1413.31,
+1540,PG-46: add refund workflow engine,5f76374b,merged,2022-04-10 22:08:30,2022-04-13 01:59:35,51.85,PG-46
+1541,PG-47: refactor transaction search API,374ae545,merged,2022-04-19 03:06:50,2022-04-21 20:00:20,64.89,PG-47
+1542,PG-48: remove chargeback handler,0106c648,merged,2022-04-20 16:50:14,2022-04-24 15:20:03,94.5,PG-48
+1543,PG-49: optimise recurring payment scheduler,90bedccd,merged,2022-04-18 06:05:13,2022-04-21 02:06:08,68.02,PG-49
+1544,PG-50: configure fraud pre-screening hook,5f76374b,merged,2022-04-25 13:30:12,2022-04-29 19:14:25,101.74,PG-50
+1545,PG-51: update retry payment service,90bedccd,merged,2022-04-21 19:24:36,2022-04-25 18:09:33,94.75,PG-51
+1546,PG-54: improve split payment module,374ae545,merged,2022-05-07 19:10:31,2022-05-10 12:45:05,65.58,PG-54
+1547,PG-55: refactor recurring payment scheduler,374ae545,merged,2022-05-02 05:42:06,2022-05-04 07:55:47,50.23,PG-55
+1548,PG-57: integrate dispute management flow,5f76374b,merged,2022-05-15 03:47:08,2022-05-17 05:33:55,49.78,PG-57
+1549,PG-59: update daily reconciliation job,3d8a229f,merged,2022-05-19 09:01:18,2022-05-23 18:08:59,105.13,PG-59
 155,feature/mwbr 128 schooling transfer,d5ec8f59,closed,2024-07-22 14:01:40,,0.0,
+1550,PG-61: add refund workflow engine,2acfbd7a,merged,2022-05-17 12:57:44,2022-05-18 01:53:28,12.93,PG-61
+1551,PG-62: add fraud pre-screening hook,2acfbd7a,merged,2022-05-17 23:26:24,2022-05-21 13:22:58,85.94,PG-62
+1552,PG-64: fix PCI-DSS audit trail,5f76374b,opened,2022-05-29 16:48:14,,0.0,PG-64
+1553,PG-65: test merchant SDK library,0106c648,merged,2022-05-31 13:27:07,2022-06-01 17:33:39,28.11,PG-65
+1554,PG-66: refactor payment link generator,3d8a229f,opened,2022-05-27 06:07:46,,0.0,PG-66
+1555,PG-67: optimise fraud pre-screening hook,374ae545,merged,2022-06-01 20:01:10,2022-06-02 09:39:54,13.65,PG-67
+1556,PG-68: refactor refund workflow engine,2acfbd7a,merged,2022-06-05 19:08:22,2022-06-09 13:25:16,90.28,PG-68
+1557,PG-69: configure IBAN validation service,90bedccd,merged,2022-06-07 18:29:31,2022-06-11 17:15:36,94.77,PG-69
+1558,PG-70: migrate payment analytics dashboard,2acfbd7a,opened,2022-06-04 20:42:46,,0.0,PG-70
+1559,PG-71: configure batch payment processor,3d8a229f,merged,2022-06-13 05:12:50,2022-06-17 07:38:48,98.43,PG-71
 156,Fix/mwbr 140/refactoring event table transfer,e11b7adb,merged,2024-07-23 11:29:05,2024-07-24 10:25:39,22.94,
+1560,PG-72: refactor chargeback handler,2acfbd7a,merged,2022-06-14 22:28:24,2022-06-19 05:56:01,103.46,PG-72
+1561,PG-73: optimise refund workflow engine,90bedccd,merged,2022-06-13 10:23:40,2022-06-13 13:43:58,3.34,PG-73
+1562,PG-74: test dispute management flow,0106c648,merged,2022-06-14 14:14:20,2022-06-19 12:30:43,118.27,PG-74
+1563,PG-75: implement transaction search API,2acfbd7a,closed,2022-06-20 03:41:23,,0.0,PG-75
+1564,PG-76: migrate fee calculation engine,2acfbd7a,merged,2022-06-26 07:59:02,2022-06-26 16:19:48,8.35,PG-76
+1565,PG-77: refactor batch payment processor,90bedccd,merged,2022-06-26 03:29:21,2022-06-26 18:50:24,15.35,PG-77
+1566,PG-78: update merchant SDK library,2acfbd7a,opened,2022-06-28 17:39:22,,0.0,PG-78
+1567,PG-79: refactor payment link generator,90bedccd,merged,2022-06-30 19:10:02,2022-07-04 21:58:27,98.81,PG-79
+1568,PG-80: test merchant SDK library,374ae545,opened,2022-06-30 07:56:06,,0.0,PG-80
+1569,FDAI-1: test historical fraud explorer,4e718012,merged,2023-02-08 00:26:43,2023-02-11 18:51:46,90.42,FDAI-1
 157,fix(payment): fix clic to pay status resp,d5ec8f59,merged,2024-07-24 09:56:55,2024-07-26 08:07:19,46.17,
+1570,FDAI-2: add threshold calibration tool,75f04902,merged,2023-02-11 01:26:19,2023-02-13 02:50:42,49.41,FDAI-2
+1571,FDAI-3: configure geolocation anomaly detector,4e718012,merged,2023-02-10 20:35:17,2023-02-14 02:50:55,78.26,FDAI-3
+1572,FDAI-4: configure model registry service,047ac22a,merged,2023-02-15 17:44:34,2023-02-17 23:45:31,54.02,FDAI-4
+1573,FDAI-5: integrate SHAP explainer service,a94a3fd1,merged,2023-02-19 02:01:12,2023-02-23 13:11:50,107.18,FDAI-5
+1574,FDAI-6: configure ensemble model builder,75f04902,merged,2023-02-21 06:54:42,2023-02-22 03:25:31,20.51,FDAI-6
+1575,FDAI-8: fix velocity rule engine,a94a3fd1,merged,2023-03-01 06:39:30,2023-03-03 09:32:03,50.88,FDAI-8
+1576,FDAI-10: migrate retraining scheduler,4e718012,merged,2023-03-03 23:40:01,2023-03-05 21:50:02,46.17,FDAI-10
+1577,FDAI-12: configure batch scoring job,5a83eabc,merged,2023-02-27 09:11:13,2023-02-28 04:15:26,19.07,FDAI-12
+1578,FDAI-13: optimise velocity rule engine,047ac22a,merged,2023-03-07 19:12:46,2023-03-11 18:16:33,95.06,FDAI-13
+1579,FDAI-14: refactor ensemble model builder,4e718012,merged,2023-03-04 09:07:21,2023-03-07 10:05:42,72.97,FDAI-14
 158,Feature/mbc 51 get details cdi,c82282e6,closed,2024-07-24 13:55:39,,0.0,
+1580,FDAI-16: integrate customer risk profiler,75f04902,merged,2023-03-12 06:47:41,2023-03-16 05:30:45,94.72,FDAI-16
+1581,FDAI-17: improve SHAP explainer service,75f04902,merged,2023-03-19 14:29:44,2023-03-21 10:25:35,43.93,FDAI-17
+1582,FDAI-19: implement real-time inference API,047ac22a,merged,2023-03-23 17:02:33,2023-03-28 00:48:28,103.77,FDAI-19
+1583,FDAI-20: refactor feature engineering pipeline,a94a3fd1,merged,2023-03-25 07:59:20,2023-03-29 16:14:25,104.25,FDAI-20
+1584,FDAI-21: fix real-time inference API,5a83eabc,merged,2023-03-23 16:52:07,2023-03-26 05:59:18,61.12,FDAI-21
+1585,FDAI-22: add decision audit log,a94a3fd1,merged,2023-03-30 12:28:25,2023-04-04 08:14:48,115.77,FDAI-22
+1586,FDAI-23: test A/B test framework,4e718012,merged,2023-03-26 11:56:23,2023-03-27 10:38:06,22.7,FDAI-23
+1587,FDAI-24: update batch scoring job,73c57167,merged,2023-04-01 02:22:35,2023-04-03 14:37:45,60.25,FDAI-24
+1588,FDAI-25: test network analysis module,75f04902,merged,2023-04-06 07:40:31,2023-04-11 03:24:56,115.74,FDAI-25
+1589,FDAI-26: remove synthetic fraud generator,5a83eabc,merged,2023-04-05 09:30:30,2023-04-07 14:40:43,53.17,FDAI-26
 159,Draft: Feature/mbc 50 get cdi opening request,ddcb93f9,opened,2024-07-24 15:32:15,,0.0,
+1590,FDAI-27: migrate batch scoring job,a94a3fd1,closed,2023-04-12 19:40:20,,0.0,FDAI-27
+1591,FDAI-28: remove network analysis module,4e718012,merged,2023-04-04 13:30:09,2023-04-07 19:33:00,78.05,FDAI-28
+1592,FDAI-31: remove network analysis module,5a83eabc,merged,2023-04-18 11:29:19,2023-04-20 12:04:46,48.59,FDAI-31
+1593,FDAI-33: integrate retraining scheduler,a94a3fd1,merged,2023-04-22 19:46:27,2023-04-27 00:54:02,101.13,FDAI-33
+1594,FDAI-34: optimise alert routing system,73c57167,merged,2023-04-23 06:15:43,2023-04-27 23:51:51,113.6,FDAI-34
+1595,FDAI-35: migrate decision audit log,4e718012,merged,2023-04-27 19:43:05,2023-05-01 00:32:40,76.83,FDAI-35
+1596,FDAI-36: configure alert routing system,5a83eabc,merged,2023-05-04 22:59:31,2023-05-05 02:03:34,3.07,FDAI-36
+1597,FDAI-37: configure velocity rule engine,73c57167,merged,2023-05-05 11:59:45,2023-05-07 20:47:49,56.8,FDAI-37
+1598,FDAI-38: migrate data quality checker,4e718012,merged,2023-05-08 19:55:34,2023-05-12 22:10:10,98.24,FDAI-38
+1599,FDAI-39: remove threshold calibration tool,4e718012,merged,2023-05-06 21:32:58,2023-05-09 22:26:10,72.89,FDAI-39
 16,Feature/add term deposit domain,e11b7adb,closed,2024-05-17 14:31:59,,0.0,
 160,Fix/ep 139 refactoring agg unit transfer,c7650c51,closed,2024-07-30 08:57:47,,0.0,
+1600,FDAI-41: update threshold calibration tool,5a83eabc,merged,2023-05-14 17:23:43,2023-05-19 15:33:28,118.16,FDAI-41
+1601,FDAI-42: optimise decision audit log,73c57167,closed,2023-05-13 08:24:11,,0.0,FDAI-42
+1602,FDAI-43: refactor velocity rule engine,047ac22a,merged,2023-05-17 18:03:33,2023-05-18 19:32:45,25.49,FDAI-43
+1603,FDAI-44: optimise real-time inference API,5a83eabc,merged,2023-05-16 06:07:09,2023-05-19 10:23:15,76.27,FDAI-44
+1604,FDAI-45: add A/B test framework,75f04902,merged,2023-05-26 22:23:38,2023-05-30 04:16:23,77.88,FDAI-45
+1605,FDAI-46: update A/B test framework,4e718012,merged,2023-05-18 20:56:18,2023-05-19 21:41:17,24.75,FDAI-46
+1606,FDAI-47: optimise velocity rule engine,75f04902,opened,2023-05-24 22:30:52,,0.0,FDAI-47
+1607,FDAI-48: optimise model performance dashboard,5a83eabc,merged,2023-05-24 07:12:26,2023-05-25 11:42:33,28.5,FDAI-48
+1608,FDAI-50: migrate network analysis module,047ac22a,merged,2023-06-03 15:56:56,2023-06-04 11:52:04,19.92,FDAI-50
+1609,FDAI-51: remove data quality checker,5a83eabc,merged,2023-06-01 06:21:26,2023-06-05 00:39:01,90.29,FDAI-51
 161,feat: Recovery PJ,374ae545,merged,2024-07-30 10:22:33,2024-08-14 11:14:37,360.87,
+1610,FDAI-52: test decision audit log,4e718012,merged,2023-06-03 11:14:29,2023-06-07 16:21:36,101.12,FDAI-52
+1611,FDAI-54: fix alert routing system,5a83eabc,merged,2023-06-08 12:55:30,2023-06-09 12:22:41,23.45,FDAI-54
+1612,FDAI-55: configure feature store integration,4e718012,merged,2023-06-14 16:39:50,2023-06-16 06:40:13,38.01,FDAI-55
+1613,FDAI-58: improve fraud pattern analyser,5a83eabc,closed,2023-06-20 14:52:18,,0.0,FDAI-58
+1614,FDAI-59: configure model registry service,75f04902,merged,2023-06-21 07:33:49,2023-06-25 16:45:18,105.19,FDAI-59
+1615,FDAI-60: test network analysis module,5a83eabc,merged,2023-06-28 13:23:05,2023-07-02 15:55:00,98.53,FDAI-60
+1616,FDAI-62: improve threshold calibration tool,4e718012,merged,2023-06-23 21:32:45,2023-06-27 08:02:19,82.49,FDAI-62
+1617,FDAI-63: optimise investigation case manager,5a83eabc,merged,2023-07-03 22:25:10,2023-07-07 12:37:32,86.21,FDAI-63
+1618,FDAI-65: implement feature engineering pipeline,047ac22a,merged,2023-07-01 14:33:55,2023-07-03 12:59:13,46.42,FDAI-65
+1619,FDAI-66: implement ML training framework,a94a3fd1,merged,2023-07-13 12:31:35,2023-07-16 07:42:06,67.18,FDAI-66
 162,Feature/adding ci,634938b8,closed,2024-07-30 13:01:11,,0.0,
+1620,FDAI-67: add ML training framework,75f04902,merged,2023-07-07 22:25:46,2023-07-10 07:08:01,56.7,FDAI-67
+1621,FDAI-70: optimise synthetic fraud generator,a94a3fd1,merged,2023-07-12 07:36:35,2023-07-16 17:03:56,105.46,FDAI-70
+1622,FDAI-71: fix ML training framework,73c57167,opened,2023-07-19 09:03:03,,0.0,FDAI-71
+1623,FDAI-72: optimise ensemble model builder,5a83eabc,merged,2023-07-21 17:05:32,2023-07-22 18:05:11,24.99,FDAI-72
+1624,FDAI-73: improve SHAP explainer service,73c57167,merged,2023-07-26 02:00:11,2023-07-30 22:11:07,116.18,FDAI-73
+1625,FDAI-74: test transaction feature extractor,73c57167,opened,2023-07-27 17:05:05,,0.0,FDAI-74
+1626,FDAI-75: add customer risk profiler,a94a3fd1,merged,2023-07-30 09:21:36,2023-08-04 06:24:02,117.04,FDAI-75
+1627,FDAI-76: migrate network analysis module,4e718012,merged,2023-07-30 23:16:35,2023-08-01 12:52:45,37.6,FDAI-76
+1628,FDAI-77: test geolocation anomaly detector,5a83eabc,merged,2023-08-08 10:59:02,2023-08-12 04:26:30,89.46,FDAI-77
+1629,FDAI-78: improve synthetic fraud generator,5a83eabc,merged,2023-08-05 10:34:03,2023-08-09 11:47:44,97.23,FDAI-78
 163,Feature/adding ci,634938b8,merged,2024-07-30 13:12:50,2024-07-30 13:15:24,0.04,
+1630,FDAI-79: update SHAP explainer service,047ac22a,merged,2023-08-02 06:35:54,2023-08-03 20:16:04,37.67,FDAI-79
+1631,FDAI-81: add fraud pattern analyser,4e718012,merged,2023-08-16 07:03:51,2023-08-18 17:51:18,58.79,FDAI-81
+1632,FDAI-82: update retraining scheduler,5a83eabc,merged,2023-08-13 12:22:31,2023-08-14 04:07:48,15.75,FDAI-82
+1633,FDAI-83: remove label propagation model,047ac22a,merged,2023-08-15 14:49:10,2023-08-18 14:51:15,72.03,FDAI-83
+1634,FDAI-84: update feature engineering pipeline,4e718012,closed,2023-08-18 08:13:36,,0.0,FDAI-84
+1635,FDAI-85: implement retraining scheduler,047ac22a,merged,2023-08-25 18:30:48,2023-08-30 06:43:17,108.21,FDAI-85
+1636,FDAI-86: migrate model drift detector,a94a3fd1,merged,2023-08-19 11:25:35,2023-08-23 17:04:33,101.65,FDAI-86
+1637,FDAI-87: fix decision audit log,047ac22a,merged,2023-08-21 15:32:25,2023-08-24 08:08:08,64.6,FDAI-87
+1638,FDAI-89: configure synthetic fraud generator,73c57167,merged,2023-08-26 05:24:56,2023-08-29 16:13:11,82.8,FDAI-89
+1639,FDAI-90: integrate network analysis module,73c57167,merged,2023-09-05 18:53:10,2023-09-06 18:50:08,23.95,FDAI-90
 164,Feature/adding ci,634938b8,merged,2024-07-30 13:21:48,2024-07-30 13:22:18,0.01,
+1640,NEOB-1: configure card limit API,095db500,merged,2024-03-10 07:16:04,2024-03-12 23:18:08,64.03,NEOB-1
+1641,NEOB-2: test card freeze feature,44b5d939,merged,2024-03-14 15:34:21,2024-03-17 22:38:15,79.07,NEOB-2
+1642,NEOB-3: refactor scheduled payment service,0106c648,merged,2024-03-15 00:52:24,2024-03-16 06:27:42,29.59,NEOB-3
+1643,NEOB-5: fix spending limit control,93219ff0,merged,2024-03-19 21:10:27,2024-03-23 03:50:24,78.67,NEOB-5
+1644,NEOB-7: update spending limit control,b4a16b14,merged,2024-03-26 05:50:41,2024-03-30 22:08:33,112.3,NEOB-7
+1645,NEOB-8: migrate push notification service,93219ff0,merged,2024-03-28 18:46:40,2024-03-29 13:48:15,19.03,NEOB-8
+1646,NEOB-9: test app performance monitor,0106c648,closed,2024-04-08 17:15:59,,0.0,NEOB-9
+1647,NEOB-10: integrate scheduled payment service,634938b8,merged,2024-04-09 04:59:13,2024-04-13 07:16:57,98.3,NEOB-10
+1648,NEOB-11: integrate push notification service,0106c648,merged,2024-04-11 17:36:58,2024-04-13 12:45:32,43.14,NEOB-11
+1649,NEOB-13: update scheduled payment service,0106c648,merged,2024-04-24 06:41:35,2024-04-27 16:12:42,81.52,NEOB-13
 165,Feature/mwbr 126/conversion montant,a94a3fd1,closed,2024-07-30 13:48:04,,0.0,
+1650,NEOB-14: integrate crash analytics integration,0106c648,merged,2024-04-22 16:33:38,2024-04-26 11:35:09,91.03,NEOB-14
+1651,NEOB-15: migrate session timeout handler,095db500,merged,2024-04-29 16:20:42,2024-05-01 10:49:29,42.48,NEOB-15
+1652,NEOB-16: migrate budget tracker,93219ff0,merged,2024-04-30 05:14:34,2024-05-02 08:25:06,51.18,NEOB-16
+1653,NEOB-18: improve fingerprint login,b4a16b14,merged,2024-05-14 12:14:55,2024-05-18 12:04:43,95.83,NEOB-18
+1654,NEOB-19: add account aggregation,44b5d939,merged,2024-05-18 20:13:49,2024-05-19 07:34:24,11.34,NEOB-19
+1655,NEOB-20: configure QR code generator,93219ff0,opened,2024-05-18 00:13:50,,0.0,NEOB-20
+1656,NEOB-21: test dispute submission form,93219ff0,merged,2024-05-25 11:26:09,2024-05-27 09:55:21,46.49,NEOB-21
+1657,NEOB-22: refactor instant loan approval,93219ff0,opened,2024-05-21 13:28:06,,0.0,NEOB-22
+1658,NEOB-23: optimise card freeze feature,634938b8,merged,2024-05-26 19:08:30,2024-05-28 01:37:34,30.48,NEOB-23
+1659,NEOB-24: remove push notification service,095db500,merged,2024-06-04 20:13:12,2024-06-08 08:30:53,84.29,NEOB-24
 166,test target,634938b8,merged,2024-07-31 09:58:43,2024-07-31 09:59:04,0.01,
+1660,NEOB-27: integrate session timeout handler,b4a16b14,closed,2024-06-09 13:31:50,,0.0,NEOB-27
+1661,NEOB-28: update spending categoriser,93219ff0,closed,2024-06-18 19:46:13,,0.0,NEOB-28
+1662,NEOB-29: test device management,095db500,merged,2024-06-23 03:20:55,2024-06-27 11:49:09,104.47,NEOB-29
+1663,NEOB-30: fix card limit API,93219ff0,merged,2024-06-25 07:53:42,2024-06-25 09:27:25,1.56,NEOB-30
+1664,NEOB-31: fix QR code generator,095db500,merged,2024-06-27 16:43:58,2024-07-01 15:10:24,94.44,NEOB-31
+1665,NEOB-32: refactor peer-to-peer transfer,b4a16b14,merged,2024-06-29 06:04:07,2024-07-04 01:37:45,115.56,NEOB-32
+1666,NEOB-33: test QR code generator,095db500,merged,2024-06-30 16:32:42,2024-06-30 21:20:03,4.79,NEOB-33
+1667,NEOB-34: migrate digital wallet connector,0106c648,closed,2024-07-15 12:05:54,,0.0,NEOB-34
+1668,NEOB-35: integrate PIN change service,0106c648,merged,2024-07-15 15:27:42,2024-07-16 04:51:57,13.4,NEOB-35
+1669,NEOB-36: migrate Google Pay integration,44b5d939,merged,2024-07-13 11:17:25,2024-07-17 12:23:07,97.1,NEOB-36
 167,feature: update pom.xml trade,634938b8,merged,2024-07-31 12:20:54,2024-07-31 12:20:58,0.0,
+1670,NEOB-38: implement account aggregation,44b5d939,merged,2024-07-30 03:51:29,2024-08-01 03:36:52,47.76,NEOB-38
+1671,NEOB-39: migrate peer-to-peer transfer,b4a16b14,closed,2024-07-24 18:41:52,,0.0,NEOB-39
+1672,NEOB-40: implement Face ID integration,634938b8,merged,2024-08-04 08:02:45,2024-08-08 08:27:11,96.41,NEOB-40
+1673,NEOB-42: test card request flow,93219ff0,closed,2024-08-09 08:54:32,,0.0,NEOB-42
+1674,NEOB-43: refactor open banking connector,44b5d939,merged,2024-08-10 15:38:25,2024-08-14 12:09:16,92.51,NEOB-43
+1675,NEOB-45: refactor bill payment integration,b4a16b14,merged,2024-08-18 07:27:12,2024-08-21 22:26:48,86.99,NEOB-45
+1676,NEOB-46: improve open banking connector,0106c648,merged,2024-08-25 11:38:33,2024-08-27 12:54:12,49.26,NEOB-46
+1677,NEOB-47: implement deep link routing,44b5d939,merged,2024-08-22 23:26:44,2024-08-23 16:02:29,16.6,NEOB-47
+1678,NEOB-51: implement crash analytics integration,095db500,merged,2024-09-16 04:08:52,2024-09-16 10:49:28,6.68,NEOB-51
+1679,NEOB-52: remove user preference settings,0106c648,closed,2024-09-16 15:52:34,,0.0,NEOB-52
 168,update trade properties,634938b8,merged,2024-07-31 12:51:18,2024-08-01 08:35:22,19.73,
+1680,NEOB-54: migrate loan application flow,93219ff0,merged,2024-09-27 05:00:49,2024-09-29 03:01:14,46.01,NEOB-54
+1681,NEOB-55: update PIN change service,b4a16b14,merged,2024-09-23 01:19:12,2024-09-27 21:34:44,116.26,NEOB-55
+1682,NEOB-56: add session timeout handler,b4a16b14,merged,2024-10-04 18:04:30,2024-10-08 08:16:58,86.21,NEOB-56
+1683,NEOB-57: update app performance monitor,93219ff0,merged,2024-09-30 00:26:27,2024-10-01 05:53:05,29.44,NEOB-57
+1684,NEOB-58: add card transaction history,095db500,closed,2024-10-06 10:19:58,,0.0,NEOB-58
+1685,NEOB-59: migrate dispute submission form,b4a16b14,merged,2024-10-12 08:24:57,2024-10-14 22:41:30,62.28,NEOB-59
+1686,NEOB-60: refactor PIN change service,44b5d939,opened,2024-10-20 14:42:54,,0.0,NEOB-60
+1687,NEOB-61: integrate PIN change service,b4a16b14,merged,2024-10-21 21:54:28,2024-10-25 08:46:40,82.87,NEOB-61
+1688,NEOB-62: optimise card freeze feature,44b5d939,merged,2024-10-19 00:17:47,2024-10-21 14:19:07,62.02,NEOB-62
+1689,NEOB-63: integrate dark mode UI,93219ff0,merged,2024-10-20 23:16:01,2024-10-25 08:29:41,105.23,NEOB-63
 169,Feature/mwbr 101 consultation historique transfert scolarite,c7650c51,merged,2024-08-01 08:51:48,2024-09-16 11:29:06,1106.62,
+1690,NEOB-64: implement spending limit control,0106c648,merged,2024-10-26 00:37:03,2024-10-28 05:40:45,53.06,NEOB-64
+1691,NEOB-65: remove push notification service,095db500,merged,2024-10-28 03:48:42,2024-10-29 05:41:08,25.87,NEOB-65
+1692,NEOB-66: configure deep link routing,93219ff0,merged,2024-11-01 00:35:36,2024-11-02 23:32:44,46.95,NEOB-66
+1693,NEOB-67: optimise referral reward system,b4a16b14,merged,2024-11-14 01:41:13,2024-11-15 06:41:57,29.01,NEOB-67
+1694,NEOB-68: fix open banking connector,095db500,merged,2024-11-15 05:29:16,2024-11-16 23:20:34,41.86,NEOB-68
+1695,NEOB-69: integrate account aggregation,0106c648,merged,2024-11-18 09:56:04,2024-11-22 16:32:18,102.6,NEOB-69
+1696,NEOB-72: optimise dispute submission form,44b5d939,merged,2024-11-28 09:55:18,2024-11-30 06:28:00,44.55,NEOB-72
+1697,NEOB-73: update session timeout handler,b4a16b14,merged,2024-11-30 22:04:07,2024-12-03 14:57:43,64.89,NEOB-73
+1698,NEOB-75: migrate card limit API,b4a16b14,merged,2024-12-06 17:22:06,2024-12-07 01:40:08,8.3,NEOB-75
+1699,NEOB-77: implement card request flow,095db500,merged,2024-12-13 08:04:47,2024-12-15 18:55:10,58.84,NEOB-77
 17,fix: remove pom.xml(multichannel) dependencies,c82282e6,merged,2024-05-17 16:00:33,2024-05-17 17:05:14,1.08,
 170,Feat/mwbr upload file editique,e11b7adb,merged,2024-08-01 13:34:47,2024-10-22 09:58:00,1964.39,
+1700,NEOB-78: add digital wallet connector,93219ff0,opened,2024-12-25 09:06:06,,0.0,NEOB-78
+1701,NEOB-79: optimise mini statement view,095db500,closed,2024-12-28 13:22:43,,0.0,NEOB-79
+1702,NEOB-80: optimise fingerprint login,93219ff0,merged,2024-12-31 07:15:15,2025-01-01 05:57:55,22.71,NEOB-80
+1703,NEOB-81: implement referral reward system,0106c648,merged,2024-12-28 21:05:12,2024-12-29 07:43:50,10.64,NEOB-81
+1704,NEOB-82: integrate Google Pay integration,44b5d939,merged,2025-01-05 07:05:42,2025-01-09 14:18:24,103.21,NEOB-82
+1705,NEOB-83: optimise crash analytics integration,634938b8,merged,2025-01-11 06:04:37,2025-01-12 12:08:12,30.06,NEOB-83
+1706,NEOB-84: improve spending categoriser,634938b8,merged,2025-01-17 20:48:28,2025-01-19 06:36:19,33.8,NEOB-84
+1707,NEOB-85: refactor budget tracker,634938b8,merged,2025-01-18 12:53:02,2025-01-20 02:10:02,37.28,NEOB-85
+1708,NEOB-86: implement WCAG compliance check,93219ff0,merged,2025-01-20 06:40:42,2025-01-21 16:15:39,33.58,NEOB-86
+1709,NEOB-87: optimise loan application flow,634938b8,opened,2025-01-30 23:11:39,,0.0,NEOB-87
 171,Fix/fix validator and trade service,c82282e6,merged,2024-08-02 09:35:45,2024-08-02 10:04:56,0.49,
+1710,NEOB-89: remove session timeout handler,634938b8,merged,2025-02-03 08:22:51,2025-02-07 20:36:22,108.23,NEOB-89
+1711,NEOB-92: improve Google Pay integration,634938b8,merged,2025-02-11 17:48:15,2025-02-15 20:23:35,98.59,NEOB-92
+1712,NEOB-93: update beneficiary management,93219ff0,closed,2025-02-17 22:58:55,,0.0,NEOB-93
+1713,NEOB-94: integrate device management,44b5d939,closed,2025-02-15 12:53:11,,0.0,NEOB-94
+1714,NEOB-95: refactor app performance monitor,0106c648,merged,2025-02-23 23:05:55,2025-02-25 05:25:16,30.32,NEOB-95
+1715,NEOB-98: update instant loan approval,095db500,merged,2025-03-11 20:24:48,2025-03-14 10:51:33,62.45,NEOB-98
+1716,NEOB-100: configure dispute submission form,93219ff0,merged,2025-03-10 15:42:48,2025-03-13 00:57:47,57.25,NEOB-100
+1717,NEOB-101: implement Apple Pay integration,634938b8,merged,2025-03-22 17:08:54,2025-03-26 20:59:57,99.85,NEOB-101
+1718,NEOB-102: configure dispute submission form,44b5d939,merged,2025-03-26 23:44:07,2025-03-27 15:51:07,16.12,NEOB-102
+1719,NEOB-105: test dispute submission form,93219ff0,merged,2025-03-28 20:21:32,2025-03-30 10:11:48,37.84,NEOB-105
 172,Fix/fix validator and trade service,c82282e6,merged,2024-08-02 11:42:02,2024-08-02 12:47:41,1.09,
+1720,NEOB-106: update crash analytics integration,93219ff0,merged,2025-04-09 08:07:14,2025-04-13 00:38:57,88.53,NEOB-106
+1721,NEOB-107: update biometric re-enrolment,b4a16b14,merged,2025-04-12 12:32:13,2025-04-14 19:46:22,55.24,NEOB-107
+1722,NEOB-108: optimise in-app notifications,095db500,merged,2025-04-10 14:42:02,2025-04-10 20:22:34,5.68,NEOB-108
+1723,NEOB-109: update mini statement view,095db500,merged,2025-04-16 20:31:18,2025-04-19 21:23:55,72.88,NEOB-109
+1724,NEOB-110: update account aggregation,93219ff0,merged,2025-04-24 16:01:14,2025-04-25 13:03:58,21.05,NEOB-110
+1725,NEOB-111: improve instant loan approval,93219ff0,merged,2025-04-26 23:41:09,2025-04-29 05:57:00,54.26,NEOB-111
+1726,NEOB-112: improve currency converter,44b5d939,merged,2025-04-28 06:24:29,2025-04-30 23:08:14,64.73,NEOB-112
+1727,NEOB-113: test QR code generator,0106c648,merged,2025-05-06 21:49:15,2025-05-09 23:29:43,73.67,NEOB-113
+1728,NEOB-114: update app performance monitor,0106c648,merged,2025-05-09 22:10:01,2025-05-10 19:02:18,20.87,NEOB-114
+1729,NEOB-115: fix card limit API,095db500,merged,2025-05-13 16:16:41,2025-05-18 15:38:01,119.36,NEOB-115
 173,Fix/mbc 75 upload sharepoint,6029dd24,merged,2024-08-05 10:36:20,2024-08-07 09:38:48,47.04,
+1730,NEOB-116: improve dispute submission form,0106c648,merged,2025-05-12 18:14:00,2025-05-14 12:20:40,42.11,NEOB-116
+1731,NEOB-117: update card transaction history,634938b8,merged,2025-05-21 07:24:18,2025-05-22 20:42:23,37.3,NEOB-117
+1732,NEOB-119: fix card freeze feature,93219ff0,merged,2025-05-23 21:24:43,2025-05-26 04:01:31,54.61,NEOB-119
+1733,NEOB-120: add user preference settings,0106c648,merged,2025-05-25 16:03:53,2025-05-26 01:12:21,9.14,NEOB-120
+1734,NEOB-122: fix bill payment integration,634938b8,closed,2025-06-05 07:59:12,,0.0,NEOB-122
+1735,NEOB-123: remove loan application flow,0106c648,merged,2025-06-09 20:55:34,2025-06-13 16:24:55,91.49,NEOB-123
+1736,NEOB-124: improve customer support chat,44b5d939,merged,2025-06-09 03:19:43,2025-06-09 23:59:48,20.67,NEOB-124
+1737,NEOB-125: improve QR payment scanner,93219ff0,merged,2025-06-13 23:10:53,2025-06-14 21:06:02,21.92,NEOB-125
+1738,NEOB-127: test instant loan approval,0106c648,merged,2025-06-24 06:19:39,2025-06-26 12:54:43,54.58,NEOB-127
+1739,NEOB-128: optimise fund transfer service,b4a16b14,opened,2025-06-25 19:11:23,,0.0,NEOB-128
 174,feat/cards-migration,e6fda5b6,merged,2024-08-06 08:02:29,2024-08-06 08:04:15,0.03,
+1740,NEOB-129: update app performance monitor,095db500,merged,2025-06-28 16:04:54,2025-07-02 17:40:25,97.59,NEOB-129
+1741,NEOB-130: integrate beneficiary management,93219ff0,merged,2025-07-01 19:11:31,2025-07-02 11:41:12,16.49,NEOB-130
+1742,NEOB-131: test peer-to-peer transfer,93219ff0,merged,2025-07-07 02:24:39,2025-07-08 08:07:45,29.72,NEOB-131
+1743,NEOB-132: update loyalty points module,93219ff0,merged,2025-07-10 18:44:46,2025-07-11 04:45:26,10.01,NEOB-132
+1744,NEOB-133: update push notification service,b4a16b14,merged,2025-07-10 06:19:48,2025-07-13 01:02:29,66.71,NEOB-133
+1745,NEOB-134: migrate budget tracker,095db500,merged,2025-07-15 11:12:18,2025-07-16 08:33:24,21.35,NEOB-134
+1746,NEOB-135: improve fingerprint login,b4a16b14,merged,2025-07-26 02:06:03,2025-07-27 01:10:27,23.07,NEOB-135
+1747,NEOB-136: migrate spending categoriser,93219ff0,merged,2025-08-01 16:42:47,2025-08-02 19:37:54,26.92,NEOB-136
+1748,NEOB-137: integrate dispute submission form,93219ff0,opened,2025-08-02 11:17:23,,0.0,NEOB-137
+1749,NEOB-138: optimise Google Pay integration,44b5d939,merged,2025-08-03 18:22:54,2025-08-04 17:04:35,22.69,NEOB-138
 175,Feature/adding ci,634938b8,merged,2024-08-06 08:28:01,2024-08-06 08:28:21,0.01,
+1750,NEOB-141: fix investment portfolio view,b4a16b14,merged,2025-08-13 07:30:12,2025-08-14 13:15:19,29.75,NEOB-141
+1751,NEOB-142: integrate loan application flow,095db500,merged,2025-08-21 21:18:23,2025-08-22 00:31:58,3.23,NEOB-142
+1752,NEOB-143: add statement download,634938b8,closed,2025-08-27 04:43:22,,0.0,NEOB-143
+1753,NEOB-145: optimise beneficiary management,44b5d939,merged,2025-08-31 21:16:43,2025-09-02 14:01:27,40.75,NEOB-145
+1754,NEOB-148: implement device management,095db500,merged,2025-09-09 11:48:49,2025-09-09 12:35:31,0.78,NEOB-148
+1755,NEOB-149: add customer support chat,0106c648,merged,2025-09-13 01:20:16,2025-09-16 18:48:31,89.47,NEOB-149
+1756,NEOB-150: test spending limit control,b4a16b14,merged,2025-09-17 18:07:34,2025-09-22 17:25:33,119.3,NEOB-150
+1757,NEOB-151: update instant loan approval,0106c648,merged,2025-09-25 15:42:47,2025-09-27 06:32:06,38.82,NEOB-151
+1758,NEOB-152: improve device management,b4a16b14,merged,2025-09-27 10:49:13,2025-10-02 01:47:53,110.98,NEOB-152
+1759,NEOB-154: improve user preference settings,634938b8,merged,2025-10-05 20:42:37,2025-10-08 01:54:19,53.2,NEOB-154
 176,feat(alert): alert-ms configuration et paramétrage,a94a3fd1,merged,2024-08-06 10:32:02,2024-11-14 14:39:24,2404.12,
+1760,NEOB-155: improve QR payment scanner,93219ff0,merged,2025-10-03 22:33:01,2025-10-04 12:53:44,14.35,NEOB-155
+1761,NEOB-158: add biometric authentication,44b5d939,closed,2025-10-17 19:31:40,,0.0,NEOB-158
+1762,NEOB-159: remove mini statement view,44b5d939,merged,2025-10-26 05:16:49,2025-10-27 07:35:35,26.31,NEOB-159
+1763,NEOB-162: configure device management,93219ff0,merged,2025-10-30 17:36:49,2025-11-03 23:55:06,102.3,NEOB-162
+1764,NEOB-163: update customer support chat,0106c648,merged,2025-11-04 11:10:28,2025-11-06 03:59:13,40.81,NEOB-163
+1765,NEOB-165: optimise open banking connector,0106c648,merged,2025-11-11 07:27:51,2025-11-14 23:04:43,87.61,NEOB-165
+1766,NEOB-166: migrate user preference settings,b4a16b14,merged,2025-11-22 09:00:11,2025-11-22 21:34:05,12.57,NEOB-166
+1767,NEOB-167: implement Google Pay integration,634938b8,merged,2025-11-25 12:15:09,2025-11-26 00:07:09,11.87,NEOB-167
+1768,NEOB-168: optimise currency converter,44b5d939,merged,2025-11-30 10:31:18,2025-12-01 17:22:33,30.85,NEOB-168
+1769,NEOB-169: remove QR code generator,44b5d939,merged,2025-12-01 22:16:37,2025-12-02 12:11:01,13.91,NEOB-169
 177,feature: Get country by codPays,374ae545,merged,2024-08-07 10:14:29,2024-08-08 12:02:02,25.79,
+1770,NEOB-170: improve spending limit control,93219ff0,merged,2025-11-28 20:48:37,2025-11-29 06:32:48,9.74,NEOB-170
+1771,NEOB-171: test fund transfer service,93219ff0,merged,2025-12-13 00:49:54,2025-12-16 17:18:18,88.47,NEOB-171
+1772,NEOB-172: add account aggregation,634938b8,merged,2025-12-16 00:18:33,2025-12-19 16:43:53,88.42,NEOB-172
+1773,NEOB-173: implement Face ID integration,b4a16b14,merged,2025-12-15 00:08:46,2025-12-19 08:45:20,104.61,NEOB-173
+1774,NEOB-174: integrate crash analytics integration,93219ff0,merged,2025-12-18 12:20:45,2025-12-19 12:23:30,24.05,NEOB-174
+1775,NEOB-175: test statement download,b4a16b14,merged,2025-12-20 04:32:36,2025-12-23 06:46:36,74.23,NEOB-175
+1776,CMIG-1: refactor Prometheus monitoring,16b8dc73,merged,2025-01-04 16:24:53,2025-01-09 08:51:00,112.44,CMIG-1
+1777,CMIG-3: configure API gateway migration,a3068886,merged,2025-01-07 13:28:48,2025-01-11 13:53:00,96.4,CMIG-3
+1778,CMIG-4: migrate cross-region backup setup,a6429d6a,merged,2025-01-12 06:47:04,2025-01-16 06:09:32,95.37,CMIG-4
+1779,CMIG-5: integrate Redis cache migration,a6429d6a,merged,2025-01-23 12:26:52,2025-01-26 13:11:55,72.75,CMIG-5
 178,Feat/viremenet mase upload amplitude document,3d946cae,merged,2024-08-07 11:12:14,2024-09-03 18:42:24,655.5,
+1780,CMIG-6: integrate network policy enforcement,a6429d6a,merged,2025-01-22 14:36:14,2025-01-22 15:43:29,1.12,CMIG-6
+1781,CMIG-8: remove Grafana dashboard templates,c7650c51,merged,2025-01-28 09:04:27,2025-01-31 08:14:45,71.17,CMIG-8
+1782,CMIG-9: optimise Kubernetes manifest templates,2521bef3,opened,2025-01-29 18:11:43,,0.0,CMIG-9
+1783,CMIG-10: test CI pipeline migration,a6429d6a,merged,2025-02-01 23:41:33,2025-02-06 02:55:28,99.23,CMIG-10
+1784,CMIG-11: update penetration test scope,a3068886,merged,2025-02-09 13:16:14,2025-02-13 16:47:15,99.52,CMIG-11
+1785,CMIG-12: implement Kubernetes manifest templates,1060bbfa,closed,2025-02-15 21:37:25,,0.0,CMIG-12
+1786,CMIG-13: refactor CI pipeline migration,16b8dc73,merged,2025-02-11 03:59:57,2025-02-12 21:09:37,41.16,CMIG-13
+1787,CMIG-15: refactor Prometheus monitoring,2521bef3,merged,2025-02-18 19:02:40,2025-02-21 11:53:35,64.85,CMIG-15
+1788,CMIG-16: implement load balancer migration,16b8dc73,merged,2025-02-25 00:04:06,2025-02-28 20:50:23,92.77,CMIG-16
+1789,CMIG-17: remove SLA baseline measurement,2521bef3,merged,2025-03-04 21:15:13,2025-03-07 19:32:20,70.29,CMIG-17
 179,Feat/mwbr 143/consult globale dom,a94a3fd1,closed,2024-08-07 12:06:53,,0.0,
+1790,CMIG-18: remove compliance audit report,16b8dc73,merged,2025-02-28 16:24:54,2025-03-02 01:04:05,32.65,CMIG-18
+1791,CMIG-19: test rightsizing analysis,2521bef3,merged,2025-03-09 10:26:07,2025-03-11 19:54:20,57.47,CMIG-19
+1792,CMIG-20: optimise DNS migration plan,a6429d6a,merged,2025-03-09 03:11:50,2025-03-11 07:02:50,51.85,CMIG-20
+1793,CMIG-22: remove infrastructure inventory tool,a3068886,opened,2025-03-21 21:02:38,,0.0,CMIG-22
+1794,CMIG-23: remove reserved instance plan,1060bbfa,opened,2025-03-21 02:47:09,,0.0,CMIG-23
+1795,CMIG-24: migrate security group rules,2521bef3,merged,2025-03-23 00:11:12,2025-03-23 01:48:58,1.63,CMIG-24
+1796,CMIG-25: implement Helm chart definitions,16b8dc73,merged,2025-03-27 06:38:55,2025-03-27 21:32:40,14.9,CMIG-25
+1797,CMIG-26: test cost tagging policy,2521bef3,merged,2025-03-31 19:08:06,2025-04-03 08:15:16,61.12,CMIG-26
+1798,CMIG-27: remove VPC architecture design,c7650c51,merged,2025-04-01 16:16:12,2025-04-03 20:25:29,52.15,CMIG-27
+1799,CMIG-28: refactor service mesh configuration,a6429d6a,merged,2025-04-03 14:47:31,2025-04-06 22:24:20,79.61,CMIG-28
 18,Feature/mwbr 52 activate deactive card,c82282e6,merged,2024-05-20 10:22:18,2024-05-31 11:04:21,264.7,
 180,Draft: Feature/mbc 69 consultation vr,6029dd24,closed,2024-08-07 14:26:22,,0.0,
+1800,CMIG-29: migrate security group rules,1060bbfa,merged,2025-04-12 20:40:49,2025-04-13 22:08:02,25.45,CMIG-29
+1801,CMIG-30: integrate security group rules,a6429d6a,merged,2025-04-10 01:38:41,2025-04-13 08:52:20,79.23,CMIG-30
+1802,CMIG-31: integrate Redis cache migration,2521bef3,opened,2025-04-19 08:51:18,,0.0,CMIG-31
+1803,CMIG-32: refactor Redis cache migration,c7650c51,merged,2025-04-15 03:24:01,2025-04-16 02:01:34,22.63,CMIG-32
+1804,CMIG-33: update CI pipeline migration,16b8dc73,merged,2025-04-20 09:55:56,2025-04-20 22:16:41,12.35,CMIG-33
+1805,CMIG-34: improve penetration test scope,a3068886,merged,2025-04-23 05:25:08,2025-04-24 06:36:33,25.19,CMIG-34
+1806,CMIG-35: configure reserved instance plan,c7650c51,merged,2025-04-23 13:30:56,2025-04-27 01:03:35,83.54,CMIG-35
+1807,CMIG-38: test workload assessment report,16b8dc73,merged,2025-05-05 12:20:32,2025-05-07 09:45:57,45.42,CMIG-38
+1808,CMIG-39: refactor secrets management setup,2521bef3,merged,2025-05-10 21:02:58,2025-05-15 00:57:34,99.91,CMIG-39
+1809,CMIG-40: configure CI pipeline migration,a6429d6a,merged,2025-05-20 13:34:00,2025-05-23 21:20:41,79.78,CMIG-40
 181,refactor/card-service,90bedccd,opened,2024-08-08 10:28:52,,0.0,
+1810,CMIG-41: update cross-region backup setup,a6429d6a,closed,2025-05-23 11:36:56,,0.0,CMIG-41
+1811,CMIG-42: add Prometheus monitoring,2521bef3,merged,2025-05-21 12:59:27,2025-05-23 18:27:55,53.47,CMIG-42
+1812,CMIG-43: configure cross-region backup setup,a6429d6a,merged,2025-05-24 18:34:41,2025-05-25 10:08:22,15.56,CMIG-43
+1813,CMIG-44: test IAM role configuration,a3068886,merged,2025-05-23 08:54:46,2025-05-23 16:54:12,7.99,CMIG-44
+1814,CMIG-45: remove IAM role configuration,a6429d6a,merged,2025-05-29 19:36:12,2025-05-30 05:00:16,9.4,CMIG-45
+1815,CMIG-47: integrate Helm chart definitions,a3068886,merged,2025-06-10 06:36:30,2025-06-12 23:14:16,64.63,CMIG-47
+1816,CMIG-49: update log aggregation pipeline,a6429d6a,merged,2025-06-16 22:30:45,2025-06-17 15:14:31,16.73,CMIG-49
+1817,CMIG-51: improve infrastructure inventory tool,16b8dc73,merged,2025-06-23 11:24:37,2025-06-25 14:42:38,51.3,CMIG-51
+1818,CMIG-52: test ELK stack deployment,a3068886,merged,2025-06-23 00:03:43,2025-06-23 12:31:47,12.47,CMIG-52
+1819,CMIG-53: improve SLA baseline measurement,a3068886,merged,2025-06-28 00:45:46,2025-06-29 14:41:32,37.93,CMIG-53
 182,Feature/adding ci,634938b8,merged,2024-08-09 11:38:02,2024-08-09 11:48:04,0.17,
+1820,CMIG-54: integrate API gateway migration,a6429d6a,merged,2025-07-06 18:27:27,2025-07-08 23:49:01,53.36,CMIG-54
+1821,CMIG-57: remove infrastructure inventory tool,a6429d6a,merged,2025-07-07 19:08:03,2025-07-12 01:53:09,102.75,CMIG-57
+1822,CMIG-58: implement secrets management setup,16b8dc73,merged,2025-07-15 08:03:06,2025-07-15 19:38:03,11.58,CMIG-58
+1823,CMIG-59: remove Prometheus monitoring,a3068886,merged,2025-07-14 18:37:25,2025-07-18 16:16:56,93.66,CMIG-59
+1824,CMIG-60: update Oracle to PostgreSQL migration,2521bef3,merged,2025-07-26 00:14:24,2025-07-30 07:42:14,103.46,CMIG-60
+1825,CMIG-61: update cost tagging policy,a6429d6a,opened,2025-07-23 13:42:22,,0.0,CMIG-61
+1826,CMIG-62: refactor workload assessment report,c7650c51,merged,2025-07-25 09:51:40,2025-07-27 19:36:05,57.74,CMIG-62
+1827,CMIG-63: refactor IAM role configuration,a3068886,merged,2025-07-25 19:14:54,2025-07-28 17:24:31,70.16,CMIG-63
+1828,CMIG-64: improve infrastructure inventory tool,a3068886,opened,2025-08-06 11:17:25,,0.0,CMIG-64
+1829,CMIG-65: remove Oracle to PostgreSQL migration,a3068886,merged,2025-08-12 18:33:39,2025-08-14 14:41:48,44.14,CMIG-65
 183,Feature/mwbr 142 create direct debit auth,d5ec8f59,closed,2024-08-09 13:51:00,,0.0,
+1830,CMIG-67: optimise Redis cache migration,16b8dc73,opened,2025-08-08 05:23:09,,0.0,CMIG-67
+1831,CMIG-69: refactor ELK stack deployment,2521bef3,merged,2025-08-22 08:21:30,2025-08-25 03:31:56,67.17,CMIG-69
+1832,CMIG-70: refactor penetration test scope,16b8dc73,merged,2025-08-22 03:35:28,2025-08-25 14:10:44,82.59,CMIG-70
+1833,CMIG-71: remove security group rules,c7650c51,merged,2025-08-23 18:43:34,2025-08-25 11:40:53,40.96,CMIG-71
+1834,CMIG-72: add cost tagging policy,16b8dc73,merged,2025-08-30 16:41:15,2025-09-03 21:55:31,101.24,CMIG-72
+1835,CMIG-73: optimise disaster recovery runbook,a6429d6a,merged,2025-09-05 16:48:07,2025-09-10 09:24:04,112.6,CMIG-73
+1836,CMIG-75: remove security group rules,2521bef3,merged,2025-09-10 09:25:11,2025-09-12 22:28:44,61.06,CMIG-75
+1837,CMIG-77: optimise Docker image builder,c7650c51,merged,2025-09-18 05:11:21,2025-09-20 16:06:47,58.92,CMIG-77
+1838,CMIG-78: implement ELK stack deployment,a3068886,merged,2025-09-14 21:16:24,2025-09-15 17:48:57,20.54,CMIG-78
+1839,CMIG-79: test CI pipeline migration,1060bbfa,merged,2025-09-23 21:37:19,2025-09-24 20:23:48,22.77,CMIG-79
 184,Fixe/get all transaction,3d946cae,closed,2024-08-12 11:52:11,,0.0,
+1840,CMIG-80: remove service mesh configuration,2521bef3,opened,2025-09-23 13:48:12,,0.0,CMIG-80
+1841,CMIG-81: add Helm chart definitions,2521bef3,merged,2025-09-29 14:13:48,2025-10-04 08:23:27,114.16,CMIG-81
+1842,CMIG-82: implement API gateway migration,2521bef3,merged,2025-09-30 21:32:29,2025-10-05 09:19:31,107.78,CMIG-82
+1843,CMIG-84: test SLA baseline measurement,2521bef3,merged,2025-10-09 17:41:02,2025-10-13 08:55:49,87.25,CMIG-84
+1844,CMIG-85: implement VPC architecture design,c7650c51,merged,2025-10-15 19:29:20,2025-10-18 21:28:15,73.98,CMIG-85
+1845,CMIG-86: test Prometheus monitoring,16b8dc73,merged,2025-10-15 21:50:30,2025-10-20 15:01:49,113.19,CMIG-86
+1846,CMIG-87: improve rightsizing analysis,16b8dc73,merged,2025-10-20 14:34:21,2025-10-22 09:28:09,42.9,CMIG-87
+1847,CMIG-88: configure disaster recovery runbook,a3068886,merged,2025-10-28 10:08:07,2025-11-01 03:47:58,89.66,CMIG-88
+1848,CMIG-89: configure secrets management setup,16b8dc73,closed,2025-10-20 12:05:22,,0.0,CMIG-89
+1849,CMIG-90: add security group rules,2521bef3,merged,2025-10-30 11:23:56,2025-11-03 22:48:59,107.42,CMIG-90
 185,Feature/mbc 66 ve validator,374ae545,merged,2024-08-14 11:29:55,2024-08-14 11:31:48,0.03,
+1850,CMIG-94: integrate cloud security baseline,1060bbfa,merged,2025-11-14 15:39:54,2025-11-16 12:41:21,45.02,CMIG-94
+1851,CMIG-95: fix IAM role configuration,1060bbfa,merged,2025-11-11 17:17:40,2025-11-13 17:48:12,48.51,CMIG-95
+1852,CMIG-99: migrate Prometheus monitoring,c7650c51,merged,2025-12-01 08:51:39,2025-12-02 04:15:17,19.39,CMIG-99
+1853,CMIG-100: integrate rightsizing analysis,16b8dc73,merged,2025-11-26 07:04:35,2025-11-26 13:00:14,5.93,CMIG-100
+1854,CMIG-101: fix reserved instance plan,1060bbfa,merged,2025-12-03 13:28:47,2025-12-07 07:48:26,90.33,CMIG-101
+1855,CMIG-102: integrate Helm chart definitions,c7650c51,merged,2025-12-04 03:44:04,2025-12-08 13:09:28,105.42,CMIG-102
+1856,CMIG-106: improve reserved instance plan,1060bbfa,merged,2025-12-19 03:27:15,2025-12-20 01:26:18,21.98,CMIG-106
+1857,CMIG-107: integrate infrastructure inventory tool,2521bef3,merged,2025-12-25 06:31:22,2025-12-26 20:27:56,37.94,CMIG-107
+1858,CMIG-108: add Oracle to PostgreSQL migration,1060bbfa,opened,2025-12-25 13:16:45,,0.0,CMIG-108
+1859,CMIG-110: remove infrastructure inventory tool,a3068886,merged,2026-01-03 02:10:06,2026-01-03 12:54:41,10.74,CMIG-110
 186,Feature/mwbr 152 batch transfer,c7650c51,closed,2024-08-14 13:22:48,,0.0,
+1860,CMIG-111: add security group rules,1060bbfa,merged,2026-01-04 23:09:01,2026-01-05 12:58:50,13.83,CMIG-111
+1861,CMIG-112: configure Redis cache migration,a6429d6a,merged,2026-01-07 20:08:24,2026-01-10 16:50:09,68.7,CMIG-112
+1862,CMIG-113: test API gateway migration,c7650c51,merged,2026-01-13 02:17:26,2026-01-16 07:16:47,76.99,CMIG-113
+1863,CMIG-114: implement service mesh configuration,16b8dc73,closed,2026-01-22 13:13:33,,0.0,CMIG-114
+1864,CMIG-115: improve compliance audit report,16b8dc73,merged,2026-01-16 18:18:47,2026-01-20 20:24:55,98.1,CMIG-115
+1865,CMIG-116: fix CD pipeline setup,c7650c51,merged,2026-01-25 08:09:35,2026-01-28 01:08:15,64.98,CMIG-116
+1866,CMIG-118: remove Oracle to PostgreSQL migration,16b8dc73,merged,2026-02-02 12:29:51,2026-02-03 03:07:16,14.62,CMIG-118
 187,refactor:transfer-service,e6fda5b6,merged,2024-08-15 08:34:40,2024-08-15 08:34:59,0.01,
 188,refactor/transfer-service,e6fda5b6,merged,2024-08-15 12:17:53,2024-08-15 12:18:02,0.0,
 189,Feature/mwbr 152 batch transfer,c7650c51,closed,2024-08-16 08:36:03,,0.0,

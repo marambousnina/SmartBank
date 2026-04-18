@@ -1,0 +1,21 @@
+======================================================
+FORMULES — dora_by_project_spark.csv
+Source : 03_dora_metrics_01.py
+======================================================
+
+nb_tickets              = COUNT(tickets) par ProjectKey
+nb_deployed             = COUNT(tickets) ou CurrentStatus = "To Be Deployed"
+avg_lead_time_h         = AVG(lead_time_hours) par ProjectKey
+median_lead_time_h      = MEDIAN(lead_time_hours) par ProjectKey
+nb_delayed              = COUNT(tickets) ou is_delayed = 1
+delay_rate_pct          = (nb_delayed / nb_tickets) × 100
+
+nb_tickets_with_git     = COUNT(tickets) ou data_source = "jira+git"
+git_coverage_pct        = (nb_tickets_with_git / nb_tickets) × 100
+
+data_source             = "jira+git" si git_coverage_pct > 0, sinon "jira_only"
+
+project_phase           = "Phase 1 (Jira only)"    si git_coverage_pct = 0
+                          "Phase 2 (Jira+Git)"     si git_coverage_pct > 0
+
+dora_available          = True si git_coverage_pct > 0, sinon False

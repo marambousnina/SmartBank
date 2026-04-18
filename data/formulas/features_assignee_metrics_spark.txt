@@ -1,0 +1,10 @@
+======================================================
+FORMULES — assignee_metrics_spark.csv
+Source : 02_feature_engineering_spark.py
+======================================================
+
+nb_tickets_assigned        = COUNT(tickets Jira) par Assignee
+nb_tickets_deployed_person = COUNT(tickets) ou CurrentStatus = "To Be Deployed"
+avg_lead_time_person       = AVG(lead_time_hours) par Assignee
+
+on_time_rate               = (COUNT(tickets ou is_delayed = 0) / nb_tickets_assigned) × 100

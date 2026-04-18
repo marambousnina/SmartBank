@@ -1,6 +1,12 @@
 ﻿ProjectKey,nb_tickets,nb_deployed,avg_lead_time_h,median_lead_time_h,nb_delayed,delay_rate_pct,nb_tickets_with_git,git_coverage_pct,data_source,project_phase,dora_available
-DL,379,0,5709.08,4945.88,253,66.8,0,0.0,jira_only,Phase 1 - Jira only,Lead Time uniquement (pas de Git)
-MBC,34,0,8736.82,8913.26,23,67.6,4,11.8,jira+git,Phase 2 - Transition,Lead Time + Deployment Freq + CFR + MTTR
-RIDIDP25,24,0,8243.94,9921.26,5,20.8,0,0.0,jira_only,Phase 1 - Jira only,Lead Time uniquement (pas de Git)
-CSCCP25,79,0,3931.43,2631.83,65,82.3,0,0.0,jira_only,Phase 1 - Jira only,Lead Time uniquement (pas de Git)
-MWBR,125,18,9349.98,10113.26,0,0.0,125,100.0,jira+git,Phase 2 - Jira+Git,Lead Time + Deployment Freq + CFR + MTTR
+NEOB,175,87,10713.88,10596.07,175,100.0,0,0.0,jira_only,Phase 1 - Jira only,Lead Time uniquement (pas de Git)
+PG,80,45,16951.38,4248.0,80,100.0,0,0.0,jira_only,Phase 1 - Jira only,Lead Time uniquement (pas de Git)
+CMIG,120,64,6510.07,6468.07,120,100.0,0,0.0,jira_only,Phase 1 - Jira only,Lead Time uniquement (pas de Git)
+DL,379,0,5709.94,4945.88,253,66.8,0,0.0,jira_only,Phase 1 - Jira only,Lead Time uniquement (pas de Git)
+APG,100,57,19725.99,5088.0,100,100.0,0,0.0,jira_only,Phase 1 - Jira only,Lead Time uniquement (pas de Git)
+MBC,34,0,8738.72,8916.07,23,67.6,4,11.8,jira+git,Phase 2 - Transition,Lead Time + Deployment Freq + CFR + MTTR
+DO,75,41,24131.55,4248.0,75,100.0,0,0.0,jira_only,Phase 1 - Jira only,Lead Time uniquement (pas de Git)
+FDAI,90,45,14328.43,5760.0,90,100.0,0,0.0,jira_only,Phase 1 - Jira only,Lead Time uniquement (pas de Git)
+RIDIDP25,24,0,8246.4,9924.07,5,20.8,0,0.0,jira_only,Phase 1 - Jira only,Lead Time uniquement (pas de Git)
+CSCCP25,79,0,3932.82,2631.83,65,82.3,0,0.0,jira_only,Phase 1 - Jira only,Lead Time uniquement (pas de Git)
+MWBR,125,18,9352.29,10116.07,0,0.0,125,100.0,jira+git,Phase 2 - Jira+Git,Lead Time + Deployment Freq + CFR + MTTR

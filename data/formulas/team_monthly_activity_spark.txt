@@ -1,0 +1,15 @@
+======================================================
+FORMULES — monthly_activity_spark.csv
+Source : 03_dora_metrics_03.py
+======================================================
+
+month_year              = FORMAT(Created, "yyyy-MM")
+
+nb_tickets_month        = COUNT(tickets crees dans le mois) par Assignee
+nb_deployed_month       = COUNT(tickets) ou CurrentStatus = "To Be Deployed" dans le mois
+nb_bugs_month           = COUNT(tickets Bug) dans le mois
+nb_delayed_month        = COUNT(tickets ou is_delayed = 1) dans le mois
+
+avg_lead_time_month     = AVG(lead_time_hours) des tickets du mois
+avg_cycle_time_month    = AVG(cycle_time_hours) des tickets du mois
+nb_commits_month        = COUNT(commits Git) de la personne dans le mois

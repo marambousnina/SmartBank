@@ -1,0 +1,24 @@
+======================================================
+FORMULES — dora_person_weekly.csv
+           dora_person_monthly.csv
+Source : 03_dora_metrics_04.py
+======================================================
+
+year_week               = FORMAT(date_activite, "yyyy-WW")
+year_month              = FORMAT(date_activite, "yyyy-MM")
+
+lead_time               = AVG(lead_time_hours) des tickets de la personne dans la periode
+cycle_time              = AVG(cycle_time_hours) des tickets de la personne dans la periode
+change_failure_rate     = (pipelines failed / pipelines total) de la personne × 100
+mttr                    = AVG(duree resolution bugs) de la personne dans la periode
+
+tasks_completed         = COUNT(tickets) ou CurrentStatus = "To Be Deployed" par personne
+bugs_created            = COUNT(tickets Bug) crees par la personne
+bugs_fixed              = COUNT(tickets Bug) resolus par la personne
+commit_count            = COUNT(commits Git) par personne dans la periode
+prs_merged              = COUNT(MRs merged) par personne dans la periode
+
+productivity_score      = score composite base sur tasks_completed, commit_count, bugs_fixed
+
+git_coverage_pct        = (nb_tickets_jira_git / nb_tickets_total) × 100
+project_phase           = "Phase 1" si git_coverage_pct = 0, sinon "Phase 2"

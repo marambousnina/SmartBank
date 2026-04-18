@@ -1,0 +1,20 @@
+======================================================
+FORMULES — yearly_performance_spark.csv
+Source : 03_dora_metrics_02.py
+======================================================
+
+year                    = FORMAT(Created, "yyyy")
+
+nb_tickets_year         = COUNT(tickets crees dans l'annee) par Assignee
+nb_deployed_year        = COUNT(tickets) ou CurrentStatus = "To Be Deployed" dans l'annee
+nb_bugs_year            = COUNT(tickets Bug) dans l'annee
+nb_delayed_year         = COUNT(tickets ou is_delayed = 1) dans l'annee
+
+avg_lead_time_year      = AVG(lead_time_hours) des tickets de l'annee
+on_time_rate_year       = (COUNT(is_delayed = 0) / nb_tickets_year) × 100
+
+nb_commits_year         = COUNT(commits Git) de la personne dans l'annee
+nb_mrs_year             = COUNT(MRs) de la personne dans l'annee
+
+nb_tickets_jira_git     = COUNT(tickets) ou data_source = "jira+git"
+nb_tickets_jira_only    = COUNT(tickets) ou data_source = "jira_only"

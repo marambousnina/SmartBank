@@ -1,0 +1,41 @@
+======================================================
+FORMULES — dora_metrics_summary_spark.csv
+Source : 03_dora_metrics_01.py
+======================================================
+
+deploy_freq_per_week    = COUNT(pipelines is_production=True, status="success") / nb_semaines
+
+lead_time_jira_hours    = AVG(lead_time_hours) des tickets jira+git
+lead_time_git_hours     = AVG(merge_time_hours) des MRs git_only
+lead_time_global_hours  = AVG(lead_time_jira_hours, lead_time_git_hours)
+
+cfr_pct                 = (COUNT(pipelines failed) / COUNT(pipelines total)) × 100
+
+mttr_jira_hours         = AVG(lead_time_hours) des tickets Bug Jira resolus
+mttr_jobs_hours         = (AVG(duree job failed) + AVG(duree job success)) / 60
+mttr_global_hours       = AVG(mttr_jira_hours, mttr_jobs_hours)
+
+Niveaux DORA :
+  deploy_freq_level :
+    Elite  = > 1 deploy/jour
+    High   = 1/semaine a 1/jour
+    Medium = 1/mois a 1/semaine
+    Low    = < 1/mois
+
+  lead_time_level :
+    Elite  = < 24h
+    High   = < 168h (1 semaine)
+    Medium = < 720h (1 mois)
+    Low    = >= 720h
+
+  cfr_level :
+    Elite  = < 15%
+    High   = < 30%
+    Medium = < 45%
+    Low    = >= 45%
+
+  mttr_level :
+    Elite  = < 1h
+    High   = < 24h
+    Medium = < 168h
+    Low    = >= 168h

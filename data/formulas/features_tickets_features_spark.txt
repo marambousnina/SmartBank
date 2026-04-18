@@ -1,0 +1,62 @@
+======================================================
+FORMULES — tickets_features_spark.csv
+Source : 02_feature_engineering_spark.py
+======================================================
+
+lead_time_hours         = (ResolutionDate - Created) / 3600
+                          si ticket termine, sinon (maintenant - Created) / 3600
+
+cycle_time_hours        = (ResolutionDate - first_inprocess_date) / 3600
+
+nb_status_changes       = COUNT(transitions de statut par ticket)
+
+time_blocked_hours      = SUM(TimeInStatusHours) ou Status = "Blocked"
+time_in_review_hours    = SUM(TimeInStatusHours) ou Status = "In Review"
+time_in_qa_hours        = SUM(TimeInStatusHours) ou Status = "QA In Process"
+time_correction_review_hours = SUM(TimeInStatusHours) ou Status = "Correction Post Review"
+time_correction_qa_hours     = SUM(TimeInStatusHours) ou Status = "Correction Post QA"
+
+was_blocked             = 1 si time_blocked_hours > 0, sinon 0
+
+is_delayed              = 1 si ResolutionDate > DueDate (ou maintenant > DueDate si non resolu)
+                          0 si pas de DueDate ou livre a temps
+
+nb_commits              = COUNT(commits Git lies au ticket via email + fenetre de dates)
+nb_mrs                  = COUNT(MRs liees au ticket via email + fenetre de dates)
+avg_merge_time_hours    = AVG(merge_time_hours) des MRs liees au ticket
+
+is_bug                  = 1 si IssueType = "Bug", sinon 0
+month_year              = FORMAT(Created, "yyyy-MM")
+data_source             = "jira+git" si nb_commits > 0, sinon "jira_only"
+
+risk_score              = (is_delayed × 40)
+                        + (was_blocked × 30)
+                        + (20 si lead_time_hours > 500, 10 si > 200, sinon 0)
+                        + (10 si nb_status_changes > 8, sinon 0)
+
+risk_level              = "High"   si risk_score >= 60
+                          "Medium" si risk_score >= 30
+                          "Low"    sinon
+
+completion_rate         = (nb_tickets_done / nb_tickets_total) × 100  [par projet]
+nb_tickets_total        = COUNT(tickets) par ProjectKey
+nb_tickets_done         = COUNT(tickets) ou CurrentStatus = "To Be Deployed"
+
+1. Informations de base Jira (viennent directement du fichier Jira nettoyé)
+
+TicketKey, ProjectKey, IssueType, CurrentStatus, Priority, Assignee, Created, DueDate...
+2. Variables calculées (features) (calculées par le script 02_feature_engineering_spark.py)
+
+Colonne	Ce qu'elle mesure
+lead_time_hours	Temps de Created → Resolution
+cycle_time_hours	Temps de début dev → Resolution
+nb_status_changes	Nombre de transitions de statut
+time_blocked_hours	Temps passé bloqué
+is_delayed	1 si livré en retard
+was_blocked	1 si ticket a été bloqué
+nb_commits / nb_mrs	Commits et MRs Git liés
+risk_score / risk_level	Score de risque (0-100)
+data_source	jira+git ou jira_only
+3. Métriques agrégées par projet
+
+nb_tickets_total, nb_tickets_done, completion_rate

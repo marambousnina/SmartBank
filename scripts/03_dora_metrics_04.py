@@ -20,7 +20,11 @@ Source des données :
 """
 
 import os
+import sys
 from datetime import datetime
+
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 
 from pyspark.sql import SparkSession, functions as F
 from pyspark.sql.types import DoubleType

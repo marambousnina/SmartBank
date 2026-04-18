@@ -83,6 +83,10 @@ mrs = spark.read.csv(
     CLEANED + "merge_requests_cleaned_spark.csv",
     header=True, inferSchema=False
 )
+pipelines = spark.read.csv(
+    CLEANED + "pipelines_cleaned_spark.csv",
+    header=True, inferSchema=False
+)
 
 def to_ts(df, cols):
     for c in cols:
@@ -348,12 +352,66 @@ proj_stats = ticket_features.groupBy("ProjectKey").agg(
     F.count("TicketKey").alias("nb_tickets_total"),
     F.sum(F.when(F.col("CurrentStatus") == "To Be Deployed", 1).otherwise(0))
      .alias("nb_tickets_done"),
+    F.round(F.avg("nb_commits"), 2).alias("avg_commits_per_ticket"),
+    F.round(F.avg("nb_mrs"), 2).alias("avg_mrs_per_ticket"),
+    F.round(F.avg("lead_time_hours"), 2).alias("avg_lead_time_hours"),
 )
 proj_stats = proj_stats.withColumn(
     "completion_rate",
     F.round(F.col("nb_tickets_done") / F.col("nb_tickets_total") * 100, 1)
 )
-ticket_features = ticket_features.join(proj_stats, on="ProjectKey", how="left")
+
+# ── Commits par projet (via TicketKey) ────────────────────────────────────
+commits_proj = commits \
+    .withColumn("ProjectKey", F.regexp_extract(F.col("TicketKey"), r"^([A-Z]+)", 1)) \
+    .filter(F.col("ProjectKey") != "") \
+    .groupBy("ProjectKey").agg(
+        F.count("sha").alias("nb_commits_git"),
+        F.countDistinct("author").alias("nb_contributors"),
+    )
+
+# ── MRs par projet (via TicketKey) ────────────────────────────────────────
+mrs_proj = mrs \
+    .withColumn("ProjectKey", F.regexp_extract(F.col("TicketKey"), r"^([A-Z]+)", 1)) \
+    .filter(F.col("ProjectKey") != "") \
+    .groupBy("ProjectKey").agg(
+        F.count("mr_id").alias("nb_mrs_git"),
+        F.sum(F.when(F.col("state") == "merged", 1).otherwise(0)).alias("nb_mrs_merged"),
+        F.round(F.avg(F.col("merge_time_hours").cast(DoubleType())), 2).alias("avg_merge_time_hours"),
+    )
+
+# ── Pipelines par projet (via ref) ────────────────────────────────────────
+pipelines_proj = pipelines \
+    .withColumn("ProjectKey", F.upper(F.regexp_extract(F.col("ref"), r"([A-Z]+)", 1))) \
+    .filter(F.col("ProjectKey") != "") \
+    .withColumn("is_production", F.col("is_production").isin("true", "True")) \
+    .groupBy("ProjectKey").agg(
+        F.count("pipeline_id").alias("nb_pipelines"),
+        F.sum(F.when(F.col("is_production") == True, 1).otherwise(0)).alias("nb_deployments"),
+        F.sum(F.when(F.col("status") == "failed", 1).otherwise(0)).alias("nb_pipelines_failed"),
+        F.round(F.avg(F.col("duration_minutes").cast(DoubleType())), 2).alias("avg_pipeline_duration_min"),
+    )
+pipelines_proj = pipelines_proj.withColumn(
+    "cfr_pct",
+    F.round(F.col("nb_pipelines_failed") / F.col("nb_pipelines") * 100, 1)
+)
+
+# ── Jointure enrichie ─────────────────────────────────────────────────────
+proj_stats = proj_stats \
+    .join(commits_proj,   on="ProjectKey", how="left") \
+    .join(mrs_proj,       on="ProjectKey", how="left") \
+    .join(pipelines_proj, on="ProjectKey", how="left") \
+    .fillna({
+        "nb_commits_git": 0, "nb_contributors": 0,
+        "nb_mrs_git": 0, "nb_mrs_merged": 0, "avg_merge_time_hours": 0.0,
+        "nb_pipelines": 0, "nb_deployments": 0,
+        "nb_pipelines_failed": 0, "avg_pipeline_duration_min": 0.0, "cfr_pct": 0.0,
+    })
+
+ticket_features = ticket_features.join(
+    proj_stats.select("ProjectKey", "nb_tickets_total", "nb_tickets_done", "completion_rate"),
+    on="ProjectKey", how="left"
+)
 
 # ── 4.4 métriques par Assignee ────────────────────────────────────────────
 assignee_stats = ticket_features.groupBy("Assignee").agg(
@@ -392,7 +450,7 @@ print(f"   Tickets en retard          : {delayed}")
 print(f"   data_source = jira+git     : {jira_git}")
 print(f"   data_source = jira_only    : {jira_only}")
 print()
-print("✅ Étape 2 Spark terminée.")
-print("   Prochaine étape : 03_dora_metrics_hybrid_spark.py")
+print("[OK] Etape 2 Spark terminee.")
+print("   Prochaine etape : 03_dora_metrics_hybrid_spark.py")
 
 spark.stop()

@@ -1,0 +1,38 @@
+======================================================
+FORMULES — person_score_detail_spark.csv
+Source : 03_dora_metrics_02.py
+======================================================
+
+nb_tickets_assigned     = COUNT(tickets Jira) par Assignee
+nb_tickets_done         = COUNT(tickets) ou CurrentStatus = "To Be Deployed"
+nb_bugs_assigned        = COUNT(tickets Bug)
+nb_bugs_resolved        = COUNT(bugs resolus)
+nb_delayed              = COUNT(tickets ou is_delayed = 1)
+nb_blocked              = COUNT(tickets ou was_blocked = 1)
+
+nb_commits_total        = COUNT(commits Git) de la personne
+nb_mrs_total            = COUNT(MRs) de la personne
+
+avg_lead_time_hours     = AVG(lead_time_hours) par Assignee
+avg_cycle_time_hours    = AVG(cycle_time_hours) par Assignee
+avg_time_blocked_hours  = AVG(time_blocked_hours) par Assignee
+avg_status_changes      = AVG(nb_status_changes) par Assignee
+
+on_time_rate            = (COUNT(is_delayed = 0) / nb_tickets_assigned) × 100
+completion_rate         = (nb_tickets_done / nb_tickets_assigned) × 100
+
+nb_tickets_jira_git     = COUNT(tickets) ou data_source = "jira+git"
+nb_tickets_jira_only    = COUNT(tickets) ou data_source = "jira_only"
+data_source_dominant    = "jira+git" si nb_tickets_jira_git > nb_tickets_jira_only
+
+score_delais            = on_time_rate × 0.4
+score_lead_time         = MAX(0, 100 - (avg_lead_time_hours / 200)) × 0.3
+score_blocages          = MAX(0, 100 - (avg_time_blocked_hours / 10)) × 0.2
+score_volume            = MIN(100, nb_tickets_assigned × 2) × 0.1
+
+performance_score       = score_delais + score_lead_time + score_blocages + score_volume
+
+performance_level       = "Excellent"    si performance_score >= 80
+                          "Bon"          si performance_score >= 60
+                          "Moyen"        si performance_score >= 40
+                          "A ameliorer"  sinon

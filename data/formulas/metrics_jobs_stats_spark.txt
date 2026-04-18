@@ -1,0 +1,9 @@
+======================================================
+FORMULES — jobs_stats_spark.csv
+Source : 03_dora_metrics_01.py
+======================================================
+
+name                    = nom du job GitLab (ex: build, test, deploy)
+status                  = statut du job (success, failed, canceled...)
+nb_jobs                 = COUNT(jobs) par name + status
+avg_duration_min        = AVG(duration_minutes) des jobs par name + status
