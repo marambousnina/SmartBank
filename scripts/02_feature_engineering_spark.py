@@ -450,6 +450,319 @@ print(f"   Tickets en retard          : {delayed}")
 print(f"   data_source = jira+git     : {jira_git}")
 print(f"   data_source = jira_only    : {jira_only}")
 print()
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+# SECTION 5 — FICHIER PERSONNEL
+# ══════════════════════════════════════════════════════════════════════════════
+print("=" * 60)
+print("Construction du fichier personnel.csv")
+print("=" * 60)
+
+# Comptes système/bots à exclure
+EXCLUDE_EMAILS = {
+    "devops-admin@attijaribank.com.tn",
+    "devops-team@attijaribank.com.tn",
+    "unknown@bank.tn",
+    "helloword0@2",
+}
+EXCLUDE_PATTERNS = ["<", ">", "\ufffd", "\xef\xbf\xbd", "?"]
+
+def is_valid_email(email):
+    if not isinstance(email, str) or not email.strip():
+        return False
+    e = email.strip().lower()
+    if e in EXCLUDE_EMAILS:
+        return False
+    try:
+        e.encode("ascii")
+    except UnicodeEncodeError:
+        return False
+    if any(p in email for p in EXCLUDE_PATTERNS):
+        return False
+    return "@" in e and "." in e.split("@")[-1]
+
+def derive_department(email):
+    if not isinstance(email, str):
+        return ""
+    domain = email.strip().lower().split("@")[-1]
+    mapping = {
+        "attijaribank.com.tn": "Attijari Bank",
+        "gtiinfo.com.tn":      "GTI Info",
+        "bank-sud.tn":         "Bank Sud",
+        "craftfoundry.tech":   "Craft Foundry",
+    }
+    return mapping.get(domain, "Externe")
+
+def name_from_email(email):
+    local = email.split("@")[0]
+    return " ".join(p.capitalize() for p in local.replace(".", " ").replace("_", " ").split())
+
+# ── Charger les données augmented en pandas ───────────────────────────────
+commits_pd = pd.read_csv(CLEANED + "commits_cleaned_spark.csv")
+jira_pd    = pd.read_csv(CLEANED + "jira_cleaned_spark.csv")
+
+# ── Git : une ligne par email valide ──────────────────────────────────────
+git_df = (
+    commits_pd[["author", "email"]]
+    .dropna(subset=["email"])
+    .assign(email_norm=lambda d: d["email"].str.strip().str.lower())
+    .query("email_norm.apply(@is_valid_email)", engine="python")
+    .drop_duplicates(subset="email_norm")
+    [["author", "email_norm"]]
+    .rename(columns={"email_norm": "email"})
+)
+
+# ── Jira : une ligne par email, avec nom, projet principal ────────────────
+jira_current_pd = jira_pd[jira_pd["IsCurrent"].astype(str).isin(["True", "true", "Yes", "yes", "1"])]
+
+jira_persons = (
+    jira_current_pd[["Assignee", "AssigneeEmail", "Project"]]
+    .dropna(subset=["AssigneeEmail"])
+    .assign(email_norm=lambda d: d["AssigneeEmail"].str.strip().str.lower())
+    .query("email_norm.apply(@is_valid_email)", engine="python")
+)
+
+# equipe = projet le plus fréquent par email
+jira_equipe = (
+    jira_persons.groupby("email_norm")["Project"]
+    .agg(lambda x: x.value_counts().index[0])
+    .reset_index()
+    .rename(columns={"email_norm": "email", "Project": "equipe"})
+)
+
+# nom = premier Assignee non-null par email
+jira_nom = (
+    jira_persons.dropna(subset=["Assignee"])
+    .groupby("email_norm")["Assignee"]
+    .first()
+    .reset_index()
+    .rename(columns={"email_norm": "email", "Assignee": "nom_jira"})
+)
+
+jira_ref = jira_equipe.merge(jira_nom, on="email", how="left")
+
+# ── Fusion Git + Jira ─────────────────────────────────────────────────────
+git_emails  = set(git_df["email"])
+jira_emails = set(jira_ref["email"])
+
+both_emails      = git_emails & jira_emails
+git_only_emails  = git_emails - jira_emails
+jira_only_emails = jira_emails - git_emails
+
+rows = []
+
+for email in sorted(both_emails):
+    jira_row = jira_ref[jira_ref["email"] == email].iloc[0]
+    nom = jira_row["nom_jira"] if pd.notna(jira_row.get("nom_jira")) else name_from_email(email)
+    rows.append({
+        "email":       email,
+        "nom":         nom,
+        "departement": derive_department(email),
+        "equipe":      "",
+        "source":      "git+jira",
+    })
+
+for email in sorted(git_only_emails):
+    rows.append({
+        "email":       email,
+        "nom":         name_from_email(email),
+        "departement": derive_department(email),
+        "equipe":      "",
+        "source":      "git",
+    })
+
+for email in sorted(jira_only_emails):
+    jira_row = jira_ref[jira_ref["email"] == email].iloc[0]
+    nom = jira_row["nom_jira"] if pd.notna(jira_row.get("nom_jira")) else name_from_email(email)
+    rows.append({
+        "email":       email,
+        "nom":         nom,
+        "departement": derive_department(email),
+        "equipe":      "",
+        "source":      "jira",
+    })
+
+personnel_df = pd.DataFrame(rows, columns=["email", "nom", "departement", "equipe", "source"])
+personnel_df.insert(0, "id", range(1, len(personnel_df) + 1))
+
+# ── Enrichissement depuis data/raw/equipe.csv ─────────────────────────────
+import unicodedata, re as _re
+
+def _norm_name(name):
+    if not isinstance(name, str):
+        return ""
+    name = unicodedata.normalize("NFD", name)
+    name = "".join(c for c in name if unicodedata.category(c) != "Mn")
+    name = name.lower().replace(".", " ").replace("_", " ").replace("-", " ")
+    name = _re.sub(r"\s+", " ", name).strip()
+    return " ".join(sorted(name.split()))
+
+eq_raw = pd.read_csv("data/raw/equipe.csv")
+eq_raw["name_key"] = eq_raw["Name"].apply(_norm_name)
+personnel_df["name_key"] = personnel_df["nom"].apply(_norm_name)
+
+eq_lookup = (
+    eq_raw[["name_key", "Department", "Teams"]]
+    .drop_duplicates(subset="name_key")
+    .set_index("name_key")
+)
+
+def _first_team(teams_str):
+    if not isinstance(teams_str, str) or not teams_str.strip():
+        return None
+    return teams_str.split("\n")[0].strip()
+
+matched_indices = set()
+
+for idx, row in personnel_df.iterrows():
+    key = row["name_key"]
+    if key not in eq_lookup.index:
+        continue
+    matched_indices.add(idx)
+    eq_row  = eq_lookup.loc[key]
+    dept    = eq_row["Department"]
+    teams   = _first_team(eq_row["Teams"])
+    has_dept  = pd.notna(dept) and str(dept).strip()
+    has_teams = bool(teams)
+
+    # departement : P1 Department, P2 first team, P3 (→ P4) email domain déjà défini
+    if has_dept:
+        personnel_df.at[idx, "departement"] = str(dept).strip()
+    elif has_teams:
+        personnel_df.at[idx, "departement"] = teams
+
+    # equipe : P1 first team, P2 departement (si teams null)
+    if has_teams:
+        personnel_df.at[idx, "equipe"] = teams
+    else:
+        personnel_df.at[idx, "equipe"] = personnel_df.at[idx, "departement"]
+
+# equipe P3 : non matché → valeur du departement
+for idx in personnel_df.index:
+    if idx not in matched_indices:
+        personnel_df.at[idx, "equipe"] = personnel_df.at[idx, "departement"]
+
+personnel_df = personnel_df.drop(columns=["name_key"])
+
+# ══════════════════════════════════════════════════════════════════════════════
+# AMÉLIORATION 1 — Déduplication des doublons (même personne, emails différents)
+# ══════════════════════════════════════════════════════════════════════════════
+# Priorité email canonique : @attijaribank > @gtiinfo > @bank-sud > autres
+EMAIL_PRIORITY = ["attijaribank.com.tn", "gtiinfo.com.tn", "bank-sud.tn"]
+
+def _email_rank(email):
+    domain = email.split("@")[-1] if "@" in email else ""
+    try:
+        return EMAIL_PRIORITY.index(domain)
+    except ValueError:
+        return len(EMAIL_PRIORITY)
+
+def _merge_source(sources):
+    s = set(sources)
+    if "git+jira" in s or ("git" in s and "jira" in s):
+        return "git+jira"
+    if "git" in s:
+        return "git"
+    return "jira"
+
+personnel_df["name_norm"] = personnel_df["nom"].apply(_norm_name)
+personnel_df["email_rank"] = personnel_df["email"].apply(_email_rank)
+personnel_df = personnel_df.sort_values("email_rank")
+
+# ── Construire email_person_map (tous alias → person_id canonique) ─────────
+alias_map_rows = []   # {alias_email, canonical_email}
+canonical_rows = []   # une ligne par vraie personne
+
+for name_key, group in personnel_df.groupby("name_norm", sort=False):
+    canonical = group.iloc[0]   # meilleur email (trié par priorité)
+    canonical_email = canonical["email"]
+    merged_source   = _merge_source(group["source"].tolist())
+    row = canonical.to_dict()
+    row["source"] = merged_source
+    canonical_rows.append(row)
+    for _, alias in group.iterrows():
+        alias_map_rows.append({
+            "alias_email":     alias["email"],
+            "canonical_email": canonical_email,
+        })
+
+personnel_clean = (
+    pd.DataFrame(canonical_rows)
+    .drop(columns=["email_rank", "name_norm", "id"], errors="ignore")
+    .reset_index(drop=True)
+)
+personnel_clean.insert(0, "id", range(1, len(personnel_clean) + 1))
+
+email_map = pd.DataFrame(alias_map_rows)   # alias_email → canonical_email
+
+# ── Sauvegardes ───────────────────────────────────────────────────────────
+personnel_clean.to_csv(FEATURES + "personnel.csv",       index=False, encoding="utf-8-sig")
+email_map.to_csv(      FEATURES + "email_person_map.csv", index=False, encoding="utf-8-sig")
+
+# ══════════════════════════════════════════════════════════════════════════════
+# AMÉLIORATION 2 — Propager person_id dans assignee_metrics
+# ══════════════════════════════════════════════════════════════════════════════
+# Charger le fichier assignee_metrics déjà sauvegardé et enrichir avec person_id
+assignee_df = pd.read_csv(FEATURES + "assignee_metrics_spark.csv")
+
+# Construire le mapping Assignee → canonical_email via Jira
+jira_email_map = (
+    jira_pd[jira_pd["IsCurrent"].astype(str).isin(["True","true","Yes","yes","1"])]
+    [["Assignee", "AssigneeEmail"]]
+    .dropna()
+    .drop_duplicates(subset="Assignee")
+    .assign(AssigneeEmail=lambda d: d["AssigneeEmail"].str.strip().str.lower())
+)
+# Joindre avec email_map pour obtenir canonical_email
+jira_email_map = jira_email_map.merge(
+    email_map.rename(columns={"alias_email": "AssigneeEmail", "canonical_email": "canonical_email"}),
+    on="AssigneeEmail", how="left"
+)
+jira_email_map["canonical_email"] = jira_email_map["canonical_email"].fillna(jira_email_map["AssigneeEmail"])
+
+# Joindre assignee_metrics avec person_id
+person_id_map = personnel_clean[["id", "email"]].rename(columns={"email": "canonical_email", "id": "person_id"})
+jira_email_map = jira_email_map.merge(person_id_map, on="canonical_email", how="left")
+
+assignee_df = assignee_df.merge(
+    jira_email_map[["Assignee", "person_id"]].drop_duplicates(),
+    on="Assignee", how="left"
+)
+
+# Agréger par person_id pour fusionner les doublons
+numeric_cols = ["nb_tickets_assigned", "nb_tickets_deployed_person"]
+mean_cols    = ["avg_lead_time_person", "on_time_rate"]
+
+agg_dict = {c: "sum" for c in numeric_cols if c in assignee_df.columns}
+agg_dict.update({c: "mean" for c in mean_cols if c in assignee_df.columns})
+agg_dict["Assignee"] = "first"
+
+assignee_merged = (
+    assignee_df
+    .dropna(subset=["person_id"])
+    .groupby("person_id", as_index=False)
+    .agg(agg_dict)
+)
+assignee_merged["on_time_rate"] = assignee_merged["on_time_rate"].round(1)
+assignee_merged["avg_lead_time_person"] = assignee_merged["avg_lead_time_person"].round(2)
+
+# Joindre avec personnel pour enrichir (nom, equipe, departement)
+assignee_merged = assignee_merged.merge(
+    personnel_clean[["id", "nom", "equipe", "departement"]].rename(columns={"id": "person_id"}),
+    on="person_id", how="left"
+)
+
+assignee_merged.to_csv(FEATURES + "assignee_metrics_spark.csv", index=False, encoding="utf-8-sig")
+
+n_before = len(personnel_df)
+n_after  = len(personnel_clean)
+print(f"   Personnes avant dédup : {n_before}")
+print(f"   Personnes après dédup : {n_after}  ({n_before - n_after} doublons fusionnés)")
+print(f"   Alias email mappés    : {len(email_map)}")
+print(f"   Assignees enrichis    : {len(assignee_merged)}")
+print(f"   Fichiers              : personnel.csv | email_person_map.csv | assignee_metrics_spark.csv")
+print()
 print("[OK] Etape 2 Spark terminee.")
 print("   Prochaine etape : 03_dora_metrics_hybrid_spark.py")
 

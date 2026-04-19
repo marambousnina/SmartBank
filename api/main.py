@@ -23,6 +23,7 @@ ROOT_DIR = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT_DIR))
 
 from database.db_connection import get_engine
+from api.routers.dwh import router as dwh_router
 
 # ── App ───────────────────────────────────────────────────────────────────────
 app = FastAPI(
@@ -39,6 +40,7 @@ app.add_middleware(
 )
 
 engine = get_engine()
+app.include_router(dwh_router)
 
 
 def run_query(sql: str, params: dict = None) -> list[dict]:

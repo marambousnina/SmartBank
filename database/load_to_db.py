@@ -199,10 +199,55 @@ def load_cleaned(engine, dry_run: bool = False) -> dict:
 # COUCHE 2 : features
 # ════════════════════════════════════════════════════════════════════════════
 
+def _apply_migrations(engine, dry_run: bool = False):
+    """Applique les migrations de schéma (ADD COLUMN IF NOT EXISTS) pour les évolutions."""
+    MIGRATIONS = [
+        # features.assignee_metrics — nouvelles colonnes post-déduplication
+        "ALTER TABLE features.assignee_metrics ADD COLUMN IF NOT EXISTS person_id   INTEGER",
+        "ALTER TABLE features.assignee_metrics ADD COLUMN IF NOT EXISTS nom         VARCHAR(200)",
+        "ALTER TABLE features.assignee_metrics ADD COLUMN IF NOT EXISTS equipe      VARCHAR(200)",
+        "ALTER TABLE features.assignee_metrics ADD COLUMN IF NOT EXISTS departement VARCHAR(100)",
+        # features.project_metrics — nouvelles colonnes enrichies
+        "ALTER TABLE features.project_metrics ADD COLUMN IF NOT EXISTS project_name             VARCHAR(200)",
+        "ALTER TABLE features.project_metrics ADD COLUMN IF NOT EXISTS avg_commits_per_ticket   DOUBLE PRECISION",
+        "ALTER TABLE features.project_metrics ADD COLUMN IF NOT EXISTS avg_mrs_per_ticket       DOUBLE PRECISION",
+        "ALTER TABLE features.project_metrics ADD COLUMN IF NOT EXISTS avg_lead_time_hours      DOUBLE PRECISION",
+        "ALTER TABLE features.project_metrics ADD COLUMN IF NOT EXISTS nb_commits_git           INTEGER",
+        "ALTER TABLE features.project_metrics ADD COLUMN IF NOT EXISTS nb_contributors          INTEGER",
+        "ALTER TABLE features.project_metrics ADD COLUMN IF NOT EXISTS nb_mrs_git               INTEGER",
+        "ALTER TABLE features.project_metrics ADD COLUMN IF NOT EXISTS nb_mrs_merged            INTEGER",
+        "ALTER TABLE features.project_metrics ADD COLUMN IF NOT EXISTS avg_merge_time_hours     DOUBLE PRECISION",
+        "ALTER TABLE features.project_metrics ADD COLUMN IF NOT EXISTS nb_pipelines             INTEGER",
+        "ALTER TABLE features.project_metrics ADD COLUMN IF NOT EXISTS nb_deployments           INTEGER",
+        "ALTER TABLE features.project_metrics ADD COLUMN IF NOT EXISTS nb_pipelines_failed      INTEGER",
+        "ALTER TABLE features.project_metrics ADD COLUMN IF NOT EXISTS avg_pipeline_duration_min DOUBLE PRECISION",
+        "ALTER TABLE features.project_metrics ADD COLUMN IF NOT EXISTS cfr_pct                  DOUBLE PRECISION",
+        # dwh.dim_assignee — departement
+        "ALTER TABLE dwh.dim_assignee ADD COLUMN IF NOT EXISTS departement VARCHAR(100)",
+        # features.* — snapshot_date manquant (ajouté automatiquement par _upsert)
+        "ALTER TABLE features.assignee_metrics  ADD COLUMN IF NOT EXISTS snapshot_date DATE",
+        "ALTER TABLE features.tickets           ADD COLUMN IF NOT EXISTS snapshot_date DATE",
+        "ALTER TABLE features.project_metrics   ADD COLUMN IF NOT EXISTS snapshot_date DATE",
+        "ALTER TABLE features.personnel         ADD COLUMN IF NOT EXISTS snapshot_date DATE",
+        "ALTER TABLE features.email_person_map  ADD COLUMN IF NOT EXISTS snapshot_date DATE",
+    ]
+    if dry_run:
+        return
+    with engine.begin() as conn:
+        for sql in MIGRATIONS:
+            try:
+                conn.execute(text(sql))
+            except Exception as e:
+                log.warning(f"  Migration ignorée ({e}): {sql[:60]}")
+    log.info("  Migrations de schéma appliquées")
+
+
 def load_features(engine, dry_run: bool = False) -> dict:
     log.info("=" * 60)
     log.info("COUCHE 2 : features")
     log.info("=" * 60)
+
+    _apply_migrations(engine, dry_run)
     stats = {}
 
     # 2.1 tickets_features
@@ -212,6 +257,9 @@ def load_features(engine, dry_run: bool = False) -> dict:
         parse_dates=["Created", "ResolutionDate", "DueDate"],
     )
     if df_tickets is not None:
+        # Supprimer la colonne 'assignee_email' en double avant le renommage
+        if "assignee_email" in df_tickets.columns and "AssigneeEmail" in df_tickets.columns:
+            df_tickets = df_tickets.drop(columns=["assignee_email"])
         df_tickets.rename(columns={
             "TicketKey": "ticket_key", "ProjectKey": "project_key",
             "Project": "project", "IssueType": "issue_type",
@@ -221,26 +269,63 @@ def load_features(engine, dry_run: bool = False) -> dict:
             "Created": "created", "ResolutionDate": "resolution_date",
             "DueDate": "due_date",
         }, inplace=True)
-        # Harmonisation snake_case
         df_tickets.columns = [c.lower() for c in df_tickets.columns]
         _truncate("features", "tickets", engine, dry_run)
         stats["tickets"] = _upsert(df_tickets, "features", "tickets", engine, dry_run=dry_run)
 
-    # 2.2 assignee_metrics
+    # 2.2 assignee_metrics — colonnes renommées pour correspondre au schéma DB
     log.info("\n→ assignee_metrics")
     df_am = _load_csv(FEATURES_DIR / "assignee_metrics_spark.csv")
     if df_am is not None:
+        df_am.rename(columns={
+            "Assignee":                    "assignee",
+            "nb_tickets_deployed_person":  "nb_tickets_deployed",
+            "avg_lead_time_person":        "avg_lead_time_hours",
+        }, inplace=True)
         df_am.columns = [c.lower() for c in df_am.columns]
+        # Garder uniquement les colonnes connues du schéma
+        KNOWN_AM_COLS = [
+            "person_id", "assignee", "nom", "equipe", "departement",
+            "nb_tickets_assigned", "nb_tickets_deployed",
+            "avg_lead_time_hours", "on_time_rate",
+        ]
+        df_am = df_am[[c for c in KNOWN_AM_COLS if c in df_am.columns]]
         _truncate("features", "assignee_metrics", engine, dry_run)
         stats["assignee_metrics"] = _upsert(df_am, "features", "assignee_metrics", engine, dry_run=dry_run)
 
-    # 2.3 project_metrics
+    # 2.3 project_metrics — avec toutes les nouvelles colonnes
     log.info("\n→ project_metrics")
     df_pm = _load_csv(FEATURES_DIR / "project_metrics_spark.csv")
     if df_pm is not None:
+        df_pm.rename(columns={"ProjectKey": "project_key"}, inplace=True)
         df_pm.columns = [c.lower().replace(" ", "_") for c in df_pm.columns]
+        # Enrichir avec le vrai nom de projet depuis tickets CSV
+        df_tick_proj = _load_csv(FEATURES_DIR / "tickets_features_spark.csv")
+        if df_tick_proj is not None:
+            proj_names = (df_tick_proj[["ProjectKey", "Project"]]
+                          .drop_duplicates(subset="ProjectKey")
+                          .rename(columns={"ProjectKey": "project_key", "Project": "project_name"}))
+            proj_names["project_key"] = proj_names["project_key"].str.strip()
+            df_pm = df_pm.merge(proj_names, on="project_key", how="left")
         _truncate("features", "project_metrics", engine, dry_run)
         stats["project_metrics"] = _upsert(df_pm, "features", "project_metrics", engine, dry_run=dry_run)
+
+    # 2.4 personnel — nouveau référentiel personnes
+    log.info("\n→ personnel")
+    df_pers = _load_csv(FEATURES_DIR / "personnel.csv")
+    if df_pers is not None:
+        df_pers.rename(columns={"id": "person_id"}, inplace=True)
+        df_pers.columns = [c.lower() for c in df_pers.columns]
+        _truncate("features", "personnel", engine, dry_run)
+        stats["personnel"] = _upsert(df_pers, "features", "personnel", engine, dry_run=dry_run)
+
+    # 2.5 email_person_map — mapping alias → email canonique
+    log.info("\n→ email_person_map")
+    df_em = _load_csv(FEATURES_DIR / "email_person_map.csv")
+    if df_em is not None:
+        df_em.columns = [c.lower() for c in df_em.columns]
+        _truncate("features", "email_person_map", engine, dry_run)
+        stats["email_person_map"] = _upsert(df_em, "features", "email_person_map", engine, dry_run=dry_run)
 
     return stats
 

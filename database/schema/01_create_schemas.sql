@@ -154,7 +154,11 @@ CREATE TABLE IF NOT EXISTS features.tickets (
 
 CREATE TABLE IF NOT EXISTS features.assignee_metrics (
     id                      SERIAL PRIMARY KEY,
+    person_id               INTEGER,
     assignee                VARCHAR(200) NOT NULL,
+    nom                     VARCHAR(200),
+    equipe                  VARCHAR(200),
+    departement             VARCHAR(100),
     nb_tickets_assigned     INTEGER,
     nb_tickets_deployed     INTEGER,
     avg_lead_time_hours     DOUBLE PRECISION,
@@ -163,14 +167,46 @@ CREATE TABLE IF NOT EXISTS features.assignee_metrics (
     loaded_at               TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE IF NOT EXISTS features.project_metrics (
+CREATE TABLE IF NOT EXISTS features.personnel (
     id                  SERIAL PRIMARY KEY,
-    project_key         VARCHAR(50) NOT NULL,
-    nb_tickets_total    INTEGER,
-    nb_tickets_done     INTEGER,
-    completion_rate     DOUBLE PRECISION,
-    pipeline_run_id     UUID DEFAULT uuid_generate_v4(),
+    person_id           INTEGER NOT NULL UNIQUE,
+    nom                 VARCHAR(200),
+    email               VARCHAR(200),
+    departement         VARCHAR(100),
+    equipe              VARCHAR(200),
+    source              VARCHAR(20),
     loaded_at           TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS features.email_person_map (
+    id              SERIAL PRIMARY KEY,
+    alias_email     VARCHAR(200) NOT NULL UNIQUE,
+    canonical_email VARCHAR(200),
+    loaded_at       TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS features.project_metrics (
+    id                          SERIAL PRIMARY KEY,
+    project_key                 VARCHAR(50) NOT NULL,
+    project_name                VARCHAR(200),
+    nb_tickets_total            INTEGER,
+    nb_tickets_done             INTEGER,
+    completion_rate             DOUBLE PRECISION,
+    avg_commits_per_ticket      DOUBLE PRECISION,
+    avg_mrs_per_ticket          DOUBLE PRECISION,
+    avg_lead_time_hours         DOUBLE PRECISION,
+    nb_commits_git              INTEGER,
+    nb_contributors             INTEGER,
+    nb_mrs_git                  INTEGER,
+    nb_mrs_merged               INTEGER,
+    avg_merge_time_hours        DOUBLE PRECISION,
+    nb_pipelines                INTEGER,
+    nb_deployments              INTEGER,
+    nb_pipelines_failed         INTEGER,
+    avg_pipeline_duration_min   DOUBLE PRECISION,
+    cfr_pct                     DOUBLE PRECISION,
+    pipeline_run_id             UUID DEFAULT uuid_generate_v4(),
+    loaded_at                   TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 

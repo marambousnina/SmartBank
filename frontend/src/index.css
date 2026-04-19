@@ -1,0 +1,58 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * { box-sizing: border-box; }
+  body {
+    @apply bg-slate-950 text-slate-100 font-sans;
+    margin: 0;
+  }
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { @apply bg-slate-900; }
+  ::-webkit-scrollbar-thumb { @apply bg-slate-600 rounded-full; }
+}
+
+@layer components {
+  .card {
+    @apply bg-slate-800 rounded-xl border border-slate-700/50 p-5;
+  }
+  .card-sm {
+    @apply bg-slate-800 rounded-xl border border-slate-700/50 p-4;
+  }
+  .btn {
+    @apply px-3 py-1.5 rounded-lg text-sm font-medium transition-colors;
+  }
+  .btn-primary {
+    @apply btn bg-indigo-600 hover:bg-indigo-500 text-white;
+  }
+  .btn-ghost {
+    @apply btn bg-slate-700 hover:bg-slate-600 text-slate-200;
+  }
+  .badge {
+    @apply inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold;
+  }
+  .section-title {
+    @apply text-sm font-semibold text-slate-400 uppercase tracking-wider mb-3;
+  }
+  .kpi-grid {
+    @apply grid grid-cols-2 lg:grid-cols-4 gap-4;
+  }
+  .chart-grid-2 {
+    @apply grid grid-cols-1 lg:grid-cols-2 gap-4;
+  }
+  .chart-grid-3 {
+    @apply grid grid-cols-1 lg:grid-cols-3 gap-4;
+  }
+}
+
+/* recharts overrides */
+.recharts-tooltip-wrapper { outline: none; }
+.recharts-default-tooltip {
+  @apply !bg-slate-800 !border-slate-600 !rounded-lg !shadow-xl;
+  color: #f1f5f9 !important;
+}
+.recharts-cartesian-grid-horizontal line,
+.recharts-cartesian-grid-vertical line {
+  stroke: rgba(100,116,139,0.2) !important;
+}

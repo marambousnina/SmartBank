@@ -1,0 +1,57 @@
+﻿id,email,nom,departement,equipe,source
+1,bakhouch.iyed@attijaribank.com.tn,Iyed Bakhouch,Attijari Bank,Attijari Bank,git+jira
+2,bensalem.houssein@attijaribank.com.tn,BENSALEM.HOUSSEIN,Attijari Bank,Attijari Bank,git+jira
+3,chaouch.ahmed@attijaribank.com.tn,Ahmed Chaouch,Attijari Bank,Attijari Bank,git+jira
+4,benyahia.firas@attijaribank.com.tn,BENYAHIA.FIRAS,Attijari Bank,Attijari Bank,git+jira
+5,zoubeidi.med-ayoub@attijaribank.com.tn,Med Zoubeidi,Attijari Bank,Attijari Bank,git+jira
+6,benhajsalah.yousef@attijaribank.com.tn,Benhajsalah Yousef,Attijari Bank,Attijari Bank,git
+7,ammar.mariem@attijaribank.com.tn,AMMAR.MARIEM,Equipe Système,Equipe Système,jira
+8,mannai.mohamed@attijaribank.com.tn,Mannai Mohamed,Equipe Système,Equipe Système,git
+9,assila.naim.ben@attijaribank.com.tn,Naim Ben Assila,Equipe Reseaux&Telephonie,Equipe Reseaux&Telephonie,jira
+10,aroua.rania@attijaribank.com.tn,Rania Aroua,DATA OFFICE,Team DATA Intelligence,jira
+11,aboulaila.sana@attijaribank.com.tn,SANA.ABOULAILA,Attijari Bank,Attijari Bank,jira
+12,amdouni.skander@attijaribank.com.tn,Skander Amdouni,Attijari Bank,Attijari Bank,jira
+13,jemaa.med.amir@attijaribank.com.tn,Jemaa Med Amir,Attijari Bank,Attijari Bank,jira
+14,jallouli.ahmed@attijaribank.com.tn,Ahmed Jallouli,data team,data team,jira
+15,hamzaoui.sarra@attijaribank.com.tn,sarra hamzaoui,Attijari Bank,Attijari Bank,jira
+16,gharbi.younes@attijaribank.com.tn,GHARBI.YOUNES,Equipe Système,Equipe Système,jira
+17,elabed.firas@attijaribank.com.tn,ELABED.FIRAS,Attijari Bank,Attijari Bank,jira
+18,daghfous.oumaima@attijaribank.com.tn,oumaima daghfous,Attijari Bank,Attijari Bank,git+jira
+19,chouchene.anis@attijaribank.com.tn,ANIS.CHOUCHENE,DATA,data team,jira
+20,chammam.ayoub.mhadheb@attijaribank.com.tn,Ayoub Mhadheb Chammam,data team,data team,jira
+21,chaabani.adam@attijaribank.com.tn,Adam Chaabani,Attijari Bank,Attijari Bank,jira
+22,brinsi.firas@attijaribank.com.tn,Firas Brinsi,Attijari Bank,Attijari Bank,jira
+23,bouguerra.rym@attijaribank.com.tn,BOUGUERRA.RYM,"Contentieux, GGR et activités support","Contentieux, GGR et activités support",jira
+24,boubakri.iheb@attijaribank.com.tn,Boubakri Iheb,Data Governance,Data Governance,jira
+25,ben.salem.saber@attijaribank.com.tn,saber ben salem,Attijari Bank,Attijari Bank,jira
+26,ben.messaoud.aicha@attijaribank.com.tn,Aicha Ben Messaoud,Attijari Bank,Attijari Bank,jira
+27,ben.jamaa.a@attijaribank.com.tn,A Ben Jamaa,Attijari Bank,Attijari Bank,jira
+28,ben.ammar.hedi@attijaribank.com.tn,Hedi Ben Ammar,Attijari Bank,Attijari Bank,jira
+29,barhoumi.aymen@attijaribank.com.tn,Aymen Barhoumi,Attijari Bank,Attijari Bank,jira
+30,baccouche.yassine@attijaribank.com.tn,Yassine Baccouche,Attijari Bank,Attijari Bank,git+jira
+31,azizridane@attijaribank.com.tn,azizridane,Attijari Bank,Attijari Bank,jira
+32,aziza.abderrahim@attijaribank.com.tn,Abderrahim Aziza,data team,data team,jira
+33,rabhi.malek@attijaribank.com.tn,Malek Rabhi,data team,data team,jira
+34,rebai.fida@attijaribank.com.tn,Fida Rebai,Attijari Bank,Attijari Bank,jira
+35,sliti.iheb@attijaribank.com.tn,Iheb Sliti,Attijari Bank,Attijari Bank,jira
+36,taboubi.nour@attijaribank.com.tn,NOUR.TABOUBI,Attijari Bank,Attijari Bank,jira
+37,khalifa.jawher@attijaribank.com.tn,Jawher KHALIFA,Attijari Bank,Attijari Bank,git+jira
+38,lajdel.boudour@attijaribank.com.tn,LAJDEL.BOUDOUR,Attijari Bank,Attijari Bank,jira
+39,latifa@attijaribank.com.tn,latifa,Attijari Bank,Attijari Bank,jira
+40,melki.iheb@attijaribank.com.tn,Melki Iheb,Team DATA Intelligence,Team DATA Intelligence,jira
+41,terras.ahmed.khalil@attijaribank.com.tn,TERRAS AHMED KHALIL,Attijari Bank,Attijari Bank,jira
+42,tlili.ahlem@attijaribank.com.tn,Ahlem Tlili,Attijari Bank,Attijari Bank,jira
+43,bensalem.saber@gtiinfo.com.tn,Saber Bensalem,GTI Info,GTI Info,git+jira
+44,jenhani.chaima@gtiinfo.com.tn,Chaima Jenhani,GTI Info,GTI Info,git+jira
+45,khouja.jihen@gtiinfo.com.tn,Khouja Jihen,GTI Info,GTI Info,git
+46,khouja.jihene@gtiinfo.com.tn,Khouja Jihene,GTI Info,GTI Info,git
+47,daghfousoumaima@gtiinfo.com.tn,Daghfousoumaima,GTI Info,GTI Info,git
+48,dridi.chayma@gtiinfo.com.tn,Dridi Chayma,GTI Info,GTI Info,git
+49,benmakhlouf.faouzi@gtiinfo.com.tn,Benmakhlouf Faouzi,GTI Info,GTI Info,git
+50,dridi.chaima@gtiinfo.com.tn,Dridi Chaima,GTI Info,GTI Info,git
+51,hajkacem.mouadh@gtiinfo.com.tn,Hajkacem Mouadh,GTI Info,GTI Info,git
+52,sghari.oumayma@gtiinfo.com.tn,Sghari Oumayma,GTI Info,GTI Info,git
+53,teber.nour@gtiinfo.com.tn,Teber Nour,GTI Info,GTI Info,git
+54,ochi.salim@gtiinfo.com.tn,Ochi Salim,GTI Info,GTI Info,git
+55,ahmed.chaouch.pro@gmail.com,Ahmed Chaouch Pro,Externe,Externe,git
+56,ahmed@craftfoundry.tech,Ahmed Craftfoundry,Craft Foundry,Craft Foundry,git+jira

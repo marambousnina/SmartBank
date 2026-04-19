@@ -282,6 +282,20 @@ CREATE TABLE IF NOT EXISTS dwh.fact_team_performance (
 );
 
 -- ============================================================
+-- DIMENSION : DIM_PERSONNEL
+-- Source : personnel.csv — référentiel personnes unifié
+-- ============================================================
+CREATE TABLE IF NOT EXISTS dwh.dim_personnel (
+    person_key      SERIAL PRIMARY KEY,
+    person_id       INTEGER NOT NULL UNIQUE,
+    nom             VARCHAR(200),
+    email           VARCHAR(200),
+    departement     VARCHAR(100),
+    equipe          VARCHAR(200),
+    source          VARCHAR(20)   -- git / jira / git+jira
+);
+
+-- ============================================================
 -- INDEXES pour performances Power BI
 -- ============================================================
 
