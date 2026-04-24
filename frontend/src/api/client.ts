@@ -37,16 +37,11 @@ export const getProjectBudget    = (code: string) => api.get(`/projects/${code}/
 export const getPersonnel        = () => api.get('/personnel').then(r => r.data)
 export const getPersonKpis       = (id: number, df?: string, dt?: string) => api.get(`/personnel/${id}/kpis`, dateParams(df, dt)).then(r => r.data)
 export const getPersonTasks      = (id: number) => api.get(`/personnel/${id}/charts/tasks`).then(r => r.data)
-<<<<<<< Updated upstream
 export const getPersonTrend      = (id: number, df?: string, dt?: string) => api.get(`/personnel/${id}/charts/trend`, dateParams(df, dt)).then(r => r.data)
 export const getPersonComparison = (id: number, df?: string, dt?: string) => api.get(`/personnel/${id}/charts/comparison`, dateParams(df, dt)).then(r => r.data)
-=======
-export const getPersonTrend      = (id: number) => api.get(`/personnel/${id}/charts/trend`).then(r => r.data)
-export const getPersonComparison = (id: number) => api.get(`/personnel/${id}/charts/comparison`).then(r => r.data)
 
 // ── Predictions ML ───────────────────────────────────────────────────────
 export const getPredictAllProjects  = () => api.get('/predict/projects').then(r => r.data)
 export const getPredictProject      = (key: string) => api.get(`/predict/projects/${key}`).then(r => r.data)
 export const predictTicket          = (payload: Record<string, unknown>) =>
   api.post('/predict/ticket', payload).then(r => r.data)
->>>>>>> Stashed changes
