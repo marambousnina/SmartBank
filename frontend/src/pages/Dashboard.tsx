@@ -1,3 +1,4 @@
+import { useCallback, useState } from 'react'
 import { RefreshCw, Download, Settings, Folder, TrendingUp, Rocket, Clock, AlertTriangle, Stethoscope, CheckSquare, Bug } from 'lucide-react'
 import KpiCard from '../components/KpiCard'
 import DonutChart from '../components/charts/DonutChart'
@@ -5,6 +6,7 @@ import MultiLine from '../components/charts/MultiLine'
 import HBar from '../components/charts/HBar'
 import Gauge from '../components/charts/Gauge'
 import AlertsList from '../components/AlertsList'
+import PeriodSelector, { Period } from '../components/PeriodSelector'
 import { useFetch } from '../hooks/useFetch'
 import {
   getDashboardKpis, getProjectStatus, getTicketsTrend,
@@ -22,12 +24,18 @@ const AI_INSIGHTS = [
 ]
 
 export default function Dashboard() {
-  const kpis      = useFetch(getDashboardKpis)
-  const gauge     = useFetch(getOnTimeGauge)
-  const donut     = useFetch(getProjectStatus)
-  const trend     = useFetch(getTicketsTrend)
-  const dora      = useFetch(getDoraMetrics)
-  const bugs      = useFetch(getBugsSeverity)
+  const [period, setPeriod] = useState<Period | null>(null)
+  const onPeriodChange = useCallback((p: Period) => setPeriod(p), [])
+
+  const df = period?.dateFrom
+  const dt = period?.dateTo
+
+  const kpis  = useFetch(() => getDashboardKpis(df, dt),  [df, dt])
+  const gauge  = useFetch(() => getOnTimeGauge(df, dt),   [df, dt])
+  const trend  = useFetch(() => getTicketsTrend(df, dt),  [df, dt])
+  const dora   = useFetch(() => getDoraMetrics(df, dt),   [df, dt])
+  const donut  = useFetch(getProjectStatus)
+  const bugs   = useFetch(getBugsSeverity)
 
   const k = kpis.data
 
@@ -49,7 +57,7 @@ export default function Dashboard() {
   return (
     <div className="p-6 space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
           <h1 className="text-2xl font-bold text-white">Dashboard Exécutif</h1>
           <p className="text-slate-400 text-sm mt-0.5">Vue globale des métriques DevOps</p>
@@ -68,6 +76,11 @@ export default function Dashboard() {
             <Settings size={14} />
           </button>
         </div>
+      </div>
+
+      {/* Period Selector */}
+      <div className="card py-3 px-4">
+        <PeriodSelector onChange={onPeriodChange} />
       </div>
 
       {/* KPI Cards — 8 cartes, 4 par ligne */}
@@ -89,7 +102,7 @@ export default function Dashboard() {
           data={donut.data ?? []}
         />
         <MultiLine
-          title="Tendance tickets (6 mois)"
+          title="Tendance tickets"
           data={trendData}
           xKey="label"
           series={[
@@ -98,7 +111,7 @@ export default function Dashboard() {
           ]}
         />
         <MultiLine
-          title="Métriques DORA (6 mois)"
+          title="Métriques DORA"
           data={doraData}
           xKey="label"
           series={[

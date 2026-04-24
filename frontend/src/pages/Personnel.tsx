@@ -1,9 +1,10 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { CheckSquare, Clock, Activity, BarChart2, Bug, ChevronDown, Loader2 } from 'lucide-react'
 import KpiCard from '../components/KpiCard'
 import DonutChart from '../components/charts/DonutChart'
 import MultiLine from '../components/charts/MultiLine'
 import VBar from '../components/charts/VBar'
+import PeriodSelector, { Period } from '../components/PeriodSelector'
 import { useFetch } from '../hooks/useFetch'
 import {
   getPersonnel, getPersonKpis, getPersonTasks,
@@ -30,6 +31,8 @@ const SOURCE_LABELS: Record<string, string> = {
 export default function Personnel() {
   const { data: staff, loading: staffLoading } = useFetch<Person[]>(getPersonnel)
   const [selectedId, setSelectedId] = useState<number | null>(null)
+  const [period, setPeriod] = useState<Period | null>(null)
+  const onPeriodChange = useCallback((p: Period) => setPeriod(p), [])
 
   useEffect(() => {
     if (staff && staff.length > 0 && !selectedId) setSelectedId(staff[0].id)
@@ -37,10 +40,13 @@ export default function Personnel() {
 
   const selectedPerson = (staff ?? []).find((p: Person) => p.id === selectedId)
 
-  const kpis       = useFetch(() => selectedId ? getPersonKpis(selectedId) : Promise.resolve(null), [selectedId])
-  const tasks      = useFetch(() => selectedId ? getPersonTasks(selectedId) : Promise.resolve([]),   [selectedId])
-  const trend      = useFetch(() => selectedId ? getPersonTrend(selectedId) : Promise.resolve([]),   [selectedId])
-  const comparison = useFetch(() => selectedId ? getPersonComparison(selectedId) : Promise.resolve([]), [selectedId])
+  const df = period?.dateFrom
+  const dt = period?.dateTo
+
+  const kpis       = useFetch(() => selectedId ? getPersonKpis(selectedId, df, dt)       : Promise.resolve(null), [selectedId, df, dt])
+  const tasks      = useFetch(() => selectedId ? getPersonTasks(selectedId)               : Promise.resolve([]),   [selectedId])
+  const trend      = useFetch(() => selectedId ? getPersonTrend(selectedId, df, dt)      : Promise.resolve([]),   [selectedId, df, dt])
+  const comparison = useFetch(() => selectedId ? getPersonComparison(selectedId, df, dt) : Promise.resolve([]),   [selectedId, df, dt])
 
   const k = kpis.data as Record<string, unknown> | null
 
@@ -50,20 +56,20 @@ export default function Personnel() {
 
   const trendData = (trend.data ?? []).map((r: Record<string,unknown>) => ({
     label: String(r.month_year ?? ''),
-    on_time_pct: Number(r.on_time_pct ?? 0),
+    on_time_pct:  Number(r.on_time_pct ?? 0),
     tickets_done: Number(r.tickets_done ?? 0),
   }))
 
   const compData = (comparison.data ?? []).map((r: Record<string,unknown>) => ({
-    name: String(r.name ?? '').split(' ')[0],
-    score: Number(r.score ?? 0),
+    name:      String(r.name ?? '').split(' ')[0],
+    score:     Number(r.score ?? 0),
     isCurrent: Boolean(r.is_current),
   }))
 
   return (
     <div className="p-6 space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
           <h1 className="text-2xl font-bold text-white">Analyse Individuelle</h1>
           <p className="text-slate-400 text-sm mt-0.5">Performance et contributions par membre</p>
@@ -85,6 +91,11 @@ export default function Personnel() {
           </select>
           <ChevronDown size={14} className="absolute right-3 top-3.5 text-slate-400 pointer-events-none" />
         </div>
+      </div>
+
+      {/* Period Selector */}
+      <div className="card py-3 px-4">
+        <PeriodSelector onChange={onPeriodChange} />
       </div>
 
       {selectedId && (
@@ -127,12 +138,12 @@ export default function Personnel() {
             </div>
           ) : (
             <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
-              <KpiCard icon="📋"                            label="Tâches assignées"    value={Number(k?.nb_assigned  ?? 0)}     color="indigo"  />
-              <KpiCard icon={<CheckSquare size={18} />}     label="Tâches terminées"    value={Number(k?.nb_done      ?? 0)}     color="emerald" />
-              <KpiCard icon={<Clock size={18} />}           label="Livraison à temps"   value={Number(k?.on_time_pct  ?? 0)} unit="%" color="cyan" />
-              <KpiCard icon={<Activity size={18} />}        label="Charge de travail"   value={Number(k?.load_pct     ?? 0)} unit="%" color="violet" />
-              <KpiCard icon={<BarChart2 size={18} />}       label="Score performance"   value={Number(k?.perf_score   ?? 0)}     color="indigo"  />
-              <KpiCard icon={<Bug size={18} />}             label="Jobs en échec"       value={Number(k?.nb_bugs      ?? 0)}     color="rose"    />
+              <KpiCard icon="📋"                            label="Tâches assignées"  value={Number(k?.nb_assigned  ?? 0)}     color="indigo"  />
+              <KpiCard icon={<CheckSquare size={18} />}     label="Tâches terminées"  value={Number(k?.nb_done      ?? 0)}     color="emerald" />
+              <KpiCard icon={<Clock size={18} />}           label="Livraison à temps" value={Number(k?.on_time_pct  ?? 0)} unit="%" color="cyan" />
+              <KpiCard icon={<Activity size={18} />}        label="Charge de travail" value={Number(k?.load_pct     ?? 0)} unit="%" color="violet" />
+              <KpiCard icon={<BarChart2 size={18} />}       label="Score performance" value={Number(k?.perf_score   ?? 0)}     color="indigo"  />
+              <KpiCard icon={<Bug size={18} />}             label="Jobs en échec"     value={Number(k?.nb_bugs      ?? 0)}     color="rose"    />
             </div>
           )}
 
@@ -148,12 +159,12 @@ export default function Personnel() {
                 data={tasksData.length > 0 ? tasksData : [{ name: 'Aucune donnée', value: 1 }]}
               />
               <MultiLine
-                title="Tendance performance (6 mois)"
+                title="Tendance performance"
                 data={trendData}
                 xKey="label"
                 series={[
-                  { key: 'on_time_pct',  label: 'On-Time %',     color: '#6366f1' },
-                  { key: 'tickets_done', label: 'Tickets livrés', color: '#10b981' },
+                  { key: 'on_time_pct',  label: 'On-Time %',      color: '#6366f1' },
+                  { key: 'tickets_done', label: 'Tickets livrés',  color: '#10b981' },
                 ]}
               />
               <VBar

@@ -1,8 +1,9 @@
-import { useState } from 'react'
+import { useState, useCallback } from 'react'
 import { TrendingUp, Calendar, Shield, DollarSign, AlertCircle, Loader2 } from 'lucide-react'
 import KpiCard from '../components/KpiCard'
 import HBar from '../components/charts/HBar'
 import VBar from '../components/charts/VBar'
+import PeriodSelector, { Period } from '../components/PeriodSelector'
 import { useFetch } from '../hooks/useFetch'
 import { getProjects, getProjectKpis, getProjectBugs, getProjectBudget } from '../api/client'
 
@@ -38,10 +39,15 @@ function ProgressBar({ pct }: { pct: number }) {
 export default function Projects() {
   const { data: projects, loading: projLoading } = useFetch<Project[]>(getProjects)
   const [selected, setSelected] = useState<string | null>(null)
+  const [period, setPeriod] = useState<Period | null>(null)
+  const onPeriodChange = useCallback((p: Period) => setPeriod(p), [])
 
-  const kpis   = useFetch(() => selected ? getProjectKpis(selected) : Promise.resolve(null), [selected])
-  const bugs   = useFetch(() => selected ? getProjectBugs(selected) : Promise.resolve([]),   [selected])
-  const budget = useFetch(() => selected ? getProjectBudget(selected) : Promise.resolve([]), [selected])
+  const df = period?.dateFrom
+  const dt = period?.dateTo
+
+  const kpis   = useFetch(() => selected ? getProjectKpis(selected, df, dt) : Promise.resolve(null), [selected, df, dt])
+  const bugs   = useFetch(() => selected ? getProjectBugs(selected)          : Promise.resolve([]),   [selected])
+  const budget = useFetch(() => selected ? getProjectBudget(selected)        : Promise.resolve([]),   [selected])
 
   const k = kpis.data as Record<string, unknown> | null
 
@@ -60,6 +66,11 @@ export default function Projects() {
       <div>
         <h1 className="text-2xl font-bold text-white">Portefeuille Projets</h1>
         <p className="text-slate-400 text-sm mt-0.5">Vue d'ensemble et analyse détaillée</p>
+      </div>
+
+      {/* Period Selector */}
+      <div className="card py-3 px-4">
+        <PeriodSelector onChange={onPeriodChange} />
       </div>
 
       {/* Portfolio Table */}
@@ -125,11 +136,11 @@ export default function Projects() {
             </div>
           ) : (
             <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
-              <KpiCard icon={<TrendingUp size={18} />}  label="Progression"         value={Number(k?.progress_pct ?? 0).toFixed(0)} unit="%"  color="indigo"  />
-              <KpiCard icon={<Calendar size={18} />}    label="Deadline"            value={String(k?.deadline ?? '—')}              color="cyan"    />
-              <KpiCard icon={<Shield size={18} />}      label="Risque"              value={Number(k?.risk_score ?? 0).toFixed(0)}              color={Number(k?.risk_score) >= 70 ? 'rose' : 'amber'} />
-              <KpiCard icon={<DollarSign size={18} />}  label="Variance budget"     value={Number(k?.budget_variance_pct ?? 0).toFixed(1)} unit="%" color="emerald" />
-              <KpiCard icon={<AlertCircle size={18} />} label="Jobs en échec"       value={Number(k?.critical_incidents ?? 0)}              color="rose"    />
+              <KpiCard icon={<TrendingUp size={18} />}  label="Progression"     value={Number(k?.progress_pct ?? 0).toFixed(0)} unit="%"  color="indigo"  />
+              <KpiCard icon={<Calendar size={18} />}    label="Deadline"        value={String(k?.deadline ?? '—')}              color="cyan"    />
+              <KpiCard icon={<Shield size={18} />}      label="Risque"          value={Number(k?.risk_score ?? 0).toFixed(0)}              color={Number(k?.risk_score) >= 70 ? 'rose' : 'amber'} />
+              <KpiCard icon={<DollarSign size={18} />}  label="Variance budget" value={Number(k?.budget_variance_pct ?? 0).toFixed(1)} unit="%" color="emerald" />
+              <KpiCard icon={<AlertCircle size={18} />} label="Jobs en échec"   value={Number(k?.critical_incidents ?? 0)}              color="rose"    />
             </div>
           )}
 

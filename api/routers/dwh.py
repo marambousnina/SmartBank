@@ -10,7 +10,8 @@ Routes FastAPI pour les 4 vues React :
 
 import sys
 from pathlib import Path
-from fastapi import APIRouter, HTTPException
+from typing import Optional
+from fastapi import APIRouter, HTTPException, Query
 
 ROOT_DIR = Path(__file__).resolve().parent.parent.parent
 sys.path.insert(0, str(ROOT_DIR))
@@ -41,33 +42,76 @@ def q(sql: str, params: dict = None) -> list[dict]:
         return rows
 
 
+def _dp(date_from: Optional[str], date_to: Optional[str]) -> dict:
+    """Returns params dict for date range queries."""
+    return {"date_from": date_from, "date_to": date_to} if date_from and date_to else {}
+
+
+# ════════════════════════════════════════════════════════════════════════════
+# DATE RANGE
+# ════════════════════════════════════════════════════════════════════════════
+
+@router.get("/date-range")
+def date_range():
+    rows = q("""
+        SELECT
+            MIN(full_date)::text                           AS min_date,
+            LEAST(MAX(full_date), CURRENT_DATE)::text     AS max_date
+        FROM dwh.dim_date
+    """)
+    r = rows[0] if rows else {}
+    return {"min_date": r.get("min_date", "2023-01-01"), "max_date": r.get("max_date", "2025-12-31")}
+
+
 # ════════════════════════════════════════════════════════════════════════════
 # DASHBOARD GLOBAL
 # ════════════════════════════════════════════════════════════════════════════
 
 @router.get("/dashboard/kpis")
-def dashboard_kpis():
+def dashboard_kpis(
+    date_from: Optional[str] = Query(None),
+    date_to:   Optional[str] = Query(None),
+):
     projects_count = q("SELECT COUNT(*) as n FROM dwh.dim_project")[0]["n"]
 
-    dora = q("""
-        SELECT
-            COALESCE(deploy_freq_per_week, 0)         AS deploy_freq,
-            COALESCE(lead_time_global_hours, 0) / 24  AS lead_time_days,
-            COALESCE(cfr_pct, 0)                      AS cfr_pct,
-            COALESCE(mttr_global_hours, 0)             AS mttr_hours
-        FROM dwh.fact_dora_snapshot
-        ORDER BY date_key DESC NULLS LAST, loaded_at DESC
-        LIMIT 1
-    """)
-    dr = dora[0] if dora else {}
+    if date_from and date_to:
+        dora = q("""
+            SELECT
+                COALESCE(AVG(fds.deploy_freq_per_week), 0)         AS deploy_freq,
+                COALESCE(AVG(fds.lead_time_global_hours), 0) / 24  AS lead_time_days,
+                COALESCE(AVG(fds.cfr_pct), 0)                      AS cfr_pct,
+                COALESCE(AVG(fds.mttr_global_hours), 0)            AS mttr_hours
+            FROM dwh.fact_dora_snapshot fds
+            JOIN dwh.dim_date dd ON fds.date_key = dd.date_key
+            WHERE dd.full_date BETWEEN :date_from AND :date_to
+        """, _dp(date_from, date_to))
+        perf = q("""
+            SELECT
+                ROUND(AVG(performance_score)::numeric, 1) AS avg_perf,
+                ROUND(AVG(on_time_rate)::numeric, 1)      AS on_time_pct
+            FROM dwh.fact_team_performance
+            WHERE snapshot_date BETWEEN :date_from AND :date_to
+        """, _dp(date_from, date_to))
+    else:
+        dora = q("""
+            SELECT
+                COALESCE(deploy_freq_per_week, 0)         AS deploy_freq,
+                COALESCE(lead_time_global_hours, 0) / 24  AS lead_time_days,
+                COALESCE(cfr_pct, 0)                      AS cfr_pct,
+                COALESCE(mttr_global_hours, 0)            AS mttr_hours
+            FROM dwh.fact_dora_snapshot
+            ORDER BY date_key DESC NULLS LAST, loaded_at DESC
+            LIMIT 1
+        """)
+        perf = q("""
+            SELECT
+                ROUND(AVG(performance_score)::numeric, 1) AS avg_perf,
+                ROUND(AVG(on_time_rate)::numeric, 1)      AS on_time_pct
+            FROM dwh.fact_team_performance
+            WHERE snapshot_date = (SELECT MAX(snapshot_date) FROM dwh.fact_team_performance)
+        """)
 
-    perf = q("""
-        SELECT
-            ROUND(AVG(performance_score)::numeric, 1)  AS avg_perf,
-            ROUND(AVG(on_time_rate)::numeric, 1)       AS on_time_pct
-        FROM dwh.fact_team_performance
-        WHERE snapshot_date = (SELECT MAX(snapshot_date) FROM dwh.fact_team_performance)
-    """)
+    dr = dora[0] if dora else {}
     pr = perf[0] if perf else {}
 
     jobs_failed = q("SELECT COUNT(*) AS n FROM cleaned.jobs WHERE status = 'failed'")
@@ -108,47 +152,94 @@ def chart_project_status():
 
 
 @router.get("/dashboard/charts/tickets-trend")
-def chart_tickets_trend():
-    rows = q("""
-        SELECT
-            dc.month_year,
-            dc.year,
-            dc.month,
-            COUNT(ft.ticket_fact_key)                                         AS created,
-            COUNT(CASE WHEN ft.lead_time_is_final = 1 THEN 1 END)            AS resolved
-        FROM dwh.dim_date dc
-        JOIN dwh.fact_tickets ft ON ft.date_key_created = dc.date_key
-        WHERE dc.full_date >= CURRENT_DATE - INTERVAL '6 months'
-        GROUP BY dc.month_year, dc.year, dc.month
-        ORDER BY dc.year, dc.month
-    """)
+def chart_tickets_trend(
+    date_from: Optional[str] = Query(None),
+    date_to:   Optional[str] = Query(None),
+):
+    if date_from and date_to:
+        rows = q("""
+            SELECT
+                dc.month_year,
+                dc.year,
+                dc.month,
+                COUNT(ft.ticket_fact_key)                               AS created,
+                COUNT(CASE WHEN ft.lead_time_is_final = 1 THEN 1 END)  AS resolved
+            FROM dwh.dim_date dc
+            JOIN dwh.fact_tickets ft ON ft.date_key_created = dc.date_key
+            WHERE dc.full_date BETWEEN :date_from AND :date_to
+            GROUP BY dc.month_year, dc.year, dc.month
+            ORDER BY dc.year, dc.month
+        """, _dp(date_from, date_to))
+    else:
+        rows = q("""
+            SELECT
+                dc.month_year,
+                dc.year,
+                dc.month,
+                COUNT(ft.ticket_fact_key)                               AS created,
+                COUNT(CASE WHEN ft.lead_time_is_final = 1 THEN 1 END)  AS resolved
+            FROM dwh.dim_date dc
+            JOIN dwh.fact_tickets ft ON ft.date_key_created = dc.date_key
+            WHERE dc.full_date >= CURRENT_DATE - INTERVAL '6 months'
+            GROUP BY dc.month_year, dc.year, dc.month
+            ORDER BY dc.year, dc.month
+        """)
     return rows
 
 
 @router.get("/dashboard/charts/dora-metrics")
-def chart_dora_metrics():
-    rows = q("""
-        SELECT
-            week_label,
-            ROUND(COALESCE(deploy_freq_per_week, 0)::numeric, 2)            AS deploy_freq,
-            ROUND(COALESCE(lead_time_global_hours, 0)::numeric / 24, 1)     AS lead_time_days,
-            ROUND(COALESCE(cfr_pct, 0)::numeric, 1)                         AS cfr_pct,
-            ROUND(COALESCE(mttr_global_hours, 0)::numeric, 1)               AS mttr_hours
-        FROM dwh.fact_dora_snapshot
-        WHERE snapshot_date >= CURRENT_DATE - INTERVAL '6 months'
-        ORDER BY date_key
-        LIMIT 26
-    """)
+def chart_dora_metrics(
+    date_from: Optional[str] = Query(None),
+    date_to:   Optional[str] = Query(None),
+):
+    if date_from and date_to:
+        rows = q("""
+            SELECT
+                fds.week_label,
+                ROUND(COALESCE(fds.deploy_freq_per_week, 0)::numeric, 2)        AS deploy_freq,
+                ROUND(COALESCE(fds.lead_time_global_hours, 0)::numeric / 24, 1) AS lead_time_days,
+                ROUND(COALESCE(fds.cfr_pct, 0)::numeric, 1)                     AS cfr_pct,
+                ROUND(COALESCE(fds.mttr_global_hours, 0)::numeric, 1)           AS mttr_hours
+            FROM dwh.fact_dora_snapshot fds
+            JOIN dwh.dim_date dd ON fds.date_key = dd.date_key
+            WHERE dd.full_date BETWEEN :date_from AND :date_to
+            ORDER BY fds.date_key
+        """, _dp(date_from, date_to))
+    else:
+        rows = q("""
+            SELECT
+                fds.week_label,
+                ROUND(COALESCE(fds.deploy_freq_per_week, 0)::numeric, 2)        AS deploy_freq,
+                ROUND(COALESCE(fds.lead_time_global_hours, 0)::numeric / 24, 1) AS lead_time_days,
+                ROUND(COALESCE(fds.cfr_pct, 0)::numeric, 1)                     AS cfr_pct,
+                ROUND(COALESCE(fds.mttr_global_hours, 0)::numeric, 1)           AS mttr_hours
+            FROM dwh.fact_dora_snapshot fds
+            JOIN dwh.dim_date dd ON fds.date_key = dd.date_key
+            WHERE dd.full_date >= CURRENT_DATE - INTERVAL '6 months'
+              AND dd.full_date <= CURRENT_DATE
+            ORDER BY fds.date_key
+            LIMIT 26
+        """)
     return rows
 
 
 @router.get("/dashboard/charts/on-time-gauge")
-def chart_on_time():
-    rows = q("""
-        SELECT ROUND(AVG(on_time_rate)::numeric, 1) AS pct
-        FROM dwh.fact_team_performance
-        WHERE snapshot_date = (SELECT MAX(snapshot_date) FROM dwh.fact_team_performance)
-    """)
+def chart_on_time(
+    date_from: Optional[str] = Query(None),
+    date_to:   Optional[str] = Query(None),
+):
+    if date_from and date_to:
+        rows = q("""
+            SELECT ROUND(AVG(on_time_rate)::numeric, 1) AS pct
+            FROM dwh.fact_team_performance
+            WHERE snapshot_date BETWEEN :date_from AND :date_to
+        """, _dp(date_from, date_to))
+    else:
+        rows = q("""
+            SELECT ROUND(AVG(on_time_rate)::numeric, 1) AS pct
+            FROM dwh.fact_team_performance
+            WHERE snapshot_date = (SELECT MAX(snapshot_date) FROM dwh.fact_team_performance)
+        """)
     return {"value": float(rows[0]["pct"] or 0) if rows else 0}
 
 
@@ -221,29 +312,38 @@ def list_teams():
 
 
 @router.get("/teams/{team}/kpis")
-def team_kpis(team: str):
-    rows = q("""
+def team_kpis(
+    team: str,
+    date_from: Optional[str] = Query(None),
+    date_to:   Optional[str] = Query(None),
+):
+    date_clause = "AND ftp.snapshot_date BETWEEN :date_from AND :date_to" if date_from and date_to else \
+                  "AND ftp.snapshot_date = (SELECT MAX(snapshot_date) FROM dwh.fact_team_performance)"
+
+    params = {"team": team, **({"date_from": date_from, "date_to": date_to} if date_from and date_to else {})}
+
+    rows = q(f"""
         SELECT
-            COUNT(DISTINCT ftp.assignee_key)                                 AS nb_members,
-            ROUND(AVG(ftp.performance_score)::numeric, 1)                   AS avg_perf,
-            ROUND(AVG(ftp.on_time_rate)::numeric, 1)                  AS on_time_pct,
-            ROUND(AVG(ftp.avg_lead_time_hours)::numeric / 24, 1)            AS lead_time_days,
-            ROUND(AVG(ftp.completion_rate)::numeric, 1)                     AS completion_rate,
-            COALESCE(SUM(ftp.nb_tickets_assigned), 0)                       AS total_tickets,
-            COALESCE(SUM(ftp.nb_bugs_assigned), 0)                          AS total_bugs,
-            COALESCE(SUM(ftp.nb_delayed), 0)                                AS total_delayed
+            COUNT(DISTINCT ftp.assignee_key)                         AS nb_members,
+            ROUND(AVG(ftp.performance_score)::numeric, 1)           AS avg_perf,
+            ROUND(AVG(ftp.on_time_rate)::numeric, 1)                AS on_time_pct,
+            ROUND(AVG(ftp.avg_lead_time_hours)::numeric / 24, 1)    AS lead_time_days,
+            ROUND(AVG(ftp.completion_rate)::numeric, 1)             AS completion_rate,
+            COALESCE(SUM(ftp.nb_tickets_assigned), 0)               AS total_tickets,
+            COALESCE(SUM(ftp.nb_bugs_assigned), 0)                  AS total_bugs,
+            COALESCE(SUM(ftp.nb_delayed), 0)                        AS total_delayed
         FROM dwh.fact_team_performance ftp
         JOIN dwh.dim_assignee da ON ftp.assignee_key = da.assignee_key
         WHERE da.team = :team
-          AND ftp.snapshot_date = (SELECT MAX(snapshot_date) FROM dwh.fact_team_performance)
-    """, {"team": team})
+          {date_clause}
+    """, params)
 
     if not rows or rows[0]["nb_members"] == 0:
-        rows = q("""
+        rows = q(f"""
             SELECT
                 COUNT(DISTINCT ftp.assignee_key)                     AS nb_members,
                 ROUND(AVG(ftp.performance_score)::numeric, 1)       AS avg_perf,
-                ROUND(AVG(ftp.on_time_rate)::numeric, 1)      AS on_time_pct,
+                ROUND(AVG(ftp.on_time_rate)::numeric, 1)            AS on_time_pct,
                 ROUND(AVG(ftp.avg_lead_time_hours)::numeric/24, 1)  AS lead_time_days,
                 ROUND(AVG(ftp.completion_rate)::numeric, 1)         AS completion_rate,
                 COALESCE(SUM(ftp.nb_tickets_assigned), 0)           AS total_tickets,
@@ -257,7 +357,6 @@ def team_kpis(team: str):
     dora = q("SELECT deploy_freq_per_week, cfr_pct, mttr_global_hours FROM dwh.fact_dora_snapshot ORDER BY date_key DESC NULLS LAST LIMIT 1")
     dr = dora[0] if dora else {}
 
-    # Jobs en échec (toutes équipes confondues — pas de lien job→équipe)
     jobs_failed = q("SELECT COUNT(*) AS n FROM cleaned.jobs WHERE status = 'failed'")
     nb_failed = int((jobs_failed[0]["n"] if jobs_failed else 0))
 
@@ -275,24 +374,32 @@ def team_kpis(team: str):
 
 
 @router.get("/teams/{team}/charts/radar")
-def team_radar(team: str):
-    rows = q("""
+def team_radar(
+    team: str,
+    date_from: Optional[str] = Query(None),
+    date_to:   Optional[str] = Query(None),
+):
+    date_clause = "AND ftp.snapshot_date BETWEEN :date_from AND :date_to" if date_from and date_to else ""
+    params = {"team": team, **({"date_from": date_from, "date_to": date_to} if date_from and date_to else {})}
+
+    rows = q(f"""
         SELECT
             ROUND(AVG(ftp.on_time_rate)::numeric, 1)      AS on_time,
-            ROUND(AVG(ftp.completion_rate)::numeric, 1)         AS completion,
-            ROUND(AVG(ftp.performance_score)::numeric, 1)       AS perf_score,
-            ROUND(AVG(ftp.avg_lead_time_hours)::numeric, 1)     AS avg_lead_h
+            ROUND(AVG(ftp.completion_rate)::numeric, 1)   AS completion,
+            ROUND(AVG(ftp.performance_score)::numeric, 1) AS perf_score,
+            ROUND(AVG(ftp.avg_lead_time_hours)::numeric, 1) AS avg_lead_h
         FROM dwh.fact_team_performance ftp
         JOIN dwh.dim_assignee da ON ftp.assignee_key = da.assignee_key
         WHERE da.team = :team
-    """, {"team": team})
+          {date_clause}
+    """, params)
 
     if not rows or rows[0]["on_time"] is None:
         rows = q("""
             SELECT
-                ROUND(AVG(ftp.on_time_rate)::numeric, 1)  AS on_time,
-                ROUND(AVG(ftp.completion_rate)::numeric, 1)     AS completion,
-                ROUND(AVG(ftp.performance_score)::numeric, 1)   AS perf_score,
+                ROUND(AVG(ftp.on_time_rate)::numeric, 1)    AS on_time,
+                ROUND(AVG(ftp.completion_rate)::numeric, 1) AS completion,
+                ROUND(AVG(ftp.performance_score)::numeric, 1) AS perf_score,
                 ROUND(AVG(ftp.avg_lead_time_hours)::numeric, 1) AS avg_lead_h
             FROM dwh.fact_team_performance ftp
         """)
@@ -303,37 +410,45 @@ def team_radar(team: str):
     reliability = max(0, min(100, round(100 - float(r.get("perf_score") or 50) * 0.3, 1)))
 
     return [
-        {"axis": "Livraison temps",   "value": float(r.get("on_time")    or 70)},
-        {"axis": "Velocite",          "value": float(r.get("completion") or 60)},
-        {"axis": "Performance",       "value": float(r.get("perf_score") or 65)},
-        {"axis": "Fiabilite deploy",  "value": reliability},
-        {"axis": "Lead Time",         "value": lead_score},
+        {"axis": "Livraison temps",  "value": float(r.get("on_time")    or 70)},
+        {"axis": "Velocite",         "value": float(r.get("completion") or 60)},
+        {"axis": "Performance",      "value": float(r.get("perf_score") or 65)},
+        {"axis": "Fiabilite deploy", "value": reliability},
+        {"axis": "Lead Time",        "value": lead_score},
     ]
 
 
 @router.get("/teams/{team}/charts/member-load")
-def team_member_load(team: str):
-    rows = q("""
+def team_member_load(
+    team: str,
+    date_from: Optional[str] = Query(None),
+    date_to:   Optional[str] = Query(None),
+):
+    date_clause = "AND ftp.snapshot_date BETWEEN :date_from AND :date_to" if date_from and date_to else ""
+    params = {"team": team, **({"date_from": date_from, "date_to": date_to} if date_from and date_to else {})}
+
+    rows = q(f"""
         SELECT
-            da.assignee_name                                     AS member,
-            ROUND(AVG(ftp.completion_rate)::numeric, 1)        AS load_pct,
-            COALESCE(SUM(ftp.nb_tickets_assigned), 0)          AS tickets,
-            ROUND(AVG(ftp.performance_score)::numeric, 1)      AS score
+            da.assignee_name                                   AS member,
+            ROUND(AVG(ftp.completion_rate)::numeric, 1)      AS load_pct,
+            COALESCE(SUM(ftp.nb_tickets_assigned), 0)        AS tickets,
+            ROUND(AVG(ftp.performance_score)::numeric, 1)    AS score
         FROM dwh.fact_team_performance ftp
         JOIN dwh.dim_assignee da ON ftp.assignee_key = da.assignee_key
         WHERE da.team = :team
+          {date_clause}
         GROUP BY da.assignee_name
         ORDER BY load_pct DESC
         LIMIT 15
-    """, {"team": team})
+    """, params)
 
     if not rows:
         rows = q("""
             SELECT
-                da.assignee_name                                 AS member,
-                ROUND(AVG(ftp.completion_rate)::numeric, 1)    AS load_pct,
-                COALESCE(SUM(ftp.nb_tickets_assigned), 0)      AS tickets,
-                ROUND(AVG(ftp.performance_score)::numeric, 1)  AS score
+                da.assignee_name                               AS member,
+                ROUND(AVG(ftp.completion_rate)::numeric, 1)  AS load_pct,
+                COALESCE(SUM(ftp.nb_tickets_assigned), 0)    AS tickets,
+                ROUND(AVG(ftp.performance_score)::numeric, 1) AS score
             FROM dwh.fact_team_performance ftp
             JOIN dwh.dim_assignee da ON ftp.assignee_key = da.assignee_key
             GROUP BY da.assignee_name
@@ -344,28 +459,37 @@ def team_member_load(team: str):
 
 
 @router.get("/teams/{team}/charts/velocity")
-def team_velocity(team: str):
-    rows = q("""
+def team_velocity(
+    team: str,
+    date_from: Optional[str] = Query(None),
+    date_to:   Optional[str] = Query(None),
+):
+    date_clause = "AND dd.full_date BETWEEN :date_from AND :date_to" if date_from and date_to else ""
+    params = {"team": team, **({"date_from": date_from, "date_to": date_to} if date_from and date_to else {})}
+
+    rows = q(f"""
         SELECT
             ds.sprint_name,
             COUNT(ft.ticket_fact_key)                AS actual,
             CEIL(COUNT(ft.ticket_fact_key) * 1.15)  AS target
         FROM dwh.fact_tickets ft
-        JOIN dwh.dim_sprint ds ON ft.sprint_key = ds.sprint_key
-        JOIN dwh.dim_assignee da ON ft.assignee_key = da.assignee_key
+        JOIN dwh.dim_sprint ds   ON ft.sprint_key    = ds.sprint_key
+        JOIN dwh.dim_assignee da ON ft.assignee_key  = da.assignee_key
+        JOIN dwh.dim_date dd     ON ft.date_key_created = dd.date_key
         WHERE da.team = :team
           AND ft.sprint_key IS NOT NULL
+          {date_clause}
         GROUP BY ds.sprint_key, ds.sprint_name
         ORDER BY ds.sprint_key
         LIMIT 8
-    """, {"team": team})
+    """, params)
 
     if not rows:
         rows = q("""
             SELECT
                 ds.sprint_name,
-                COUNT(ft.ticket_fact_key)                AS actual,
-                CEIL(COUNT(ft.ticket_fact_key) * 1.15)  AS target
+                COUNT(ft.ticket_fact_key)               AS actual,
+                CEIL(COUNT(ft.ticket_fact_key) * 1.15) AS target
             FROM dwh.fact_tickets ft
             JOIN dwh.dim_sprint ds ON ft.sprint_key = ds.sprint_key
             WHERE ft.sprint_key IS NOT NULL
@@ -443,8 +567,15 @@ def list_projects():
 
 
 @router.get("/projects/{project_code}/kpis")
-def project_kpis(project_code: str):
-    rows = q("""
+def project_kpis(
+    project_code: str,
+    date_from: Optional[str] = Query(None),
+    date_to:   Optional[str] = Query(None),
+):
+    date_clause = "AND dd.full_date BETWEEN :date_from AND :date_to" if date_from and date_to else ""
+    params = {"code": project_code.upper(), **({"date_from": date_from, "date_to": date_to} if date_from and date_to else {})}
+
+    rows = q(f"""
         SELECT
             COALESCE(dp.project_name, dp.project_code)               AS project_name,
             COUNT(ft.ticket_fact_key)                                 AS total_tickets,
@@ -460,18 +591,18 @@ def project_kpis(project_code: str):
         FROM dwh.dim_project dp
         LEFT JOIN dwh.fact_tickets ft ON dp.project_key = ft.project_key
         LEFT JOIN dwh.dim_status ds   ON ft.status_key  = ds.status_key
+        LEFT JOIN dwh.dim_date dd     ON ft.date_key_created = dd.date_key
         WHERE UPPER(dp.project_code) = :code
+          {date_clause}
         GROUP BY dp.project_key, dp.project_name, dp.project_code
-    """, {"code": project_code.upper()})
+    """, params)
 
     if not rows:
         raise HTTPException(status_code=404, detail=f"Project {project_code} not found")
 
     r = rows[0]
-    # Budget variance synthétique (pas de données budgétaires réelles)
     bv = round(((hash(project_code) % 21) - 10) / 10, 1)
 
-    # Jobs en échec liés à ce projet (via ref de pipeline contenant le code projet)
     failed_jobs = q("""
         SELECT COUNT(*) AS n FROM cleaned.jobs j
         JOIN cleaned.pipelines p ON j.pipeline_id = p.pipeline_id
@@ -480,7 +611,6 @@ def project_kpis(project_code: str):
     """, {"pattern": f"%{project_code.upper()}%"})
     nb_failed_jobs = int(failed_jobs[0]["n"] if failed_jobs else 0)
 
-    # Fallback : déploiements en échec dans fact_deployments
     if nb_failed_jobs == 0:
         dep_failed = q("SELECT COUNT(*) AS n FROM dwh.fact_deployments WHERE is_failed = true")
         nb_failed_jobs = int(dep_failed[0]["n"] if dep_failed else 0)
@@ -500,7 +630,6 @@ def project_kpis(project_code: str):
 
 @router.get("/projects/{project_code}/charts/bugs")
 def project_bugs(project_code: str):
-    """Jobs en échec liés au projet via fact_deployments.ref (branche contenant le code du projet)"""
     rows = q("""
         SELECT
             j.name   AS severity,
@@ -515,7 +644,6 @@ def project_bugs(project_code: str):
     """, {"pattern": f"%{project_code.upper()}%"})
 
     if not rows:
-        # Fallback : top jobs en échec globaux (aucune ref ne correspond)
         rows = q("""
             SELECT name AS severity, COUNT(*) AS count
             FROM cleaned.jobs
@@ -531,9 +659,9 @@ def project_bugs(project_code: str):
 def project_budget(project_code: str):
     rows = q("""
         SELECT
-            COUNT(ft.ticket_fact_key)                          AS ticket_count,
-            COALESCE(AVG(ft.lead_time_hours), 72)             AS avg_lead_h,
-            COALESCE(SUM(ft.nb_commits), 0)                   AS total_commits
+            COUNT(ft.ticket_fact_key)          AS ticket_count,
+            COALESCE(AVG(ft.lead_time_hours), 72) AS avg_lead_h,
+            COALESCE(SUM(ft.nb_commits), 0)    AS total_commits
         FROM dwh.fact_tickets ft
         JOIN dwh.dim_project dp ON ft.project_key = dp.project_key
         WHERE UPPER(dp.project_code) = :code
@@ -562,26 +690,30 @@ def project_budget(project_code: str):
 def list_personnel():
     return q("""
         SELECT
-            da.assignee_key                              AS id,
-            da.assignee_name                             AS name,
-            COALESCE(da.assignee_email, '')             AS email,
-            COALESCE(da.team, 'Non assigne')            AS team,
-            COALESCE(da.role, 'git+jira')               AS source,
-            COALESCE(da.departement, 'IT')              AS departement
+            da.assignee_key                      AS id,
+            da.assignee_name                     AS name,
+            COALESCE(da.assignee_email, '')     AS email,
+            COALESCE(da.team, 'Non assigne')    AS team,
+            COALESCE(da.role, 'git+jira')       AS source,
+            COALESCE(da.departement, 'IT')      AS departement
         FROM dwh.dim_assignee da
         ORDER BY da.assignee_name
     """)
 
 
 @router.get("/personnel/{assignee_key}/kpis")
-def person_kpis(assignee_key: int):
+def person_kpis(
+    assignee_key: int,
+    date_from: Optional[str] = Query(None),
+    date_to:   Optional[str] = Query(None),
+):
     person = q("""
         SELECT
-            da.assignee_name                             AS name,
-            COALESCE(da.team, 'Non assigne')            AS team,
-            COALESCE(da.role, 'Developpeur')            AS source,
-            COALESCE(da.departement, 'IT')              AS departement,
-            COALESCE(da.assignee_email, '')             AS email
+            da.assignee_name                     AS name,
+            COALESCE(da.team, 'Non assigne')    AS team,
+            COALESCE(da.role, 'Developpeur')    AS source,
+            COALESCE(da.departement, 'IT')      AS departement,
+            COALESCE(da.assignee_email, '')     AS email
         FROM dwh.dim_assignee da
         WHERE da.assignee_key = :key
     """, {"key": assignee_key})
@@ -589,17 +721,21 @@ def person_kpis(assignee_key: int):
     if not person:
         raise HTTPException(status_code=404, detail="Personnel not found")
 
-    metrics = q("""
+    date_clause = "AND snapshot_date BETWEEN :date_from AND :date_to" if date_from and date_to else ""
+    params = {"key": assignee_key, **({"date_from": date_from, "date_to": date_to} if date_from and date_to else {})}
+
+    metrics = q(f"""
         SELECT
-            COALESCE(SUM(ftp.nb_tickets_assigned), 0)           AS nb_assigned,
-            COALESCE(SUM(ftp.nb_tickets_done), 0)               AS nb_done,
+            COALESCE(SUM(ftp.nb_tickets_assigned), 0)     AS nb_assigned,
+            COALESCE(SUM(ftp.nb_tickets_done), 0)         AS nb_done,
             ROUND(AVG(ftp.on_time_rate)::numeric, 1)      AS on_time_pct,
-            ROUND(AVG(ftp.completion_rate)::numeric, 1)         AS load_pct,
-            ROUND(AVG(ftp.performance_score)::numeric, 1)       AS perf_score,
-            COALESCE(SUM(ftp.nb_bugs_assigned), 0)              AS nb_bugs
+            ROUND(AVG(ftp.completion_rate)::numeric, 1)   AS load_pct,
+            ROUND(AVG(ftp.performance_score)::numeric, 1) AS perf_score,
+            COALESCE(SUM(ftp.nb_bugs_assigned), 0)        AS nb_bugs
         FROM dwh.fact_team_performance ftp
         WHERE ftp.assignee_key = :key
-    """, {"key": assignee_key})
+          {date_clause}
+    """, params)
 
     m = metrics[0] if metrics else {}
     p = person[0]
@@ -634,55 +770,84 @@ def person_tasks(assignee_key: int):
 
 
 @router.get("/personnel/{assignee_key}/charts/trend")
-def person_trend(assignee_key: int):
-    rows = q("""
-        SELECT
-            dd.month_year,
-            dd.year,
-            dd.month,
-            COUNT(ft.ticket_fact_key)                                    AS tickets_done,
-            ROUND(AVG(CASE WHEN ft.is_delayed = 0 THEN 100.0 ELSE 0 END), 1) AS on_time_pct
-        FROM dwh.fact_tickets ft
-        JOIN dwh.dim_date dd ON ft.date_key_resolved = dd.date_key
-        WHERE ft.assignee_key = :key
-          AND dd.full_date >= CURRENT_DATE - INTERVAL '6 months'
-        GROUP BY dd.month_year, dd.year, dd.month
-        ORDER BY dd.year, dd.month
-    """, {"key": assignee_key})
+def person_trend(
+    assignee_key: int,
+    date_from: Optional[str] = Query(None),
+    date_to:   Optional[str] = Query(None),
+):
+    if date_from and date_to:
+        rows = q("""
+            SELECT
+                dd.month_year,
+                dd.year,
+                dd.month,
+                COUNT(ft.ticket_fact_key)                                        AS tickets_done,
+                ROUND(AVG(CASE WHEN ft.is_delayed = 0 THEN 100.0 ELSE 0 END), 1) AS on_time_pct
+            FROM dwh.fact_tickets ft
+            JOIN dwh.dim_date dd ON ft.date_key_resolved = dd.date_key
+            WHERE ft.assignee_key = :key
+              AND dd.full_date BETWEEN :date_from AND :date_to
+            GROUP BY dd.month_year, dd.year, dd.month
+            ORDER BY dd.year, dd.month
+        """, {"key": assignee_key, "date_from": date_from, "date_to": date_to})
+    else:
+        rows = q("""
+            SELECT
+                dd.month_year,
+                dd.year,
+                dd.month,
+                COUNT(ft.ticket_fact_key)                                        AS tickets_done,
+                ROUND(AVG(CASE WHEN ft.is_delayed = 0 THEN 100.0 ELSE 0 END), 1) AS on_time_pct
+            FROM dwh.fact_tickets ft
+            JOIN dwh.dim_date dd ON ft.date_key_resolved = dd.date_key
+            WHERE ft.assignee_key = :key
+              AND dd.full_date >= CURRENT_DATE - INTERVAL '6 months'
+            GROUP BY dd.month_year, dd.year, dd.month
+            ORDER BY dd.year, dd.month
+        """, {"key": assignee_key})
     return rows
 
 
 @router.get("/personnel/{assignee_key}/charts/comparison")
-def person_comparison(assignee_key: int):
+def person_comparison(
+    assignee_key: int,
+    date_from: Optional[str] = Query(None),
+    date_to:   Optional[str] = Query(None),
+):
     team_info = q("""
         SELECT COALESCE(da.team, '') AS team
         FROM dwh.dim_assignee da WHERE da.assignee_key = :key
     """, {"key": assignee_key})
 
     team = team_info[0]["team"] if team_info else ""
+    date_clause = "AND ftp.snapshot_date BETWEEN :date_from AND :date_to" if date_from and date_to else ""
+    date_params = {"date_from": date_from, "date_to": date_to} if date_from and date_to else {}
 
     if team:
-        rows = q("""
+        rows = q(f"""
             SELECT
-                da.assignee_name                                     AS name,
-                ROUND(AVG(ftp.performance_score)::numeric, 1)       AS score,
-                (da.assignee_key = :key)                            AS is_current
+                da.assignee_name                                   AS name,
+                ROUND(AVG(ftp.performance_score)::numeric, 1)     AS score,
+                (da.assignee_key = :key)                          AS is_current
             FROM dwh.fact_team_performance ftp
             JOIN dwh.dim_assignee da ON ftp.assignee_key = da.assignee_key
             WHERE da.team = :team
+              {date_clause}
             GROUP BY da.assignee_name, da.assignee_key
             ORDER BY score DESC
-        """, {"team": team, "key": assignee_key})
+        """, {"team": team, "key": assignee_key, **date_params})
     else:
-        rows = q("""
+        rows = q(f"""
             SELECT
-                da.assignee_name                                     AS name,
-                ROUND(AVG(ftp.performance_score)::numeric, 1)       AS score,
-                (da.assignee_key = :key)                            AS is_current
+                da.assignee_name                                   AS name,
+                ROUND(AVG(ftp.performance_score)::numeric, 1)     AS score,
+                (da.assignee_key = :key)                          AS is_current
             FROM dwh.fact_team_performance ftp
             JOIN dwh.dim_assignee da ON ftp.assignee_key = da.assignee_key
+            WHERE 1=1
+              {date_clause}
             GROUP BY da.assignee_name, da.assignee_key
             ORDER BY score DESC
             LIMIT 15
-        """, {"key": assignee_key})
+        """, {"key": assignee_key, **date_params})
     return rows
