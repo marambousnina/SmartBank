@@ -1,7 +1,7 @@
 ﻿metric,source,value,unit,dora_level
-Lead Time for Changes,jira+git,10322.48,heures,Low
+Lead Time for Changes,jira+git,10348.29,heures,Low
 Lead Time (git_only),git_only,104.82,heures,Low
-Lead Time (global),hybride,5679.28,heures,Low
+Lead Time (global),hybride,5693.36,heures,Low
 Deployment Frequency,git,16.86,/semaine,Elite
 Change Failure Rate,git,19.06,%,Low
 MTTR (jira+git),jira+git,0.0,heures,Elite

@@ -163,14 +163,13 @@ def populate_dim_assignee(engine):
     personnel = _load_personnel()
 
     if not personnel.empty:
-        # team = equipe, role = source (git/jira/git+jira), departement = colonne dédiée
-        df = personnel[["nom", "email", "equipe", "departement", "source"]].copy()
+        # team = equipe, role = source (git/jira/git+jira)
+        df = personnel[["nom", "email", "equipe", "source"]].copy()
         df = df.rename(columns={
-            "nom":         "assignee_name",
-            "email":       "assignee_email",
-            "equipe":      "team",
-            "source":      "role",
-            "departement": "departement",
+            "nom":    "assignee_name",
+            "email":  "assignee_email",
+            "equipe": "team",
+            "source": "role",
         })
     else:
         info("personnel.csv absent — repli sur features.tickets")

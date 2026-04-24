@@ -1,2 +1,2 @@
 ﻿deploy_freq_per_week,deploy_freq_level,lead_time_jira_hours,lead_time_git_hours,lead_time_global_hours,lead_time_level,cfr_pct,cfr_level,mttr_jira_hours,mttr_jobs_hours,mttr_global_hours,mttr_level,commits_jira_git,commits_git_only,total_deploys,total_pipelines,failed_pipelines,nb_bugs_jira,nb_failed_jobs,nb_success_jobs,avg_job_fail_min,avg_job_fix_min
-16.86,Elite,10322.48,104.82,5679.28,Low,19.06,Low,0,0.14,0.14,Elite,3180,3443,5115,10268,1957,0,6173,25798,3.84,4.45
+16.86,Elite,10348.29,104.82,5693.36,Low,19.06,Low,0,0.14,0.14,Elite,3180,3443,5115,10268,1957,0,6173,25798,3.84,4.45

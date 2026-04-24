@@ -24,6 +24,7 @@ sys.path.insert(0, str(ROOT_DIR))
 
 from database.db_connection import get_engine
 from api.routers.dwh import router as dwh_router
+from api.routers.predictions import router as predictions_router
 
 # ── App ───────────────────────────────────────────────────────────────────────
 app = FastAPI(
@@ -41,6 +42,7 @@ app.add_middleware(
 
 engine = get_engine()
 app.include_router(dwh_router)
+app.include_router(predictions_router)
 
 
 def run_query(sql: str, params: dict = None) -> list[dict]:

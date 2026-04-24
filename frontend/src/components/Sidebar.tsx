@@ -1,11 +1,12 @@
 import { NavLink } from 'react-router-dom'
-import { LayoutDashboard, Users, FolderKanban, UserCircle, BarChart3 } from 'lucide-react'
+import { LayoutDashboard, Users, FolderKanban, UserCircle, BarChart3, BrainCircuit } from 'lucide-react'
 
 const nav = [
-  { to: '/dashboard', label: 'Dashboard',  icon: LayoutDashboard },
-  { to: '/equipes',   label: 'Equipes',    icon: Users },
-  { to: '/projets',   label: 'Projets',    icon: FolderKanban },
-  { to: '/personne',  label: 'Personnel',  icon: UserCircle },
+  { to: '/dashboard',    label: 'Dashboard',    icon: LayoutDashboard },
+  { to: '/equipes',      label: 'Equipes',      icon: Users },
+  { to: '/projets',      label: 'Projets',      icon: FolderKanban },
+  { to: '/personne',     label: 'Personnel',    icon: UserCircle },
+  { to: '/predictions',  label: 'Prédictions',  icon: BrainCircuit },
 ]
 
 export default function Sidebar() {

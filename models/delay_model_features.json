@@ -1,0 +1,16 @@
+[
+  "nb_status_changes",
+  "time_blocked_hours",
+  "time_in_review_hours",
+  "time_in_qa_hours",
+  "time_correction_review_hours",
+  "time_correction_qa_hours",
+  "nb_commits",
+  "nb_mrs",
+  "was_blocked",
+  "is_bug",
+  "nb_tickets_total",
+  "nb_tickets_done",
+  "completion_rate",
+  "IssueType_enc"
+]
