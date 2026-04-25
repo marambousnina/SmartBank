@@ -239,8 +239,19 @@ ticket_window = current.select(
     F.coalesce(F.col("ResolutionDate"), F.current_timestamp()).alias("t_end")
 ).filter(F.col("tw_email").isNotNull() & (F.col("tw_email") != ""))
 
-commits_agg = commits \
-    .filter(F.col("date").isNotNull() & F.col("commit_email").isNotNull()) \
+# Jointure 1 : par TicketKey extrait du titre du commit (priorité)
+commits_by_key = commits \
+    .filter(F.col("TicketKey").isNotNull() & (F.col("TicketKey") != "")) \
+    .groupBy("TicketKey") \
+    .agg(F.count("sha").alias("nb_commits_key"))
+
+# Jointure 2 : par email + fenêtre temporelle (fallback pour commits sans TicketKey)
+commits_by_email = commits \
+    .filter(
+        F.col("date").isNotNull() &
+        F.col("commit_email").isNotNull() &
+        (F.col("TicketKey").isNull() | (F.col("TicketKey") == ""))
+    ) \
     .join(
         ticket_window,
         (F.col("commit_email") == F.col("tw_email")) &
@@ -249,8 +260,18 @@ commits_agg = commits \
         how="inner"
     ) \
     .groupBy("tw_TicketKey") \
-    .agg(F.count("sha").alias("nb_commits")) \
+    .agg(F.count("sha").alias("nb_commits_email")) \
     .withColumnRenamed("tw_TicketKey", "TicketKey")
+
+# Fusionner les deux sources et prendre le total
+commits_agg = commits_by_key \
+    .join(commits_by_email, on="TicketKey", how="full_outer") \
+    .withColumn(
+        "nb_commits",
+        F.coalesce(F.col("nb_commits_key"), F.lit(0)) +
+        F.coalesce(F.col("nb_commits_email"), F.lit(0))
+    ) \
+    .select("TicketKey", "nb_commits")
 
 mr_auth_col = "author_username" if "author_username" in mrs.columns else "author"
 

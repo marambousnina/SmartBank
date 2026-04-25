@@ -66,10 +66,26 @@ def _load_csv(filepath: Path, parse_dates: list = None) -> pd.DataFrame | None:
     return df
 
 
+def _get_table_columns(schema: str, table: str, engine) -> set:
+    """Retourne l'ensemble des colonnes réelles d'une table PostgreSQL."""
+    try:
+        with engine.connect() as conn:
+            result = conn.execute(text("""
+                SELECT column_name
+                FROM information_schema.columns
+                WHERE table_schema = :schema AND table_name = :table
+            """), {"schema": schema, "table": table})
+            return {row[0] for row in result.fetchall()}
+    except Exception:
+        return set()
+
+
 def _upsert(df: pd.DataFrame, schema: str, table: str, engine,
             conflict_cols: list = None, dry_run: bool = False) -> int:
     """
     Insère les données dans PostgreSQL.
+    - Filtre automatiquement les colonnes du DataFrame aux colonnes existantes
+      en base (évite les erreurs "column does not exist").
     - Si conflict_cols spécifié : INSERT ... ON CONFLICT DO NOTHING (idempotent)
     - Sinon : remplacement complet de la table
     """
@@ -84,11 +100,27 @@ def _upsert(df: pd.DataFrame, schema: str, table: str, engine,
         return len(df)
 
     # Nettoyage des noms de colonnes (lowercase, no spaces)
+    df = df.copy()
     df.columns = [c.lower().replace(" ", "_") for c in df.columns]
 
     # Ajout de la date de snapshot si la table la supporte
     if "snapshot_date" not in df.columns:
         df["snapshot_date"] = date.today()
+
+    # ── Filtrage : ne conserver que les colonnes qui existent en base ──────
+    db_cols = _get_table_columns(schema, table, engine)
+    if db_cols:
+        # Colonnes du DataFrame présentes en base (hors colonnes auto : id, loaded_at)
+        auto_cols = {"id", "loaded_at"}
+        valid_cols = [c for c in df.columns if c in db_cols and c not in auto_cols]
+        extra = [c for c in df.columns if c not in db_cols and c not in auto_cols]
+        if extra:
+            log.warning(f"  Colonnes ignorées (absentes de {full_table}) : {extra}")
+        df = df[valid_cols]
+
+    if df.empty or len(df.columns) == 0:
+        log.warning(f"  Aucune colonne valide pour {full_table} — insertion ignorée")
+        return 0
 
     try:
         df.to_sql(
@@ -363,6 +395,11 @@ def load_dora_metrics(engine, dry_run: bool = False) -> dict:
         # Renommage spécifique pour dora_by_project
         if table_name == "by_project":
             df.rename(columns={"projectkey": "project_key"}, inplace=True)
+            # Garder uniquement les colonnes du schéma
+            keep = ["project_key", "nb_tickets", "nb_deployed", "avg_lead_time_h",
+                    "median_lead_time_h", "nb_delayed", "delay_rate_pct", "data_source",
+                    "deploy_freq_per_week", "cfr_pct", "mttr_hours"]
+            df = df[[c for c in keep if c in df.columns]]
 
         # NE PAS truncate weekly (accumulation historique) - juste by_source et kpis
         if table_name not in ("weekly",):

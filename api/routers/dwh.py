@@ -12,6 +12,7 @@ import sys
 from pathlib import Path
 from typing import Optional
 from fastapi import APIRouter, HTTPException, Query
+from pydantic import BaseModel
 
 ROOT_DIR = Path(__file__).resolve().parent.parent.parent
 sys.path.insert(0, str(ROOT_DIR))
@@ -21,6 +22,26 @@ from sqlalchemy import text
 
 router = APIRouter(prefix="/api", tags=["Dashboard DWH"])
 _engine = get_engine()
+
+
+def _ensure_project_status_column():
+    """Ajoute la colonne status à dim_project si elle n'existe pas."""
+    try:
+        with _engine.connect() as conn:
+            conn.execute(text(
+                "ALTER TABLE dwh.dim_project "
+                "ADD COLUMN IF NOT EXISTS status VARCHAR(50) DEFAULT 'Actif'"
+            ))
+            conn.commit()
+    except Exception:
+        pass
+
+
+_ensure_project_status_column()
+
+
+class StatusUpdate(BaseModel):
+    status: str
 
 
 def q(sql: str, params: dict = None) -> list[dict]:
@@ -549,6 +570,7 @@ def list_projects():
             dp.project_code,
             COALESCE(dp.project_name, dp.project_code)           AS project_name,
             COALESCE(dp.domain, 'Autre')                         AS domain,
+            COALESCE(dp.status, 'Actif')                         AS status,
             COUNT(ft.ticket_fact_key)                            AS total_tickets,
             COUNT(CASE WHEN ds.status_category = 'Done' THEN 1 END)  AS done_tickets,
             COALESCE(ROUND(
@@ -556,12 +578,16 @@ def list_projects():
                 / NULLIF(COUNT(ft.ticket_fact_key), 0)
             ), 0)                                                 AS progress_pct,
             COALESCE(ROUND(AVG(ft.risk_score)::numeric, 0), 0)  AS risk_score,
-            COUNT(CASE WHEN ft.is_bug = 1 THEN 1 END)           AS nb_bugs,
+            COUNT(
+                CASE WHEN ft.is_bug = 1
+                          OR LOWER(COALESCE(ft.issue_type, '')) LIKE '%bug%'
+                     THEN 1 END
+            )                                                     AS nb_bugs,
             COUNT(CASE WHEN ft.is_delayed = 1 THEN 1 END)       AS nb_delayed
         FROM dwh.dim_project dp
         LEFT JOIN dwh.fact_tickets ft ON dp.project_key = ft.project_key
         LEFT JOIN dwh.dim_status ds   ON ft.status_key = ds.status_key
-        GROUP BY dp.project_key, dp.project_code, dp.project_name, dp.domain
+        GROUP BY dp.project_key, dp.project_code, dp.project_name, dp.domain, dp.status
         ORDER BY total_tickets DESC
     """)
 
@@ -585,9 +611,15 @@ def project_kpis(
                 / NULLIF(COUNT(ft.ticket_fact_key), 0)
             ), 0)                                                     AS progress_pct,
             COALESCE(ROUND(AVG(ft.risk_score)::numeric, 0), 0)      AS risk_score,
-            COUNT(CASE WHEN ft.is_bug = 1
-                       AND ft.priority IN ('Critical','Highest','High') THEN 1 END) AS critical_incidents,
-            COALESCE(ROUND(AVG(ft.lead_time_hours)::numeric / 24, 1), 0) AS avg_lead_days
+            COUNT(
+                CASE WHEN (ft.is_bug = 1 OR LOWER(COALESCE(ft.issue_type,'')) LIKE '%bug%')
+                          AND ft.priority IN ('Critical','Highest','High') THEN 1 END
+            )                                                         AS critical_incidents,
+            COALESCE(ROUND(AVG(ft.lead_time_hours)::numeric / 24, 1), 0) AS avg_lead_days,
+            COALESCE(SUM(ft.nb_commits), 0)                          AS nb_commits,
+            COALESCE(ROUND(
+                AVG(CASE WHEN ft.is_delayed = 0 THEN 100.0 ELSE 0 END)::numeric, 1
+            ), 0)                                                     AS on_time_rate
         FROM dwh.dim_project dp
         LEFT JOIN dwh.fact_tickets ft ON dp.project_key = ft.project_key
         LEFT JOIN dwh.dim_status ds   ON ft.status_key  = ds.status_key
@@ -625,6 +657,8 @@ def project_kpis(
         "total_tickets":      int(r.get("total_tickets") or 0),
         "done_tickets":       int(r.get("done_tickets") or 0),
         "avg_lead_days":      float(r.get("avg_lead_days") or 0),
+        "nb_commits":         int(r.get("nb_commits") or 0),
+        "on_time_rate":       float(r.get("on_time_rate") or 0),
     }
 
 
@@ -680,6 +714,108 @@ def project_budget(project_code: str):
         {"category": "Variance",        "value": abs(variance), "surplus": variance < 0},
         {"category": "Budget reel",     "value": actual},
     ]
+
+
+@router.get("/projects/{project_code}/dora")
+def project_dora(project_code: str):
+    """Métriques DORA depuis dora_metrics.by_project pour un projet donné."""
+    rows = q("""
+        SELECT
+            project_key,
+            data_source,
+            avg_lead_time_h,
+            median_lead_time_h,
+            nb_deployed,
+            deploy_freq_per_week,
+            cfr_pct,
+            mttr_hours,
+            nb_delayed,
+            delay_rate_pct
+        FROM dora_metrics.by_project
+        WHERE UPPER(project_key) = :code
+        LIMIT 1
+    """, {"code": project_code.upper()})
+
+    if not rows:
+        return {
+            "data_source": "N/A", "available": False,
+            "lead_time_h": None, "lead_time_days": None,
+            "deploy_freq_per_week": None, "cfr_pct": None,
+            "mttr_hours": None, "mttr_days": None,
+            "nb_deployed": 0, "delay_rate_pct": None,
+        }
+
+    r = rows[0]
+    lt_h   = float(r["avg_lead_time_h"]) if r["avg_lead_time_h"] is not None else None
+    mttr_h = float(r["mttr_hours"])       if r["mttr_hours"]      is not None else None
+
+    return {
+        "data_source":        r["data_source"],
+        "available":          any(r[c] is not None for c in ["deploy_freq_per_week", "cfr_pct", "mttr_hours"]),
+        "lead_time_h":        round(lt_h, 1)          if lt_h   is not None else None,
+        "lead_time_days":     round(lt_h / 24, 1)     if lt_h   is not None else None,
+        "deploy_freq_per_week": float(r["deploy_freq_per_week"]) if r["deploy_freq_per_week"] is not None else None,
+        "cfr_pct":            float(r["cfr_pct"])      if r["cfr_pct"]      is not None else None,
+        "mttr_hours":         round(mttr_h, 1)         if mttr_h is not None else None,
+        "mttr_days":          round(mttr_h / 24, 1)   if mttr_h is not None else None,
+        "nb_deployed":        int(r["nb_deployed"])    if r["nb_deployed"]  is not None else 0,
+        "delay_rate_pct":     float(r["delay_rate_pct"]) if r["delay_rate_pct"] is not None else None,
+    }
+
+
+@router.put("/projects/{project_code}/status")
+def update_project_status(project_code: str, body: StatusUpdate):
+    """Met à jour le statut d'un projet dans dim_project."""
+    allowed = {"Actif", "Terminé", "En pause", "En attente"}
+    if body.status not in allowed:
+        raise HTTPException(status_code=400, detail=f"Statut invalide. Valeurs acceptées : {allowed}")
+    rows = q("SELECT project_key FROM dwh.dim_project WHERE UPPER(project_code) = :code",
+             {"code": project_code.upper()})
+    if not rows:
+        raise HTTPException(status_code=404, detail=f"Projet {project_code} introuvable")
+    with _engine.connect() as conn:
+        conn.execute(
+            text("UPDATE dwh.dim_project SET status = :status WHERE UPPER(project_code) = :code"),
+            {"status": body.status, "code": project_code.upper()},
+        )
+        conn.commit()
+    return {"project_code": project_code.upper(), "status": body.status}
+
+
+@router.get("/projects/{project_code}/charts/trend")
+def project_trend(
+    project_code: str,
+    date_from: Optional[str] = Query(None),
+    date_to:   Optional[str] = Query(None),
+):
+    """Évolution mensuelle des tickets créés / résolus et du taux livraison."""
+    date_clause = "AND dd.full_date BETWEEN :date_from AND :date_to" if date_from and date_to else \
+                  "AND dd.full_date >= CURRENT_DATE - INTERVAL '12 months'"
+    params: dict = {"code": project_code.upper()}
+    if date_from and date_to:
+        params["date_from"] = date_from
+        params["date_to"]   = date_to
+
+    rows = q(f"""
+        SELECT
+            dd.month_year                                                AS month,
+            dd.year,
+            dd.month                                                     AS month_num,
+            COUNT(ft.ticket_fact_key)                                   AS created,
+            COUNT(CASE WHEN ft.lead_time_is_final = 1 THEN 1 END)      AS resolved,
+            ROUND(
+                COUNT(CASE WHEN ft.is_delayed = 0 AND ft.lead_time_is_final = 1 THEN 1 END) * 100.0
+                / NULLIF(COUNT(CASE WHEN ft.lead_time_is_final = 1 THEN 1 END), 0)
+            , 1)                                                         AS on_time_pct
+        FROM dwh.fact_tickets ft
+        JOIN dwh.dim_project dp ON ft.project_key = dp.project_key
+        JOIN dwh.dim_date dd    ON ft.date_key_created = dd.date_key
+        WHERE UPPER(dp.project_code) = :code
+          {date_clause}
+        GROUP BY dd.month_year, dd.year, dd.month
+        ORDER BY dd.year, dd.month
+    """, params)
+    return rows
 
 
 # ════════════════════════════════════════════════════════════════════════════

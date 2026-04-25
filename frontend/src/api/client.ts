@@ -32,6 +32,9 @@ export const getProjects         = () => api.get('/projects').then(r => r.data)
 export const getProjectKpis      = (code: string, df?: string, dt?: string) => api.get(`/projects/${code}/kpis`, dateParams(df, dt)).then(r => r.data)
 export const getProjectBugs      = (code: string) => api.get(`/projects/${code}/charts/bugs`).then(r => r.data)
 export const getProjectBudget    = (code: string) => api.get(`/projects/${code}/charts/budget`).then(r => r.data)
+export const getProjectTrend     = (code: string, df?: string, dt?: string) => api.get(`/projects/${code}/charts/trend`, dateParams(df, dt)).then(r => r.data)
+export const getProjectDora      = (code: string) => api.get(`/projects/${code}/dora`).then(r => r.data)
+export const updateProjectStatus = (code: string, status: string) => api.put(`/projects/${code}/status`, { status }).then(r => r.data)
 
 // ── Personnel ────────────────────────────────────────────────────────────
 export const getPersonnel        = () => api.get('/personnel').then(r => r.data)

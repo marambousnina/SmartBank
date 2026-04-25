@@ -456,7 +456,7 @@ weekly = pipelines.withColumn(
 weekly.toPandas().to_csv(METRICS + "dora_metrics_weekly_spark.csv", index=False, encoding="utf-8-sig")
 print(f"   ✅ dora_metrics_weekly_spark.csv")
 
-# Par projet — phase réelle basée sur la couverture Git
+# Par projet — métriques Jira + DORA depuis pipelines
 by_project = tickets.withColumn(
     "nb_commits", F.col("nb_commits").cast(DoubleType())
 ).groupBy("ProjectKey").agg(
@@ -466,31 +466,79 @@ by_project = tickets.withColumn(
     F.round(F.percentile_approx("lead_time_hours", 0.5), 2).alias("median_lead_time_h"),
     F.sum("is_delayed").alias("nb_delayed"),
     F.round(F.sum("is_delayed").cast(DoubleType()) / F.count("TicketKey") * 100, 1).alias("delay_rate_pct"),
-    F.sum(F.when(F.col("nb_commits") > 0, 1).otherwise(0)).alias("nb_tickets_with_git"),
     F.round(
         F.sum(F.when(F.col("nb_commits") > 0, 1).otherwise(0)).cast(DoubleType()) /
         F.count("TicketKey") * 100, 1
     ).alias("git_coverage_pct"),
 ).withColumn(
-    # Phase 1 : 0% Git  → jira_only
-    # Phase 2 : >0% Git → jira+git (partiel ou complet)
     "data_source",
     F.when(F.col("git_coverage_pct") == 0, "jira_only").otherwise("jira+git")
-).withColumn(
-    # Phase projet selon avancement Git
-    "project_phase",
-    F.when(F.col("git_coverage_pct") == 0,   "Phase 1 - Jira only")
-     .when(F.col("git_coverage_pct") < 50,   "Phase 2 - Transition")
-     .otherwise(                              "Phase 2 - Jira+Git")
-).withColumn(
-    # Métriques DORA disponibles selon la phase
-    "dora_available",
-    F.when(F.col("data_source") == "jira_only",
-           "Lead Time uniquement (pas de Git)")
-     .otherwise("Lead Time + Deployment Freq + CFR + MTTR")
 )
-by_project.toPandas().to_csv(METRICS + "dora_by_project_spark.csv", index=False, encoding="utf-8-sig")
-print(f"   ✅ dora_by_project_spark.csv")
+
+# ── Calcul Deploy Frequency, CFR et MTTR par projet depuis pipelines ──
+pipespd = pipelines.toPandas()
+# Convertir created_at en datetime si ce n'est pas déjà fait
+pipespd["created_at"] = pd.to_datetime(pipespd["created_at"], errors="coerce", utc=True)
+pipespd["is_production"] = pipespd["is_production"].astype(str).str.lower() == "true"
+
+proj_keys = [r["ProjectKey"] for r in by_project.select("ProjectKey").collect()]
+
+pipe_stats_rows = []
+for pk in proj_keys:
+    pf = pipespd[pipespd["ref"].str.upper().str.contains(pk.upper(), na=False)].copy()
+    if pf.empty or pf["created_at"].isna().all():
+        pipe_stats_rows.append({"ProjectKey": pk,
+                                 "deploy_freq_per_week": None,
+                                 "cfr_pct": None,
+                                 "mttr_hours": None})
+        continue
+
+    pf = pf.sort_values("created_at").reset_index(drop=True)
+    nb_total   = len(pf)
+    nb_deploys = int(pf["is_production"].sum())
+    nb_failed  = int((pf["status"] == "failed").sum())
+
+    # Deploy Frequency (déploiements par semaine)
+    span_weeks = max(
+        (pf["created_at"].max() - pf["created_at"].min()).total_seconds() / 604800.0,
+        1.0
+    )
+    deploy_freq = round(nb_deploys / span_weeks, 2)
+
+    # Change Failure Rate
+    cfr = round(nb_failed / nb_total * 100, 1) if nb_total > 0 else None
+
+    # MTTR : temps entre un pipeline failed et le prochain success
+    pf["next_status"]  = pf["status"].shift(-1)
+    pf["next_created"] = pf["created_at"].shift(-1)
+    recovery = pf[(pf["status"] == "failed") & (pf["next_status"] == "success")]
+    if not recovery.empty:
+        mttr = round(
+            ((recovery["next_created"] - recovery["created_at"])
+             .dt.total_seconds() / 3600.0).mean(), 2
+        )
+    else:
+        mttr = None
+
+    pipe_stats_rows.append({"ProjectKey": pk,
+                             "deploy_freq_per_week": deploy_freq,
+                             "cfr_pct": cfr,
+                             "mttr_hours": mttr})
+
+pipe_statspd = pd.DataFrame(pipe_stats_rows)
+
+# Fusionner avec by_project
+by_projectpd = by_project.toPandas()
+by_projectpd = by_projectpd.merge(pipe_statspd, on="ProjectKey", how="left")
+
+# Colonnes finales (ordre propre, sans colonnes intermédiaires)
+final_cols = ["ProjectKey", "nb_tickets", "nb_deployed", "avg_lead_time_h",
+              "median_lead_time_h", "nb_delayed", "delay_rate_pct",
+              "data_source", "deploy_freq_per_week", "cfr_pct", "mttr_hours"]
+by_projectpd = by_projectpd[[c for c in final_cols if c in by_projectpd.columns]]
+
+by_projectpd.to_csv(METRICS + "dora_by_project_spark.csv", index=False, encoding="utf-8-sig")
+print(f"   dora_by_project_spark.csv ({len(by_projectpd)} projets)")
 
 # Statistiques jobs (nouveau fichier)
 jobs_stats.toPandas().to_csv(METRICS + "jobs_stats_spark.csv", index=False, encoding="utf-8-sig")
