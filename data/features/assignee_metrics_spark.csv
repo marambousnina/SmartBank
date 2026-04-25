@@ -1,44 +1,44 @@
 ﻿person_id,nb_tickets_assigned,nb_tickets_deployed_person,avg_lead_time_person,on_time_rate,Assignee,nom,equipe,departement
-1.0,3,0,14926.77,100.0,Iyed Bakhouch,Iyed Bakhouch,Attijari Bank,Attijari Bank
-2.0,1,0,9070.77,0.0,BENSALEM.HOUSSEIN,BENSALEM.HOUSSEIN,Attijari Bank,Attijari Bank
-3.0,60,5,11449.6,100.0,Ahmed Chaouch,Ahmed Chaouch,Attijari Bank,Attijari Bank
+1.0,3,0,14940.92,100.0,Iyed Bakhouch,Iyed Bakhouch,Attijari Bank,Attijari Bank
+2.0,1,0,9084.92,0.0,BENSALEM.HOUSSEIN,BENSALEM.HOUSSEIN,Attijari Bank,Attijari Bank
+3.0,60,5,11460.68,100.0,Ahmed Chaouch,Ahmed Chaouch,Attijari Bank,Attijari Bank
 4.0,3,0,8195.06,0.0,BENYAHIA.FIRAS,BENYAHIA.FIRAS,Attijari Bank,Attijari Bank
-5.0,2,0,1894.77,100.0,Med Zoubeidi,Med Zoubeidi,Attijari Bank,Attijari Bank
-7.0,45,23,9469.2,17.8,AMMAR.MARIEM,AMMAR.MARIEM,Equipe Système,Equipe Système
-9.0,35,18,17830.33,2.9,Naim Ben Assila,Naim Ben Assila,Equipe Reseaux&Telephonie,Equipe Reseaux&Telephonie
-10.0,22,8,16397.14,13.6,Rania Aroua,Rania Aroua,Team DATA Intelligence,DATA OFFICE
+5.0,2,0,1908.92,100.0,Med Zoubeidi,Med Zoubeidi,Attijari Bank,Attijari Bank
+7.0,45,23,9475.18,17.8,AMMAR.MARIEM,AMMAR.MARIEM,Equipe Système,Equipe Système
+9.0,35,18,17836.8,2.9,Naim Ben Assila,Naim Ben Assila,Equipe Reseaux&Telephonie,Equipe Reseaux&Telephonie
+10.0,22,8,16404.86,13.6,Rania Aroua,Rania Aroua,Team DATA Intelligence,DATA OFFICE
 11.0,1,0,7624.96,100.0,SANA.ABOULAILA,SANA.ABOULAILA,Attijari Bank,Attijari Bank
-12.0,47,16,14347.39,0.0,Skander Amdouni,Skander Amdouni,Attijari Bank,Attijari Bank
-13.0,43,29,12613.68,0.0,Jemaa Med Amir,Jemaa Med Amir,Attijari Bank,Attijari Bank
-14.0,44,24,12597.01,4.5,Ahmed Jallouli,Ahmed Jallouli,data team,data team
-15.0,58,23,9042.7,3.4,sarra hamzaoui,sarra hamzaoui,Attijari Bank,Attijari Bank
-16.0,22,9,15183.44,4.5,GHARBI.YOUNES,GHARBI.YOUNES,Equipe Système,Equipe Système
-17.0,27,12,14117.59,0.0,ELABED.FIRAS,ELABED.FIRAS,Attijari Bank,Attijari Bank
-18.0,7,0,8483.41,28.6,oumaima daghfous,oumaima daghfous,Attijari Bank,Attijari Bank
-19.0,6,0,8666.77,83.3,ANIS.CHOUCHENE,ANIS.CHOUCHENE,data team,DATA
-20.0,60,30,10617.83,3.3,Ayoub Mhadheb Chammam,Ayoub Mhadheb Chammam,data team,data team
-21.0,46,17,14916.49,13.0,Adam Chaabani,Adam Chaabani,Attijari Bank,Attijari Bank
-22.0,49,18,13956.14,24.5,Firas Brinsi,Firas Brinsi,Attijari Bank,Attijari Bank
-23.0,1,0,1606.77,0.0,BOUGUERRA.RYM,BOUGUERRA.RYM,"Contentieux, GGR et activités support","Contentieux, GGR et activités support"
-24.0,43,0,3432.05,4.7,Boubakri Iheb,Boubakri Iheb,Data Governance,Data Governance
+12.0,47,16,14356.43,0.0,Skander Amdouni,Skander Amdouni,Attijari Bank,Attijari Bank
+13.0,43,29,12623.23,0.0,Jemaa Med Amir,Jemaa Med Amir,Attijari Bank,Attijari Bank
+14.0,44,24,12605.69,4.5,Ahmed Jallouli,Ahmed Jallouli,data team,data team
+15.0,58,23,9053.19,3.4,sarra hamzaoui,sarra hamzaoui,Attijari Bank,Attijari Bank
+16.0,22,9,15193.73,4.5,GHARBI.YOUNES,GHARBI.YOUNES,Equipe Système,Equipe Système
+17.0,27,12,14129.65,0.0,ELABED.FIRAS,ELABED.FIRAS,Attijari Bank,Attijari Bank
+18.0,7,0,8491.5,28.6,oumaima daghfous,oumaima daghfous,Attijari Bank,Attijari Bank
+19.0,6,0,8680.92,83.3,ANIS.CHOUCHENE,ANIS.CHOUCHENE,data team,DATA
+20.0,60,30,10625.62,3.3,Ayoub Mhadheb Chammam,Ayoub Mhadheb Chammam,data team,data team
+21.0,46,17,14926.34,13.0,Adam Chaabani,Adam Chaabani,Attijari Bank,Attijari Bank
+22.0,49,18,13964.52,24.5,Firas Brinsi,Firas Brinsi,Attijari Bank,Attijari Bank
+23.0,1,0,1620.92,0.0,BOUGUERRA.RYM,BOUGUERRA.RYM,"Contentieux, GGR et activités support","Contentieux, GGR et activités support"
+24.0,43,0,3433.69,4.7,Boubakri Iheb,Boubakri Iheb,Data Governance,Data Governance
 25.0,2,0,8382.65,0.0,saber ben salem,saber ben salem,Attijari Bank,Attijari Bank
-26.0,18,0,2785.85,0.0,Aicha Ben Messaoud,Aicha Ben Messaoud,Attijari Bank,Attijari Bank
-27.0,1,0,5974.77,0.0,A Ben Jamaa,A Ben Jamaa,Attijari Bank,Attijari Bank
-28.0,6,0,6770.75,66.7,Hedi Ben Ammar,Hedi Ben Ammar,Attijari Bank,Attijari Bank
-29.0,43,15,12663.07,23.3,Aymen Barhoumi,Aymen Barhoumi,Attijari Bank,Attijari Bank
+26.0,18,0,2787.43,0.0,Aicha Ben Messaoud,Aicha Ben Messaoud,Attijari Bank,Attijari Bank
+27.0,1,0,5988.92,0.0,A Ben Jamaa,A Ben Jamaa,Attijari Bank,Attijari Bank
+28.0,6,0,6777.82,66.7,Hedi Ben Ammar,Hedi Ben Ammar,Attijari Bank,Attijari Bank
+29.0,43,15,12671.62,23.3,Aymen Barhoumi,Aymen Barhoumi,Attijari Bank,Attijari Bank
 30.0,1,0,8131.29,0.0,Yassine Baccouche,Yassine Baccouche,Attijari Bank,Attijari Bank
-31.0,33,11,7682.99,6.1,azizridane,azizridane,Attijari Bank,Attijari Bank
-32.0,11,0,8945.11,81.8,Abderrahim Aziza,Abderrahim Aziza,data team,data team
-33.0,33,13,13676.52,0.0,Malek Rabhi,Malek Rabhi,data team,data team
-34.0,43,20,11633.66,4.7,Fida Rebai,Fida Rebai,Attijari Bank,Attijari Bank
-35.0,61,0,4332.5,21.3,Iheb Sliti,Iheb Sliti,Attijari Bank,Attijari Bank
-36.0,49,5,8748.35,36.7,NOUR.TABOUBI,NOUR.TABOUBI,Attijari Bank,Attijari Bank
-37.0,1,0,9070.77,0.0,Jawher KHALIFA,Jawher KHALIFA,Attijari Bank,Attijari Bank
-38.0,1,0,9334.77,100.0,LAJDEL.BOUDOUR,LAJDEL.BOUDOUR,Attijari Bank,Attijari Bank
+31.0,33,11,7685.57,6.1,azizridane,azizridane,Attijari Bank,Attijari Bank
+32.0,11,0,8957.97,81.8,Abderrahim Aziza,Abderrahim Aziza,data team,data team
+33.0,33,13,13688.53,0.0,Malek Rabhi,Malek Rabhi,data team,data team
+34.0,43,20,11644.19,4.7,Fida Rebai,Fida Rebai,Attijari Bank,Attijari Bank
+35.0,61,0,4336.44,21.3,Iheb Sliti,Iheb Sliti,Attijari Bank,Attijari Bank
+36.0,49,5,8751.53,36.7,NOUR.TABOUBI,NOUR.TABOUBI,Attijari Bank,Attijari Bank
+37.0,1,0,9084.92,0.0,Jawher KHALIFA,Jawher KHALIFA,Attijari Bank,Attijari Bank
+38.0,1,0,9348.92,100.0,LAJDEL.BOUDOUR,LAJDEL.BOUDOUR,Attijari Bank,Attijari Bank
 39.0,2,0,4989.79,0.0,latifa,latifa,Attijari Bank,Attijari Bank
-40.0,75,20,8933.29,6.7,Melki Iheb,Melki Iheb,Team DATA Intelligence,Team DATA Intelligence
-41.0,56,13,9682.05,0.0,TERRAS AHMED KHALIL,TERRAS AHMED KHALIL,Attijari Bank,Attijari Bank
-42.0,54,15,10881.58,3.7,Ahlem Tlili,Ahlem Tlili,Attijari Bank,Attijari Bank
-43.0,54,12,6710.59,100.0,Saber Bensalem,Saber Bensalem,GTI Info,GTI Info
-44.0,5,1,14180.56,100.0,Chaima Jenhani,Chaima Jenhani,GTI Info,GTI Info
-56.0,1,0,16150.77,100.0,Ahmed Craftfoundry,Ahmed Craftfoundry,Craft Foundry,Craft Foundry
+40.0,75,20,8944.24,6.7,Melki Iheb,Melki Iheb,Team DATA Intelligence,Team DATA Intelligence
+41.0,56,13,9686.35,0.0,TERRAS AHMED KHALIL,TERRAS AHMED KHALIL,Attijari Bank,Attijari Bank
+42.0,54,15,10889.18,3.7,Ahlem Tlili,Ahlem Tlili,Attijari Bank,Attijari Bank
+43.0,54,12,6722.9,100.0,Saber Bensalem,Saber Bensalem,GTI Info,GTI Info
+44.0,5,1,14189.05,100.0,Chaima Jenhani,Chaima Jenhani,GTI Info,GTI Info
+56.0,1,0,16164.92,100.0,Ahmed Craftfoundry,Ahmed Craftfoundry,Craft Foundry,Craft Foundry

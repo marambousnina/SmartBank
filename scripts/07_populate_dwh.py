@@ -242,6 +242,44 @@ def populate_dim_project(engine):
     df["domain"] = df["project_name"].apply(_derive_domain)
     upsert(engine, df, "dwh.dim_project")
 
+    # -- Ajouter dead_line et variance_budget si absents
+    with engine.begin() as conn:
+        conn.execute(text("ALTER TABLE dwh.dim_project ADD COLUMN IF NOT EXISTS dead_line DATE"))
+        conn.execute(text("ALTER TABLE dwh.dim_project ADD COLUMN IF NOT EXISTS variance_budget NUMERIC(12,2)"))
+
+    # -- Calculer variance_budget uniquement pour les projets Actifs
+    # Budget = somme des jours-personne travailles x 200 DT
+    try:
+        budget_df = load_df(engine, """
+            SELECT
+                UPPER(sub.project_key)                           AS project_code,
+                ROUND(SUM(sub.person_days * 200.0)::numeric, 2) AS variance_budget
+            FROM (
+                SELECT
+                    c.project_key,
+                    c.author_email,
+                    COUNT(DISTINCT c.created_at::date) AS person_days
+                FROM cleaned.commits c
+                WHERE c.project_key IS NOT NULL
+                  AND c.author_email IS NOT NULL
+                  AND c.created_at   IS NOT NULL
+                GROUP BY c.project_key, c.author_email
+            ) sub
+            GROUP BY UPPER(sub.project_key)
+        """)
+        if not budget_df.empty:
+            with engine.begin() as conn:
+                for _, row in budget_df.iterrows():
+                    conn.execute(text("""
+                        UPDATE dwh.dim_project
+                        SET variance_budget = :budget
+                        WHERE UPPER(project_code) = :code
+                          AND COALESCE(status, 'Actif') = 'Actif'
+                    """), {"budget": float(row["variance_budget"]), "code": str(row["project_code"])})
+        ok("dim_project.variance_budget mis a jour (projets Actifs)")
+    except Exception as exc:
+        info(f"variance_budget calcul ignore : {exc}")
+
 
 # =============================================================================
 # 5. DIM_STATUS
@@ -473,7 +511,7 @@ def populate_fact_dora_snapshot(engine):
         df = load_df(engine, """
             SELECT
                 TO_CHAR(DATE_TRUNC('week', created_at), 'YYYY-"W"IW') AS week_label,
-                CAST(TO_CHAR(MIN(created_at), 'YYYYMMDD') AS INTEGER)  AS date_key,
+                CAST(TO_CHAR(DATE_TRUNC('week', MIN(created_at)), 'YYYYMMDD') AS INTEGER) AS date_key,
                 COUNT(*)                                                AS deployment_count,
                 COUNT(*) / 7.0                                          AS deploy_freq_per_week,
                 COUNT(*)                                                AS total_pipelines,
@@ -493,7 +531,7 @@ def populate_fact_dora_snapshot(engine):
         df = load_df(engine, """
             SELECT
                 w.week                              AS week_label,
-                CAST(REPLACE(w.week, '-W', '') || '01' AS INTEGER) AS date_key,
+                CAST(TO_CHAR(TO_DATE(w.week || '-1', 'IYYY-"W"IW-ID'), 'YYYYMMDD') AS INTEGER) AS date_key,
                 w.deployment_count,
                 w.deployment_count / 7.0            AS deploy_freq_per_week,
                 w.total_pipelines,
@@ -630,6 +668,34 @@ def populate_fact_team_performance(engine):
 
 
 # =============================================================================
+# 14. FACT_DORA_METRICS_PROJET  (table de cache pour le calcul a la demande)
+# =============================================================================
+def create_fact_dora_metrics_projet(engine):
+    print("\n[14] fact_dora_metrics_projet")
+    run_sql(engine, """
+        CREATE TABLE IF NOT EXISTS dwh.fact_dora_metrics_projet (
+            id                    SERIAL PRIMARY KEY,
+            project_key           INTEGER REFERENCES dwh.dim_project(project_key),
+            date_debut            DATE NOT NULL,
+            date_fin              DATE NOT NULL,
+            mttr                  DOUBLE PRECISION,
+            change_failure_rate   DOUBLE PRECISION,
+            deployment_frequency  DOUBLE PRECISION,
+            lead_time_mean        DOUBLE PRECISION,
+            risk_score            DOUBLE PRECISION,
+            failed_jobs           INTEGER,
+            tickets_total         INTEGER,
+            tickets_done          INTEGER,
+            commits               INTEGER,
+            data_source           VARCHAR(20) DEFAULT 'jira_only',
+            computed_at           TIMESTAMP DEFAULT NOW(),
+            UNIQUE (project_key, date_debut, date_fin)
+        )
+    """)
+    ok("fact_dora_metrics_projet prete")
+
+
+# =============================================================================
 # MAIN
 # =============================================================================
 def main():
@@ -700,6 +766,7 @@ def main():
     populate_fact_commits(engine)
     populate_fact_dora_snapshot(engine)
     populate_fact_team_performance(engine)
+    create_fact_dora_metrics_projet(engine)
 
     print()
     print("=" * 60)

@@ -40,8 +40,49 @@ def _ensure_project_status_column():
 _ensure_project_status_column()
 
 
+def _ensure_dora_compute_tables():
+    """Crée fact_dora_metrics_projet et ajoute les colonnes dim_project manquantes."""
+    try:
+        with _engine.begin() as conn:
+            # Nouvelles colonnes dim_project
+            conn.execute(text("ALTER TABLE dwh.dim_project ADD COLUMN IF NOT EXISTS dead_line DATE"))
+            conn.execute(text("ALTER TABLE dwh.dim_project ADD COLUMN IF NOT EXISTS variance_budget NUMERIC(12,2)"))
+            # Table de cache DORA à la demande
+            conn.execute(text("""
+                CREATE TABLE IF NOT EXISTS dwh.fact_dora_metrics_projet (
+                    id                    SERIAL PRIMARY KEY,
+                    project_key           INTEGER REFERENCES dwh.dim_project(project_key),
+                    date_debut            DATE NOT NULL,
+                    date_fin              DATE NOT NULL,
+                    mttr                  DOUBLE PRECISION,
+                    change_failure_rate   DOUBLE PRECISION,
+                    deployment_frequency  DOUBLE PRECISION,
+                    lead_time_mean        DOUBLE PRECISION,
+                    risk_score            DOUBLE PRECISION,
+                    failed_jobs           INTEGER,
+                    tickets_total         INTEGER,
+                    tickets_done          INTEGER,
+                    commits               INTEGER,
+                    data_source           VARCHAR(20) DEFAULT 'jira_only',
+                    computed_at           TIMESTAMP DEFAULT NOW(),
+                    UNIQUE (project_key, date_debut, date_fin)
+                )
+            """))
+    except Exception:
+        pass
+
+
+_ensure_dora_compute_tables()
+
+
 class StatusUpdate(BaseModel):
     status: str
+
+
+class DoraComputeRequest(BaseModel):
+    project_code: str
+    date_debut: str
+    date_fin: str
 
 
 def q(sql: str, params: dict = None) -> list[dict]:
@@ -987,3 +1028,363 @@ def person_comparison(
             LIMIT 15
         """, {"key": assignee_key, **date_params})
     return rows
+
+
+# ════════════════════════════════════════════════════════════════════════════
+# DORA PAR PROJET — MENSUEL & HEBDOMADAIRE
+# ════════════════════════════════════════════════════════════════════════════
+
+@router.get("/projects/dora/monthly")
+def dora_projects_monthly(
+    project_code: Optional[str] = Query(None, description="Filtrer par code projet (ex: DL)"),
+    date_from:    Optional[str] = Query(None),
+    date_to:      Optional[str] = Query(None),
+):
+    """DORA par projet, granularité mensuelle."""
+    conditions = ["1=1"]
+    params: dict = {}
+
+    if project_code:
+        conditions.append("UPPER(dp.project_code) = :code")
+        params["code"] = project_code.upper()
+
+    if date_from and date_to:
+        conditions.append("dd.full_date BETWEEN :date_from AND :date_to")
+        params["date_from"] = date_from
+        params["date_to"]   = date_to
+    else:
+        conditions.append("dd.full_date >= CURRENT_DATE - INTERVAL '12 months'")
+
+    where = " AND ".join(conditions)
+
+    return q(f"""
+        SELECT
+            dp.project_code,
+            dp.project_name,
+            dp.domain,
+            m.month_year,
+            m.year,
+            m.month,
+            m.deployment_count,
+            ROUND(m.deploy_freq_per_week::numeric, 2)  AS deploy_freq_per_week,
+            dl1.dora_level                             AS deploy_freq_level,
+            dl1.dora_color                             AS deploy_freq_color,
+            ROUND(m.avg_lead_time_hours::numeric, 1)   AS avg_lead_time_hours,
+            ROUND(m.avg_lead_time_days::numeric, 1)    AS avg_lead_time_days,
+            dl2.dora_level                             AS lead_time_level,
+            dl2.dora_color                             AS lead_time_color,
+            m.total_pipelines,
+            m.failed_pipelines,
+            ROUND(m.cfr_pct::numeric, 1)               AS cfr_pct,
+            dl3.dora_level                             AS cfr_level,
+            dl3.dora_color                             AS cfr_color,
+            m.tickets_created,
+            m.tickets_resolved,
+            m.tickets_delayed,
+            ROUND(m.on_time_rate::numeric, 1)          AS on_time_rate
+        FROM dwh.fact_dora_project_monthly m
+        JOIN dwh.dim_project    dp  ON m.project_key    = dp.project_key
+        JOIN dwh.dim_date       dd  ON m.date_key       = dd.date_key
+        JOIN dwh.dim_dora_level dl1 ON m.deploy_freq_key = dl1.dora_key
+        JOIN dwh.dim_dora_level dl2 ON m.lead_time_key   = dl2.dora_key
+        JOIN dwh.dim_dora_level dl3 ON m.cfr_key         = dl3.dora_key
+        WHERE {where}
+        ORDER BY m.date_key, dp.project_code
+    """, params)
+
+
+@router.get("/projects/dora/weekly")
+def dora_projects_weekly(
+    project_code: Optional[str] = Query(None, description="Filtrer par code projet (ex: DL)"),
+    date_from:    Optional[str] = Query(None),
+    date_to:      Optional[str] = Query(None),
+):
+    """DORA par projet, granularité hebdomadaire."""
+    conditions = ["1=1"]
+    params: dict = {}
+
+    if project_code:
+        conditions.append("UPPER(dp.project_code) = :code")
+        params["code"] = project_code.upper()
+
+    if date_from and date_to:
+        conditions.append("dd.full_date BETWEEN :date_from AND :date_to")
+        params["date_from"] = date_from
+        params["date_to"]   = date_to
+    else:
+        conditions.append("dd.full_date >= CURRENT_DATE - INTERVAL '6 months'")
+
+    where = " AND ".join(conditions)
+
+    return q(f"""
+        SELECT
+            dp.project_code,
+            dp.project_name,
+            dp.domain,
+            w.week_label,
+            w.year,
+            w.week_of_year,
+            w.deployment_count,
+            ROUND(w.deploy_freq_per_week::numeric, 2)  AS deploy_freq_per_week,
+            dl1.dora_level                             AS deploy_freq_level,
+            dl1.dora_color                             AS deploy_freq_color,
+            ROUND(w.avg_lead_time_hours::numeric, 1)   AS avg_lead_time_hours,
+            ROUND(w.avg_lead_time_days::numeric, 1)    AS avg_lead_time_days,
+            dl2.dora_level                             AS lead_time_level,
+            dl2.dora_color                             AS lead_time_color,
+            w.total_pipelines,
+            w.failed_pipelines,
+            ROUND(w.cfr_pct::numeric, 1)               AS cfr_pct,
+            dl3.dora_level                             AS cfr_level,
+            dl3.dora_color                             AS cfr_color,
+            w.tickets_created,
+            w.tickets_resolved,
+            w.tickets_delayed,
+            ROUND(w.on_time_rate::numeric, 1)          AS on_time_rate
+        FROM dwh.fact_dora_project_weekly w
+        JOIN dwh.dim_project    dp  ON w.project_key    = dp.project_key
+        JOIN dwh.dim_date       dd  ON w.date_key       = dd.date_key
+        JOIN dwh.dim_dora_level dl1 ON w.deploy_freq_key = dl1.dora_key
+        JOIN dwh.dim_dora_level dl2 ON w.lead_time_key   = dl2.dora_key
+        JOIN dwh.dim_dora_level dl3 ON w.cfr_key         = dl3.dora_key
+        WHERE {where}
+        ORDER BY w.date_key, dp.project_code
+    """, params)
+
+
+@router.get("/projects/{project_code}/dora/monthly")
+def project_dora_monthly(
+    project_code: str,
+    date_from: Optional[str] = Query(None),
+    date_to:   Optional[str] = Query(None),
+):
+    """DORA mensuel pour un projet spécifique."""
+    return dora_projects_monthly(project_code=project_code, date_from=date_from, date_to=date_to)
+
+
+@router.get("/projects/{project_code}/dora/weekly")
+def project_dora_weekly(
+    project_code: str,
+    date_from: Optional[str] = Query(None),
+    date_to:   Optional[str] = Query(None),
+):
+    """DORA hebdomadaire pour un projet spécifique."""
+    return dora_projects_weekly(project_code=project_code, date_from=date_from, date_to=date_to)
+
+
+# ════════════════════════════════════════════════════════════════════════════
+# DORA A LA DEMANDE — calcul par periode sur un projet
+# ════════════════════════════════════════════════════════════════════════════
+
+@router.get("/dora/results/{project_code}")
+def dora_compute_results(project_code: str):
+    """Retourne tous les résultats DORA calculés et mis en cache pour un projet."""
+    rows = q("""
+        SELECT
+            f.id,
+            f.date_debut::text,
+            f.date_fin::text,
+            f.deployment_frequency,
+            f.lead_time_mean,
+            f.change_failure_rate,
+            f.mttr,
+            f.risk_score,
+            f.failed_jobs,
+            f.tickets_total,
+            f.tickets_done,
+            f.commits,
+            f.data_source,
+            f.computed_at::text
+        FROM dwh.fact_dora_metrics_projet f
+        JOIN dwh.dim_project dp ON f.project_key = dp.project_key
+        WHERE UPPER(dp.project_code) = :code
+        ORDER BY f.date_debut DESC, f.date_fin DESC
+    """, {"code": project_code.upper()})
+    return rows
+
+
+@router.post("/dora/compute")
+def dora_compute(body: DoraComputeRequest):
+    """
+    Calcule les métriques DORA pour un projet sur une période.
+    - Si le résultat existe déjà en cache → le retourne directement.
+    - Sinon → calcule, insère en base, retourne le résultat.
+    - Jira Only : Lead Time, CFR, MTTR, Deploy Freq depuis les tickets Jira.
+    - Jira + Git : Deploy Freq et CFR depuis les pipelines/déploiements.
+    """
+    code = body.project_code.upper()
+    date_debut = body.date_debut
+    date_fin   = body.date_fin
+
+    # -- Récupérer project_key
+    proj = q("SELECT project_key, COALESCE(status,'Actif') AS status FROM dwh.dim_project WHERE UPPER(project_code) = :code",
+             {"code": code})
+    if not proj:
+        raise HTTPException(status_code=404, detail=f"Projet '{code}' introuvable")
+    project_key = int(proj[0]["project_key"])
+
+    # -- Vérifier le cache
+    cached = q("""
+        SELECT id, date_debut::text, date_fin::text,
+               deployment_frequency, lead_time_mean, change_failure_rate, mttr,
+               risk_score, failed_jobs, tickets_total, tickets_done, commits,
+               data_source, computed_at::text
+        FROM dwh.fact_dora_metrics_projet
+        WHERE project_key = :pk AND date_debut = :d1 AND date_fin = :d2
+        LIMIT 1
+    """, {"pk": project_key, "d1": date_debut, "d2": date_fin})
+
+    if cached:
+        result = dict(cached[0])
+        result["cached"] = True
+        result["project_code"] = code
+        return result
+
+    # -- Déterminer le type de projet (Jira Only vs Jira+Git)
+    src_rows = q("SELECT data_source FROM dora_metrics.by_project WHERE UPPER(project_key) = :code LIMIT 1",
+                 {"code": code})
+    data_source = (src_rows[0]["data_source"] if src_rows else "jira_only") or "jira_only"
+    is_git = "git" in data_source.lower()
+
+    params = {"code": code, "d1": date_debut, "d2": date_fin}
+
+    # -- Métriques tickets (communes aux deux cas)
+    tkt = q("""
+        SELECT
+            COUNT(*)                                                               AS tickets_total,
+            COUNT(*) FILTER (WHERE ft.lead_time_is_final = 1)                    AS tickets_done,
+            AVG(ft.lead_time_hours) FILTER (WHERE ft.lead_time_is_final = 1)     AS lead_time_mean,
+            (COUNT(*) FILTER (WHERE ft.is_bug = 1 AND ft.lead_time_is_final = 1) * 100.0
+             / NULLIF(COUNT(*) FILTER (WHERE ft.lead_time_is_final = 1), 0))     AS cfr_jira,
+            AVG(ft.lead_time_hours)
+                FILTER (WHERE ft.is_bug = 1 AND ft.lead_time_is_final = 1)       AS mttr_jira,
+            COUNT(*) FILTER (WHERE ft.lead_time_is_final = 1)::float
+                / NULLIF((CAST(:d2 AS DATE) - CAST(:d1 AS DATE))::float / 7.0, 0)
+                                                                                   AS deploy_freq_jira
+        FROM dwh.fact_tickets ft
+        JOIN dwh.dim_project dp ON ft.project_key = dp.project_key
+        JOIN dwh.dim_date    dd ON ft.date_key_created = dd.date_key
+        WHERE UPPER(dp.project_code) = :code
+          AND dd.full_date BETWEEN :d1 AND :d2
+    """, params)
+    t = tkt[0] if tkt else {}
+
+    # -- Métriques Git (pipelines/déploiements) si Jira+Git
+    deploy_freq  = float(t.get("deploy_freq_jira") or 0)
+    cfr_pct      = float(t.get("cfr_jira") or 0)
+    mttr         = float(t.get("mttr_jira") or 0)
+
+    if is_git:
+        dep = q("""
+            SELECT
+                COUNT(*)                                                          AS deploy_count,
+                COUNT(*) FILTER (WHERE fd.status = 'failed') * 100.0
+                    / NULLIF(COUNT(*), 0)                                         AS cfr_git,
+                COUNT(*)::float
+                    / NULLIF((CAST(:d2 AS DATE) - CAST(:d1 AS DATE))::float / 7.0, 0)
+                                                                                  AS deploy_freq_git
+            FROM dwh.fact_deployments fd
+            JOIN dwh.dim_date dd ON fd.date_key = dd.date_key
+            WHERE UPPER(fd.ref) LIKE CONCAT('%%', :code, '%%')
+              AND dd.full_date BETWEEN :d1 AND :d2
+        """, params)
+        if dep and dep[0].get("deploy_count"):
+            d0 = dep[0]
+            deploy_freq = float(d0.get("deploy_freq_git") or 0)
+            cfr_pct     = float(d0.get("cfr_git") or 0)
+
+    # -- Commits
+    cmts = q("""
+        SELECT COUNT(*) AS commits
+        FROM dwh.fact_commits fc
+        JOIN dwh.dim_project dp ON fc.project_key = dp.project_key
+        JOIN dwh.dim_date    dd ON fc.date_key = dd.date_key
+        WHERE UPPER(dp.project_code) = :code
+          AND dd.full_date BETWEEN :d1 AND :d2
+    """, params)
+    nb_commits = int((cmts[0].get("commits") if cmts else 0) or 0)
+
+    # -- Jobs en échec (global sur la période)
+    jobs_row = q("""
+        SELECT COUNT(*) AS failed_jobs
+        FROM cleaned.jobs
+        WHERE status = 'failed'
+    """)
+    nb_failed_jobs = int((jobs_row[0].get("failed_jobs") if jobs_row else 0) or 0)
+
+    # -- Calcul du Risk Score (0-100) : CFR 40% + taux retard 40% + lead time 20%
+    lead_time_h    = float(t.get("lead_time_mean") or 0)
+    tickets_done   = int(t.get("tickets_done") or 0)
+    tickets_total  = int(t.get("tickets_total") or 0)
+    delay_rate     = 0.0
+    if tickets_total > 0:
+        delayed_row = q("""
+            SELECT COUNT(*) FILTER (WHERE ft.is_delayed = 1 AND ft.lead_time_is_final = 1)::float
+                   / NULLIF(COUNT(*) FILTER (WHERE ft.lead_time_is_final = 1), 0) * 100 AS delay_rate
+            FROM dwh.fact_tickets ft
+            JOIN dwh.dim_project dp ON ft.project_key = dp.project_key
+            JOIN dwh.dim_date    dd ON ft.date_key_created = dd.date_key
+            WHERE UPPER(dp.project_code) = :code AND dd.full_date BETWEEN :d1 AND :d2
+        """, params)
+        delay_rate = float((delayed_row[0].get("delay_rate") if delayed_row else None) or 0)
+
+    lt_score   = min(lead_time_h / 500 * 100, 100)  # >500h = risque max
+    risk_score = round(cfr_pct * 0.40 + delay_rate * 0.40 + lt_score * 0.20, 1)
+    risk_score = min(risk_score, 100.0)
+
+    # -- Insérer en cache
+    with _engine.begin() as conn:
+        conn.execute(text("""
+            INSERT INTO dwh.fact_dora_metrics_projet
+                (project_key, date_debut, date_fin,
+                 mttr, change_failure_rate, deployment_frequency, lead_time_mean,
+                 risk_score, failed_jobs, tickets_total, tickets_done, commits,
+                 data_source, computed_at)
+            VALUES
+                (:pk, :d1, :d2,
+                 :mttr, :cfr, :df, :lt,
+                 :rs, :fj, :tt, :td, :cm,
+                 :src, NOW())
+            ON CONFLICT (project_key, date_debut, date_fin)
+            DO UPDATE SET
+                mttr                = EXCLUDED.mttr,
+                change_failure_rate = EXCLUDED.change_failure_rate,
+                deployment_frequency= EXCLUDED.deployment_frequency,
+                lead_time_mean      = EXCLUDED.lead_time_mean,
+                risk_score          = EXCLUDED.risk_score,
+                failed_jobs         = EXCLUDED.failed_jobs,
+                tickets_total       = EXCLUDED.tickets_total,
+                tickets_done        = EXCLUDED.tickets_done,
+                commits             = EXCLUDED.commits,
+                data_source         = EXCLUDED.data_source,
+                computed_at         = NOW()
+        """), {
+            "pk": project_key, "d1": date_debut, "d2": date_fin,
+            "mttr": round(mttr, 2),
+            "cfr":  round(cfr_pct, 2),
+            "df":   round(deploy_freq, 3),
+            "lt":   round(lead_time_h, 2),
+            "rs":   risk_score,
+            "fj":   nb_failed_jobs,
+            "tt":   tickets_total,
+            "td":   tickets_done,
+            "cm":   nb_commits,
+            "src":  data_source,
+        })
+
+    return {
+        "cached":               False,
+        "project_code":         code,
+        "date_debut":           date_debut,
+        "date_fin":             date_fin,
+        "deployment_frequency": round(deploy_freq, 3),
+        "lead_time_mean":       round(lead_time_h, 2),
+        "change_failure_rate":  round(cfr_pct, 2),
+        "mttr":                 round(mttr, 2),
+        "risk_score":           risk_score,
+        "failed_jobs":          nb_failed_jobs,
+        "tickets_total":        tickets_total,
+        "tickets_done":         tickets_done,
+        "commits":              nb_commits,
+        "data_source":          data_source,
+    }

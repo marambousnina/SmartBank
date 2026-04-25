@@ -43,6 +43,12 @@ export const getPersonTasks      = (id: number) => api.get(`/personnel/${id}/cha
 export const getPersonTrend      = (id: number, df?: string, dt?: string) => api.get(`/personnel/${id}/charts/trend`, dateParams(df, dt)).then(r => r.data)
 export const getPersonComparison = (id: number, df?: string, dt?: string) => api.get(`/personnel/${id}/charts/comparison`, dateParams(df, dt)).then(r => r.data)
 
+// ── DORA à la demande ────────────────────────────────────────────────────────
+export const computeDora           = (payload: { project_code: string; date_debut: string; date_fin: string }) =>
+  api.post('/dora/compute', payload).then(r => r.data)
+export const getDoraComputeResults = (code: string) =>
+  api.get(`/dora/results/${encodeURIComponent(code)}`).then(r => r.data)
+
 // ── Predictions ML ───────────────────────────────────────────────────────
 export const getPredictAllProjects  = () => api.get('/predict/projects').then(r => r.data)
 export const getPredictProject      = (key: string) => api.get(`/predict/projects/${key}`).then(r => r.data)
